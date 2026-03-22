@@ -1,0 +1,71 @@
+% 02_layout.tex
+% Geometría, Encabezados y Trazabilidad (IEEE 1012-2024)
+
+% 1. Configuración de Márgenes Exactos
+\geometry{
+    a4paper,
+    inner=3cm,       
+    outer=2cm,       
+    top=2.5cm,       
+    bottom=2.5cm,    
+    includehead,     
+    includefoot,     
+    headheight=28pt, 
+    headsep=0.4cm,   
+    footskip=1.0cm   
+}
+\onehalfspacing    
+
+\titleformat{\chapter}[hang]
+  {\sffamily\bfseries\fontsize{16}{19.2}\selectfont\color{colorPrimario}}
+  {\thechapter.}
+  {1em}{}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\titleformat{\section}[hang]
+  {\sffamily\bfseries\fontsize{14}{16.8}\selectfont\color{colorPrimario}}
+  {\thesection.}
+  {1em}{}
+
+% ==========================================
+% VARIABLES DINÁMICAS DE SPRINT
+% ==========================================
+\newcommand{\currentSprint}{Sprint \# - Estado}
+\newcommand{\currentTag}{release/v0.0.0}
+\newcommand{\currentTaskID}{Gestor Tareas: ID}
+\newcommand{\docOwner}{Propietario: Nombre}
+
+\newcommand{\setSprint}[1]{\renewcommand{\currentSprint}{#1}}
+\newcommand{\setTag}[1]{\renewcommand{\currentTag}{#1}}
+\newcommand{\setTaskID}[1]{\renewcommand{\currentTaskID}{#1}}
+\newcommand{\setDocOwner}[1]{\renewcommand{\docOwner}{#1}}
+
+% ==========================================
+% ENCABEZADOS Y PIES (Documentation as Code)
+% ==========================================
+\pagestyle{fancy}
+\fancyhf{} 
+
+% Encabezado: Logo (Izq) | Estado Sprint (Centro) | Branch/Tag (Der)
+\fancyhead[L]{\includegraphics[height=0.5cm, keepaspectratio]{assets/img/bytebusters/logo_horizontal.png}}
+\fancyhead[C]{\sffamily\footnotesize\textcolor{colorPrimario}{\textbf{\currentSprint}}}
+\fancyhead[R]{\fontfamily{pcr}\footnotesize\textcolor{textVerde}{\currentTag}}
+
+% Pie de Página: Trazabilidad (Izq) | Owner y Paginación (Der)
+\fancyfoot[L]{\sffamily\footnotesize\textcolor{grisISO}{\currentTaskID}}
+\fancyfoot[R]{\sffamily\footnotesize\textcolor{grisISO}{\docOwner\ | Pág. \thepage\ de \pageref{LastPage}}}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{grisISO}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{grisISO}\leaders\hrule height \footrulewidth\hfill}}
+
+\hypersetup{colorlinks=true, linkcolor=colorPrimario, urlcolor=colorPrimario}
+
+\hypersetup{
+    colorlinks=true, 
+    linkcolor=colorPrimario, 
+    urlcolor=colorPrimario, 
+    pdftitle={Documentación por Sprint ISO/IEC/IEEE 26515:2024},
+    pdfauthor={Byte Busters S.R.L.}
+    }

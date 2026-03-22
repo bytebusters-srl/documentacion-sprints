@@ -1,0 +1,37 @@
+% main.tex
+% Memoria P.D.S. (Release Notes) - ISO/IEC/IEEE 26515:2024 e ISO 15289
+
+\documentclass[10pt, a4paper, twoside]{report} % Base a 10pt para notas de versión
+
+\input{config/01_packages}
+\input{config/03_fonts_colors}
+\input{config/02_layout}
+\input{config/04_macros}
+
+\begin{document}
+
+\include{sections/00_portada}
+
+\clearpage
+\begingroup
+  \makeatletter \let\ps@plain\ps@empty \makeatother
+  \pagestyle{empty} 
+  \tableofcontents
+  \clearpage
+\endgroup
+
+\pagestyle{fancy}   
+\setcounter{page}{1} 
+
+% Configuramos las variables dinámicas para este Incremento
+\setSprint{Sprint 5 - Closed}
+\setTag{release/v2.1.0}
+\setTaskID{Jira: SPRINT-05}
+\setDocOwner{Documentation Owner: J. Pardo}
+
+% ==========================================
+% MEMORIA DEL SPRINT (INCREMENTO)
+% ==========================================
+\chapter{Identificación del Incremento}
+
+\end{document}
