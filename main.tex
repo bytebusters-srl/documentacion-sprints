@@ -15,23 +15,23 @@
 \clearpage
 \begingroup
   \makeatletter \let\ps@plain\ps@empty \makeatother
-  \pagestyle{empty} 
+  \pagestyle{empty}
   \tableofcontents
   \clearpage
 \endgroup
 
-\pagestyle{fancy}   
-\setcounter{page}{1} 
+\pagestyle{fancy}
+\setcounter{page}{1}
 
 % Configuramos las variables dinámicas para este Incremento
-\setSprint{Sprint 5 - Closed}
-\setTag{release/v2.1.0}
-\setTaskID{Jira: SPRINT-05}
-\setDocOwner{Documentation Owner: J. Pardo}
+\setSprint{Sprint 0 - Closed}
+\setTag{release/v0.1.0}
+\setTaskID{Jira: SPRINT-00}
 
-% ==========================================
-% MEMORIA DEL SPRINT (INCREMENTO)
-% ==========================================
-\chapter{Identificación del Incremento}
-
+% --- SPRINT 0 ---
+\include{sections/doc-sprint0/01_introduccion}
+\include{sections/doc-sprint0/02_infraestructura}
+\include{sections/doc-sprint0/03_producto}
+\include{sections/doc-sprint0/04_diseno&prototipado}
+\include{sections/doc-sprint0/05_cierreSprint}
 \end{document}
