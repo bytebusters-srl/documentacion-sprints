@@ -1,0 +1,41 @@
+% --- SECCIÓN 6: CIERRE DE SPRINT ---
+\section{Cierre de Sprint}
+\label{sec:cierre_sprint}
+
+Este apartado consolida el desempeño del equipo y establece la gestión de riesgos para las siguientes iteraciones.
+
+\subsection{Trazabilidad de Tareas (Task Tracking)}
+\begin{TablaBacklog}
+    BB-S0-01 & Configuración de POM.xml y dependencias Java & \estadoPass & 3 & 0 & Validación de compilación exitosa. \\ \hline
+    BB-S0-02 & Next.js Base + Configuración de Node v20.19.0 & \estadoPass & 5 & 0 & SSR funcional en entorno local. \\ \hline
+    BB-S0-03 & Configuración JPA y conexión PostgreSQL & \estadoPass & 5 & 0 & Conexión BD sin rechazos. \\ \hline
+    BB-S0-04 & Prototipado en Figma (Sora / UI) & \estadoPass & 8 & 0 & Aprobación visual por Product Owner. \\ \hline
+\end{TablaBacklog}
+
+\subsection{Lecciones Aprendidas y Gestión de Riesgos}
+La adopción de un stack Enterprise (Spring Boot + Next.js) presentó retos superados exitosamente, dejando las siguientes métricas:
+
+\begin{itemize}
+    \item \textbf{Estandarización Lombok:} El uso de \comando{@Data} y \comando{@Builder} redujo el código de las entidades en un 40\%, mejorando la legibilidad.
+    \item \textbf{Ventaja Next.js:} La configuración temprana del framework aseguró que las metas de SEO (Epic 6) sean técnicamente viables desde el día 1, sin necesidad de refactorizar un React puro (SPA) más adelante.
+\end{itemize}
+
+\subsubsection{Identificación de Cuellos de Botella}
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|X|X|X|}
+        \hline
+        \rowcolor{colorPrimario} \textcolor{white}{\textbf{Riesgo}} & \textcolor{white}{\textbf{Impacto Potencial}} & \textcolor{white}{\textbf{Estrategia de Mitigación}} \\ \hline
+        Curva Spring Security & Bloqueos en CORS y filtros JWT en próximos sprints. & Sesiones de Pair Programming entre Backend Devs. \\ \hline
+        Curva Next.js (SSR/CSR) & Confusión al separar componentes de Servidor y Cliente, causando errores de hidratación. & Definir directivas \comando{"use client"} estrictamente solo donde haya interactividad. \\ \hline
+        Configuración OAuth2 & Retrasos en el mapeo de atributos de GitHub/Google. & Dejar la implementación OAuth2 para el Sprint 2. \\ \hline
+    \end{tabularx}
+    \caption{Matriz de Riesgos Identificados.}
+\end{table}
+
+\begin{AlertaDefecto}
+    \textbf{Alerta de Entorno:} Algunos miembros experimentaron fallos de dependencias en Frontend. Se estableció como normativa obligatoria el uso de \comando{nvm use 20.19.0} antes de ejecutar cualquier comando \comando{npm install}.
+\end{AlertaDefecto}
+
+\subsection{Conclusión del Incremento}
+Con el ecosistema \textit{Java / Next.js} validado y el entorno estandarizado sin errores, el proyecto \textbf{EthosHub} se declara oficialmente en estado \textbf{Ready for Development}.
