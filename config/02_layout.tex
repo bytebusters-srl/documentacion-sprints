@@ -4,8 +4,8 @@
 % 1. Configuración de Márgenes Exactos
 \geometry{
     a4paper,
-    inner=3cm,       
-    outer=2cm,       
+    inner=3.0cm,       
+    outer=2.0cm,       
     top=2.5cm,       
     bottom=2.5cm,    
     includehead,     
@@ -14,7 +14,7 @@
     headsep=0.4cm,   
     footskip=1.0cm   
 }
-\onehalfspacing    
+\singlespacing 
 
 \titleformat{\chapter}[hang]
   {\sffamily\bfseries\fontsize{16}{19.2}\selectfont\color{colorPrimario}}
@@ -48,12 +48,12 @@
 
 % Encabezado: Logo (Izq) | Estado Sprint (Centro) | Branch/Tag (Der)
 \fancyhead[L]{\includegraphics[height=0.5cm, keepaspectratio]{assets/img/bytebusters/logo_horizontal.png}}
-\fancyhead[C]{\sffamily\footnotesize\textcolor{colorPrimario}{\textbf{\currentSprint}}}
-\fancyhead[R]{\fontfamily{pcr}\footnotesize\textcolor{textVerde}{\currentTag}}
+\fancyhead[C]{\sffamily\footnotesize\textcolor{colorPrimario}{\currentSprint}}
+\fancyhead[R]{\fontfamily{pcr}\footnotesize\textcolor{grisISO}{\currentTag}}
 
 % Pie de Página: Trazabilidad (Izq) | Owner y Paginación (Der)
 \fancyfoot[L]{\sffamily\footnotesize\textcolor{grisISO}{\currentTaskID}}
-\fancyfoot[R]{\sffamily\footnotesize\textcolor{grisISO}{\docOwner\ | Pág. \thepage\ de \pageref{LastPage}}}
+\fancyfoot[R]{\sffamily\footnotesize\textcolor{grisISO}{Byte Busters S.R.L.\ | Pág. \thepage\ de \pageref{LastPage}}}
 
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
