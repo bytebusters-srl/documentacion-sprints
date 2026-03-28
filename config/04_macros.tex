@@ -59,7 +59,7 @@
     boxrule=1.5pt,
     leftrule=6pt,
     arc=2pt,
-    title={\faExclamationTriangle\ \textbf{Cambio Crítico (Breaking Change)}},
+    title={\faExclamationTriangle\ \textbf{Cambio Crítico}},
     coltitle=black,
     fonttitle=\sffamily,
     attach title to upper=\par\vspace{0.2em}
@@ -87,3 +87,21 @@
 
 % Cajas originales de advertencia preservadas
 \newtcolorbox{AlertaDefecto}{colback=white, colframe=bgFail, boxrule=1.2pt, arc=2pt, title={\faBug\ \textbf{Defecto Crítico Detectado}}, coltitle=bgFail, fonttitle=\sffamily, attach title to upper=\par\vspace{0.2em}}
+
+% --- ENTORNO PARA EL PRODUCT BACKLOG ---
+\newenvironment{TablaBacklog}{
+    \par\vspace{0.2cm}\noindent
+    \hbadness=10000 % Silencia los warnings de \hbox (cajas horizontales)
+    \tabularx{\textwidth}{|l|>{\raggedright\arraybackslash\hspace{0pt}}X|c|c|c|>{\raggedright\arraybackslash\hspace{0pt}}X|}
+    \hline
+    \rowcolor{colorPrimario} 
+    \textcolor{white}{\textbf{ID}} & 
+    \textcolor{white}{\textbf{Descripción}} & 
+    \textcolor{white}{\textbf{PRI}} & 
+    \textcolor{white}{\textbf{EST.ESF.}} & 
+    \textcolor{white}{\textbf{Sprint}} & 
+    \textcolor{white}{\textbf{Prueba}} \\ \hline
+}{
+    \endtabularx
+    \par\vspace{0.2cm}
+}
