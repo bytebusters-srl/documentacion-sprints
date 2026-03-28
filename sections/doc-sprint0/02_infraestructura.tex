@@ -1,0 +1,37 @@
+% --- SECCIÓN 2: INFRAESTRUCTURA Y ENTORNOS ---
+\section{Infraestructura y Entornos de Desarrollo}
+\label{sec:infraestructura_entornos}
+En esta sección se describe el ecosistema de herramientas configurado durante el Sprint 0, garantizando la escalabilidad y seguridad requerida para un producto SaaS de alto nivel.
+
+\subsection{Configuración del Ecosistema Backend}
+El núcleo del servidor (\textit{API REST}) ha sido construido bajo un ecosistema robusto orientado a objetos y patrones de diseño empresariales.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Lenguaje Core:} \comando{Java 17}, aprovechando las últimas características LTS.
+    \item \textbf{Framework:} \comando{Spring Boot 3.4.1}.
+    \item \textbf{Gestión de Dependencias (Maven):} Se han integrado módulos críticos como  \\
+    \comando{spring-boot-starter-web}, \comando{spring-boot-starter-data-jpa} para persistencia, y \comando{lombok} \\
+    (v1.18.38) para la reducción de código \textit{boilerplate} (getters, setters, constructores).
+    \item \textbf{Documentación de API:} Integración de \comando{springdoc-openapi-starter-webmvc-ui} (v2.5.0) para la autogeneración de la interfaz de Swagger.
+\end{itemize}
+
+\subsection{Configuración del Ecosistema Frontend}
+Para alcanzar la estética \textit{clean-tech} premium y garantizar un SEO óptimo (crucial para la Epic 6: Visibilidad), el entorno cliente ha evolucionado hacia una arquitectura de renderizado híbrido.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Entorno de Ejecución:} Se ha estandarizado el uso estricto de \comando{Node.js v20.19.0} mediante \comando{nvm} (Node Version Manager) para todo el equipo Frontend.
+    \item \textbf{Framework Core:} \comando{Next.js}. Se adopta como framework principal sobre React para aprovechar el \textit{Server-Side Rendering (SSR)} y la \textit{Static Site Generation (SSG)}, mejorando radicalmente los tiempos de carga iniciales y la indexación en buscadores.
+    \item \textbf{Estilizado y UI:} Uso de \comando{Tailwind CSS} para un diseño sobrio y responsivo, integrando la fuente corporativa \comando{Sora}.
+\end{itemize}
+
+\subsection{Instancia de Base de Datos}
+La persistencia de los perfiles profesionales recae en un motor relacional sólido, gestionado directamente desde el backend mediante \textit{Spring Data JPA}.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Motor:} \comando{PostgreSQL}.
+    \item \textbf{Integración:} Uso del driver \comando{org.postgresql:postgresql} gestionado en el \comando{pom.xml}. La creación de esquemas (\textit{DDL}) está temporalmente delegada a JPA durante esta fase de desarrollo.
+\end{itemize}
+
+\begin{NotaTecnica}
+    Se ha incluido la dependencia \comando{spring-boot-devtools} en el entorno local para habilitar el Live Reload y facilitar la experiencia de desarrollo backend.
+\end{NotaTecnica}
