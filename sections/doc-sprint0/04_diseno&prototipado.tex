@@ -1,0 +1,37 @@
+% --- SECCIÓN 4: DISEÑO Y PROTOTIPADO ---
+\section{Diseño y Prototipado}
+\label{sec:diseno_prototipado}
+
+La traducción visual de EthosHub busca eliminar la apariencia de "prototipo estudiantil", aplicando estándares de diseño de interfaces corporativas.
+
+\subsection{Arquitectura de Información}
+Se dividió la navegación en dos áreas excluyentes:
+\begin{itemize}[noitemsep]
+    \item \textbf{Zona Privada (Gestión):} Formularios y dashboards accesibles solo mediante validación de token JWT.
+    \item \textbf{Zona Pública (Proyección):} Renderizado de solo lectura del portafolio profesional.
+\end{itemize}
+
+\subsection{Mockups de Alta Fidelidad}
+Los prototipos aprobados para el inicio del desarrollo incluyen:
+
+\begin{itemize}
+    \item \textbf{Panel de Autenticación:} Formularios limpios para Login/Registro, preparados para integrar flujos OAuth2.
+    \item \textbf{Dashboard (Epic 1):} Vista central para la edición del perfil, utilizando \comando{JetBrains Mono} en las áreas de configuración técnica o despliegue de repositorios.
+    \item \textbf{Portafolio Público (Epic 2):} Diseño de \textit{Single Page} optimizado para lectura rápida por parte de reclutadores IT.
+\end{itemize}
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|l|}
+        \hline
+        \rowcolor{colorPrimario} \textcolor{white}{\textbf{Módulo Visual}} & \textcolor{white}{\textbf{Foco de UX}} & \textcolor{white}{\textbf{Estado}} \\ \hline
+        Auth (Login/Register) & Fricción mínima al ingreso. & \estadoPass \\ \hline
+        Profile Manager & Componentización mediante \textit{Hooks}. & \estadoPass \\ \hline
+        Public View & Jerarquía de tipografía \comando{Sora}. & \estadoPass \\ \hline
+    \end{tabularx}
+    \caption{Estado de los Prototipos UI.}
+\end{table}
+
+\begin{NotaTecnica}
+    Los Mockups fueron creados en Figma y se encuentran disponibles en el siguiente enlace: \url{https://url-shortener.me/IT5L}
+\end{NotaTecnica}
