@@ -1,0 +1,132 @@
+% --- SECCIÓN 3: DEFINICIÓN DEL PRODUCTO Y BACKLOG ---
+\section{Definición del Producto y Backlog}
+\label{sec:definicion_producto}
+\raggedbottom
+
+Este apartado detalla el proceso de ingeniería de requerimientos. Tras las sesiones de \textit{Grooming}, se consolidó la visión del sistema en un Backlog técnico, estructurando el alcance total de \textbf{EthosHub} en 8 macro-funcionalidades (Épicas).
+
+\subsection{Estructura de Epics}
+\begin{itemize}[noitemsep]
+    \item \textbf{EPIC-01: Identidad, Acceso y Seguridad.} Núcleo de autenticación y gestión de usuarios.
+    \item \textbf{EPIC-02: Perfil Profesional y Trayectoria.} Narrativa del usuario y línea de tiempo.
+    \item \textbf{EPIC-03: Matriz de Habilidades y Validación.} Catálogo de competencias y validaciones.
+    \item \textbf{EPIC-04: Gestión de Proyectos y Evidencias.} Vitrina de logros y contenido multimedia.
+    \item \textbf{EPIC-05: Interconexión y Sincronización Externa.} Integración con GitHub y LinkedIn.
+    \item \textbf{EPIC-06: Visibilidad, Marca Personal y SEO.} Enlaces y privacidad granular.
+    \item \textbf{EPIC-07: Inteligencia de Datos y Analíticas.} Dashboard de visualizaciones y métricas.
+    \item \textbf{EPIC-08: UX y Diseño Adaptable.} Responsividad y configuraciones de interfaz.
+\end{itemize}
+
+\subsection{Desglose de Historias de Usuario por Épica}
+Para evitar tablas extensas y garantizar la trazabilidad, el Product Backlog se ha segmentado por Épica. Se han definido los sprints tentativos de ejecución y los esfuerzos estimados basados en puntos de historia.
+
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
+
+\subsubsection{EPIC-01: Identidad, Acceso y Seguridad}
+\begin{TablaBacklog}
+    LOG-001 & Registro de Usuario Profesional & Alt & 5 & 1 & Creación exitosa tras validación de datos. \\ \hline
+    LOG-002 & Registro de Usuario Reclutador & Alt & 5 & 1 & Registro de empresa con rol asignado. \\ \hline
+    LOG-003 & Inicio de Sesión de Usuarios & Alt & 3 & 1 & Acceso permitido con credenciales válidas. \\ \hline
+    LOG-004 & Autenticación Proveedores Ext. & Med & 5 & 1 & Login exitoso vía proveedor externo (OAuth). \\ \hline
+    LOG-005 & Recuperación de Contraseña & Alt & 8 & 1 & Cambio de clave mediante enlace seguro. \\ \hline
+    LOG-006 & Cierre de Sesión & Alt & 2 & 1 & Invalida token y redirige al login. \\ \hline
+    LOG-007 & Asignación de Roles & Alt & 8 & 1 & Admin asigna y guarda rol en BD. \\ \hline
+    LOG-008 & Control de Acceso Según Rol & Alt & 8 & 1 & Bloqueo de rutas protegidas sin permisos. \\ \hline
+    LOG-009 & Actualización datos de perfil & Med & 3 & 1 & Modificación validada y persistida. \\ \hline
+    LOG-010 & Desactivación de Cuenta & Med & 8 & 1 & Cambio de estado a inactiva y bloqueo. \\ \hline
+    LOG-011 & Protección Credenciales & Alt & 8 & 1 & Almacenamiento con hash encriptado. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-02: Perfil Profesional y Trayectoria Histórica}
+\begin{TablaBacklog}
+    IDEN-001 & Hero Section y Branding & Alt & 5 & 1 & Renderiza foto optimizada y título. \\ \hline
+    IDEN-002 & Badge de Disponibilidad & Baj & 8 & 1 & Actualiza indicador visual de estado. \\ \hline
+    IDEN-003 & Perfil Integral (Bio/Academia) & Alt & 8 & 1 & Guarda biografía y certificados listados. \\ \hline
+    IDEN-004 & Línea de Tiempo Experiencia & Alt & 5 & 1 & Registros ordenados cronológicamente. \\ \hline
+    IDEN-005 & Agregador Identidad Social & Med & 3 & 1 & URLs validadas mostradas con iconos. \\ \hline
+    IDEN-006 & Vista Invitado (Guest Teaser) & Med & 5 & 1 & Muestra perfil parcial e incita registro. \\ \hline
+    IDEN-007 & Moderación Admin Tool & Baj & 8 & 1 & Admin suspende o edita perfiles públicos. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-03: Matriz de Habilidades y Validación Social}
+\begin{TablaBacklog}
+    MHVS-001 & Registro Hard Skills & Baj & 8 & 2 & Agrega nivel de destreza a catálogo. \\ \hline
+    MHVS-002 & Soft Skills y Casos de Éxito & Baj & 8 & 2 & Guarda habilidad con acordeón de texto. \\ \hline
+    MHVS-003 & Validación Pares (Endorsements) & Baj & 8 & 2 & Suma voto de confianza en la BD. \\ \hline
+    MHVS-004 & Visualización Restricciones & Baj & 8 & 2 & Oculta botones de voto a invitados. \\ \hline
+    MHVS-005 & Top 3 Skills & Baj & 8 & 2 & Reordena matriz destacando 3 skills. \\ \hline
+    MHVS-006 & Fusión de Etiquetas (Admin) & Baj & 8 & 2 & Unifica duplicados en BD global. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-04: Gestión del Catálogo de Proyectos}
+\begin{TablaBacklog}
+    GAN-001 & Crear proyecto & Alt & 8 & 3 & Formulario validado asocia ID a usuario. \\ \hline
+    GAN-002 & Editar proyecto & Alt & 8 & 3 & Actualiza y persiste cambios. \\ \hline
+    GAN-003 & Eliminar proyecto & Alt & 8 & 3 & Borrado en cascada (datos y evidencias). \\ \hline
+    GAN-004 & Listado y detalle & Alt & 8 & 3 & Muestra información completa. \\ \hline
+    GAN-005 & Información técnica & Med & 8 & 3 & Estructura lenguajes y rol del proyecto. \\ \hline
+    GAN-006 & Contenido multimedia & Alt & 8 & 3 & Renderiza iframe seguro y validado. \\ \hline
+    GAN-007 & Archivos adjuntos & Med & 8 & 3 & Permite subida con restricción de peso. \\ \hline
+    GAN-008 & Verificador de evidencias & Baj & 8 & 3 & Valida integridad de adjuntos en BD. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-05: Interconexión y Sincronización Externa}
+\begin{TablaBacklog}
+    CONX-001 & Registro Rápido (SSO) & Baj & 8 & 3 & Crea cuenta capturando payload de OAuth. \\ \hline
+    CONX-002 & Importación (LinkedIn) & Baj & 8 & 3 & Mapea array de experiencia al perfil. \\ \hline
+    CONX-003 & Importación (GitHub) & Baj & 8 & 3 & Lista repos públicos y los guarda. \\ \hline
+    CONX-004 & Sync Commits (Métricas) & Baj & 8 & 3 & Renderiza mapa de calor cachead. \\ \hline
+    CONX-005 & Extracción de README.md & Baj & 8 & 3 & Parsea Markdown a HTML sanitizado. \\ \hline
+    CONX-006 & Testimonios (LinkedIn) & Baj & 8 & 3 & Extrae recomendaciones inalterables. \\ \hline
+\end{TablaBacklog}
+
+\begin{NotaTecnica}
+    Las historias correspondientes a la EPIC-05 se encuentran condicionadas hasta que se definan las claves de acceso (API Keys) de GitHub y LinkedIn en los entornos de desarrollo locales.
+\end{NotaTecnica}
+
+\subsubsection{EPIC-06: Visibilidad, Marca Personal y SEO}
+\begin{TablaBacklog}
+    VIS-01 & Vanity URL & Baj & 8 & 4 & Slug único con redirect automático 301. \\ \hline
+    VIS-02 & Indexación SEO granular & Baj & 8 & 4 & Controla etiqueta noindex por sección. \\ \hline
+    VIS-03 & Configuración metadatos & Baj & 8 & 4 & Establece Title y Description HTML. \\ \hline
+    VIS-04 & Vista previa pública & Baj & 8 & 4 & Renderiza sin recargar como invitado. \\ \hline
+    VIS-05 & Protección con contraseña & Baj & 8 & 4 & Bloquea acceso general al portafolio. \\ \hline
+    VIS-06 & Tarjeta Open Graph & Baj & 8 & 4 & Inserta etiquetas og:image en Head. \\ \hline
+    VIS-07 & Acceso Reclutador & Baj & 8 & 4 & Renderiza datos públicos sin login. \\ \hline
+    VIS-08 & Exploración Invitado & Baj & 8 & 4 & Permite navegación libre. \\ \hline
+    VIS-09 & Moderación Visibilidad & Baj & 8 & 4 & Admin forza portafolio a estado privado. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-07: Inteligencia de Datos y Analíticas}
+\begin{TablaBacklog}
+    IDAR-001 & Métricas de Portafolio & Baj & 8 & 5 & Carga panel estadístico del perfil. \\ \hline
+    IDAR-002 & Consultar Visitas & Baj & 8 & 5 & Muestra tráfico histórico recibido. \\ \hline
+    IDAR-003 & Dashboard Admin global & Baj & 8 & 5 & Visión general de datos plataforma. \\ \hline
+    IDAR-004 & Actividad Reciente & Baj & 8 & 5 & Lista eventos de sistema ordenados. \\ \hline
+    IDAR-005 & Métricas Usuarios & Baj & 8 & 5 & Muestra total de registros nuevos. \\ \hline
+    IDAR-006 & Reportes Admin & Baj & 8 & 5 & Genera resumen exportable. \\ \hline
+    IDAR-007 & Supervisar Plataforma & Baj & 8 & 5 & Análisis del comportamiento general. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-08: Experiencia de Usuario y Diseño Adaptable}
+\begin{TablaBacklog}
+    UX-001 & Visualización Responsive & Alt & 8 & 5 & Adaptación fluida sin desbordamientos. \\ \hline
+    UX-002 & Cambio de idioma & Med & 8 & 5 & Traducción en tiempo real sin recarga. \\ \hline
+    UX-003 & Modo claro/oscuro & Med & 8 & 5 & Cambio de variables de tema UI. \\ \hline
+    UX-004 & Reordenar portafolio & Med & 8 & 5 & Arrastrar y soltar secciones en perfil. \\ \hline
+    UX-005 & Navegación intuitiva & Med & 8 & 5 & Interacciones con estado y sin cortes. \\ \hline
+\end{TablaBacklog}
+
+\endgroup
+
+\subsection{Criterios de Aceptación Globales (DoD)}
+Para mantener el estándar corporativo, se definieron criterios transversales obligatorios para todas las historias de usuario:
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{Validación Backend (Java):} Todos los datos deben ser evaluados con la dependencia de validación de Spring Boot previniendo inyecciones de código.
+    \item \textbf{Fidelidad UI (Next.js):} Cumplimiento estricto de los mockups en Figma, optimizando el renderizado de componentes para Server/Client según corresponda, y respetando las fuentes del proyecto.
+    \item \textbf{Autenticación Segura:} Todo endpoint privado debe estar protegido mediante filtros de seguridad y validación de tokens.
+\end{enumerate}
+\flushbottom
