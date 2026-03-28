@@ -1,0 +1,88 @@
+\chapter{Producto Desarrollado en el Sprint 0}
+
+\newpage
+\section{Introducción}
+\label{sec:intro}
+El Sprint 0, denominado estructuralmente como la fase de \textit{Inception}, constituye el periodo de cimentación técnica y conceptual para la plataforma \textbf{EthosHub}. Durante este ciclo, el equipo de Byte Busters S.R.L. se centró en la transición de la visión de negocio hacia una arquitectura técnica desplegable y escalable.
+
+\subsection{Propósito y Objetivos}
+El propósito primordial de este ciclo inicial es la transición de la visión conceptual de \textbf{EthosHub} hacia una arquitectura de software tangible. Bajo el marco normativo de \textbf{ISO/IEC/IEEE 26515:2024}, este sprint establece la línea base de configuración, asegurando que el desarrollo sea escalable desde el primer bit.\par
+\textbf{Etimología y Concepto:} El nombre combina el \textit{Ethos} (carácter e integridad del profesional) con el \textit{Hub} (eje central de actividad). Esta dualidad dicta que la plataforma debe ser tan robusta en su \textit{backend} como elegante en su \textit{frontend}.
+
+\subsubsection{Meta de Negocio: La Visión EthosHub}
+La meta de negocio es posicionar a \textbf{EthosHub} como una plataforma \textit{SaaS} de alto nivel para el sector tecnológico. No es un generador de sitios estáticos común; es una herramienta de gestión de marca personal diseñada para impresionar a tres perfiles críticos:
+\begin{itemize}[noitemsep]
+    \item \textbf{Reclutadores IT:} Mediante una jerarquía visual clara y acceso rápido a competencias.
+    \item \textbf{Clientes Potenciales:} A través de una estética \textit{clean-tech} que denote profesionalismo.
+    \item \textbf{Evaluadores Académicos:} Mediante la rigurosidad técnica y funcional del producto real.
+\end{itemize}
+
+\subsubsection{Objetivos Estratégicos}
+\begin{itemize}[noitemsep]
+    \item \textbf{Establecimiento de la Línea Base Tecnológica:} Garantizar la paridad de entornos entre todos los desarrolladores para eliminar conflictos de versiones.
+    \item \textbf{Arquitectura de Identidad:} Definir el núcleo del sistema basado en la \comando{gestión de usuarios} como primer punto de contacto.
+    \item \textbf{Definición de Alcance (Grooming):} Transformar la visión de negocio en un Backlog técnico priorizado (Epics y US).
+    \item \textbf{Fidelidad Visual:} Proyectar la imagen mediante \textit{mockups} con tipografías especificadas.
+\end{itemize}
+
+\subsection{Ficha Técnica del Sprint}
+\label{ssec:ficha_tecnica}
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario} \textcolor{white}{\textbf{Atributo}} & \textcolor{white}{\textbf{Detalle Técnico}} \\ \hline
+        \textbf{Periodo} & 16 de marzo de 2026 al 28 de marzo de 2026. \\ \hline
+        \textbf{Stack Frontend} & Next.js (React) / Node.js v20.19.0 / Tipografía \comando{Sora}. \\ \hline
+        \textbf{Stack Backend} & Java 17 / Spring Boot 3.4.1. \\ \hline
+        \textbf{Base de Datos} & PostgreSQL v15.10. \\ \hline
+        \textbf{Criterio de Éxito} & Validación de \textbf{Paridad de Entornos} al 100\% en el equipo. \\ \hline
+    \end{tabularx}
+    \caption{Ficha resumida del Sprint 0 - EthosHub.}
+\end{table}
+
+\begin{BreakingChange}
+    Cualquier desviación en la versión del JDK (\comando{Java 17}) o del entorno de ejecución de Frontend (\comando{Node v20.19.0}) será tratada como un bloqueo crítico para la compilación del proyecto.
+\end{BreakingChange}
+
+\subsubsection{Hitos de Configuración Alcanzados}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Estandarización de GitFlow:} Estrategia de ramas \textit{main, develop, feature}.
+    \item \textbf{Sincronización de Dependencias:} Uso obligatorio de \comando{package-lock.json}.
+    \item \textbf{Línea Base de UI:} Configuración de jerarquía visual premium.
+\end{enumerate}
+
+\subsection{Ficha Técnica del Sprint}
+Esta sección consolida la información operativa, el capital humano y el ecosistema tecnológico que permitió la ejecución del Sprint 0.
+
+\subsubsection{Cronograma de Ejecución}
+La fase de \textit{Inception} se desarrolló en un marco de 12 días naturales, con una intensidad de trabajo orientada a la configuración crítica:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Fecha de Inicio:} lunes 16 de marzo de 2026 (08:00).
+    \item \textbf{Fecha de Finalización:} sábado 28 de marzo de 2026 (23:59).
+    \item \textbf{Hito Intermedio:} Grooming técnico y socialización de Mockups (22 de marzo).
+\end{itemize}
+
+\subsubsection{Equipo Involucrado y Roles}
+El éxito de la paridad de entornos dependió de la coordinación de los siguientes perfiles de \textbf{Byte Busters S.R.L.}:
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario} \textcolor{white}{\textbf{Rol}} & \textcolor{white}{\textbf{Responsabilidad en Sprint 0}} \\ \hline
+        \textbf{Scrum Master} & Facilitación de ceremonias y eliminación de bloqueos en instalaciones. \\ \hline
+        \textbf{Product Owner} & Definición de visión de negocio y aprobación de Mockups (Epic 1 y 2). \\ \hline
+        \textbf{Fullstack Dev} & Configuración de entornos locales, scripts de despliegue y DB. \\ \hline
+        \textbf{Frontend Dev} & Implementación de tipografías \comando{Sora} y base de UI. \\ \hline
+        \textbf{Backend Dev} & Configuración de Node.js y arquitectura de Gestión de Usuarios. \\ \hline
+        \textbf{QA Engineer} & Validación de paridad de versiones en todos los entornos. \\ \hline
+    \end{tabularx}
+    \caption{Matriz de Responsabilidades del Sprint 0.}
+\end{table}
+
+\begin{NotaTecnica}
+    La elección del stack se basó en la necesidad de escalabilidad. Se optó por un entorno dockerizado para la base de datos para asegurar que cada miembro del equipo trabaje exactamente sobre el mismo esquema de \comando{gestión de usuarios}.
+\end{NotaTecnica}
