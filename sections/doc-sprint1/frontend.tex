@@ -1,0 +1,17 @@
+\section{Desarrollo Frontend y Experiencia de Usuario (UX)}
+\label{sec:frontend}
+
+El ecosistema de interfaces de cliente se unificó bajo la nueva arquitectura del proyecto, dotando a la aplicación de un diseño interactivo, responsivo y orientado a la conversión.
+
+\subsection{Gestión y Edición de Perfil}
+Se desarrolló la vista principal de administración (\comando{/dashboard/profile}) donde se cargan dinámicamente los datos del usuario. Se incorporaron herramientas de validación estricta en tiempo real para formatos de texto y enlaces (URLs). El sistema previene el envío de formularios corruptos mediante bloqueos dinámicos en el botón de guardado y emite advertencias preventivas si el usuario intenta abandonar la vista con cambios no registrados.
+
+\subsection{Componentes Dinámicos y Vistas Públicas}
+Se implementaron formularios controlados (\comando{ExperienceForm}, \comando{EducationForm}) para la captura de trayectoria laboral y académica, dotados de validaciones cronológicas que impiden el registro de fechas de finalización anteriores al inicio. Estos datos alimentan el componente interactivo \comando{CareerTimeline}, el cual automatiza el cálculo de antigüedad. Las vistas públicas y privadas fueron acopladas exitosamente a la barra de navegación principal, integrando indicadores visuales de disponibilidad del profesional.
+
+\subsection{Estrategia de Conversión de Usuarios Invitados}
+La interfaz pública implementa estrategias visuales para fomentar la creación de cuentas \\(\comando{GuestProfileView}). Las redes sociales del profesional se enmascaran bajo íconos de acceso restringido y la línea de tiempo de experiencia recibe un efecto de desenfoque (\textit{blur}) escalonado. Un \textit{banner} persistente y un modal automático interactúan con el invitado para ejecutar el llamado a la acción de registro tras 30 segundos de inactividad.
+
+\begin{BreakingChange}
+El sistema de diseño adoptó \comando{Sora} como tipografía corporativa estándar. Todos los componentes renderizados deben heredar la directiva global configurada en los ficheros \comando{index.html} e \comando{index.css}.
+\end{BreakingChange}

@@ -1,0 +1,15 @@
+\section{Desarrollo Backend y APIs}
+\label{sec:backend}
+
+La capa de servicios experimentó un avance significativo en la consolidación del núcleo de seguridad y en el procesamiento transaccional de datos del perfil profesional. 
+
+\subsection{Autenticación, Seguridad y Sesiones}
+Se completó la integración de extremo a extremo para los flujos de autenticación mediante el protocolo OAuth2. El sistema ahora soporta el acceso mediante proveedores externos (Google y GitHub), abarcando el procesamiento automatizado de la respuesta y el manejo seguro del token de sesión. Además, se habilitó el punto de enlace de cierre de sesión, garantizando la invalidación estricta de credenciales en el lado del servidor. Se desarrollaron los endpoints correspondientes al registro básico de usuarios, implementando las reglas de persistencia de datos correspondientes.
+
+\subsection{Gestión Transaccional del Perfil de Usuario}
+Para la actualización de la identidad visual de la plataforma, se construyó el endpoint REST \\ \comando{PATCH /api/profile/hero-section}, habilitado para la ingesta de cargas multipropósito \\(\comando{multipart/form-data}). La lógica subyacente está controlada por un servicio transaccional que asegura la actualización concurrente y atómica de múltiples entidades.
+Se robusteció el sistema integrando \textit{Data Transfer Objects} (DTOs) para la validación de entrada, acoplados a un manejador global de excepciones (\textit{Global Exception Handler}) que estandariza las respuestas de error HTTP. Adicionalmente, se configuraron las políticas CORS globales para permitir el flujo bidireccional seguro con el cliente web.
+
+\begin{NotaTecnica}
+La conexión JDBC fue estabilizada desactivando la manipulación automática del esquema relacional por parte del ORM (\comando{ddl-auto=none}). Esta medida previene corrupciones accidentales y delega el control exclusivo de la estructura a los scripts de migración oficiales.
+\end{NotaTecnica}

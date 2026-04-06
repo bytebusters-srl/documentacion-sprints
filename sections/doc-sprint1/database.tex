@@ -1,0 +1,11 @@
+\section{Arquitectura de Persistencia de Datos}
+\label{sec:base_datos}
+
+La base de datos se modeló y desplegó aplicando principios de integridad referencial rígida y aislamiento de entornos, sentando las bases para escalabilidad en entornos \textit{Cloud}.
+
+\subsection{Modelado Lógico y Orquestación Local}
+El modelo de datos lógico fue abstraído utilizando la herramienta DbSchema. Para erradicar discrepancias de dependencias en el equipo de desarrollo, se construyó una infraestructura basada en contenedores gestionada mediante \comando{docker-compose.yml}, garantizando la paridad técnica entre todos los nodos locales de desarrollo. 
+
+\subsection{Estandarización, Tipado y Despliegue en la Nube}
+Garantizando el cumplimiento de los estándares de nomenclatura internacionales, el conjunto completo de entidades, tablas y columnas fue redactado estrictamente en inglés. Las entidades mapean de forma precisa objetos principales como \comando{profile}, \comando{profile\_basic}, \comando{countries} y \comando{roles}. 
+A nivel de optimización, se erradicó el uso indiscriminado del tipo de dato texto dinámico, implementando \textit{User-Defined Types} (UDTs) y enumeradores (ENUMs). El campo de avatar se adaptó para almacenamiento binario nativo (\comando{bytea}). Finalmente, el esquema y las tablas maestras pre-cargadas (\textit{seeding}) fueron migradas a la infraestructura \textit{Serverless} Neon.tech para soportar la estrategia de CI/CD.
