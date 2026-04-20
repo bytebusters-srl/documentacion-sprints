@@ -1,0 +1,24 @@
+\section{Arquitectura de Persistencia de Datos}
+\label{sec:db_sprint2}
+
+El modelo relacional en PostgreSQL fue robustecido añadiendo nuevas entidades jerárquicas y restricciones preventivas (\textit{Constraints}) que salvaguardan la integridad de la matriz de habilidades y el catálogo global.
+
+\subsection{Restricciones de Dominio y Cascadas (MHVS-002)}
+Se aplicó la filosofía de "defensa en profundidad" delegando validaciones críticas al motor relacional.
+Se inyectó un DDL script para modificar la tabla \comando{profile\_skills}, integrando una restricción de chequeo: \\ \comando{CHECK (years\_experience >= 0)}. Esto imposibilita la corrupción de datos históricos por inserciones negativas.
+
+Asimismo, se configuraron estrictamente llaves foráneas con directivas \comando{ON DELETE CASCADE} entre la tabla \comando{profile\_skills} y la tabla de validaciones (\textit{endorsements}), asegurando que la eliminación de una habilidad limpie huérfanos asociados instantáneamente.
+
+\subsection{Optimización de Búsquedas e Índices (MHVS-007)}
+Para soportar el tráfico asíncrono generado por el \textit{Talent Search} del reclutador, se rediseñó la estrategia de indexación. 
+
+\begin{TablaHSDoc}
+    MHVS-007 & Indexación de Habilidades & Sí (Doc. API) & Sí (Script Migración) \\ \hline
+\end{TablaHSDoc}
+
+Se crearon índices \textit{B-Tree} compuestos en la tabla intermedia \comando{profile\_skills} apuntando a las columnas \comando{skill\_name} y \comando{nivel\_dominio}. Esto garantiza que las consultas condicionales con múltiples filtros lógicos se resuelvan con latencia mínima (O(log n)), evitando escaneos secuenciales (\textit{Seq Scans}) completos en tablas masivas.
+
+\subsection{Catálogo Global y Semilla de Datos (MHVS-004 y MHVS-005)}
+La tabla de catálogo global de habilidades fue expandida para soportar \comando{category\_id} y \comando{category\_name}. Mediante scripts de \textit{Seed Data}, se poblaron diccionarios iniciales agrupando tecnologías por ramas ("Bases de Datos", "Frameworks", "Lenguajes"), configurando un valor por defecto \comando{'Uncategorized'} para prevenir retornos nulos.
+
+Adicionalmente, el esquema \comando{profile\_skills} integró el campo booleano \comando{is\_top} y el numérico \\ \comando{order\_position}, brindando el soporte persistente requerido para destacar el "Top 3" de competencias del perfil profesional.

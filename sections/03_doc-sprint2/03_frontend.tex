@@ -1,0 +1,29 @@
+\section{Desarrollo Frontend y Experiencia de Usuario (UX)}
+\label{sec:frontend_sprint2}
+
+La capa de cliente (Next.js) experimentó una refactorización orientada a la interactividad asíncrona, enfocándose en la reducción de latencia percibida por el perfil y la fluidez en la gestión del stack tecnológico.
+
+\subsection{Gestión Asíncrona del Catálogo de Habilidades (MHVS-001 a MHVS-003)}
+Se implementaron componentes controlados para la gestión de \textit{Hard} y \textit{Soft Skills}. Para garantizar una experiencia sin fricciones, se integraron notificaciones tipo \textit{Toast} (mediante bibliotecas optimizadas como \comando{sonner}) que otorgan feedback visual inmediato tras acciones de creación, edición o borrado.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Validación de UI:} Se añadió una limitación estricta de 250 caracteres para los casos de éxito en las Soft Skills. El contador transiciona a color rojo (\comando{\#FF0000}) al alcanzar el límite, bloqueando el input de forma nativa.
+    \item \textbf{Estados de Carga:} Todos los botones transaccionales incluyen estados \comando{isLoading} con \textit{spinners} integrados, deshabilitando interacciones dobles mientras las promesas de la API están pendientes.
+\end{itemize}
+
+\subsection{Procesamiento de Imágenes y Recorte UI (IDEN-008)}
+Se introdujo una herramienta de recorte (\textit{crop}) en el navegador previo a la subida de la imagen del perfil. Esto garantiza que las proporciones del avatar sean siempre exactas (relación de aspecto 1:1), delegando el recorte a la interfaz antes de que el \textit{payload} consuma ancho de banda hacia el servidor.
+
+\subsection{Interactividad Avanzada: Top 3 Skills (MHVS-005)}
+Para destacar las fortalezas del profesional, se desarrolló una interfaz de arrastrar y soltar (\textit{Drag \& Drop}) que permite reordenar las tres habilidades principales. 
+
+\begin{NotaTecnica}
+La selección de Top Skills cuenta con un indicador en tiempo real de cupos (ej. 2/3 usados). Cuando el límite es alcanzado, la UI bloquea de manera proactiva la selección de nuevas estrellas y arroja una advertencia, requiriendo que el perfil desmarque una habilidad antes de destacar otra. Las animaciones de transición (\textit{slide/fade}) aseguran un reacomodo orgánico en el DOM sin recargar la página.
+\end{NotaTecnica}
+
+\subsection{Dashboard de Reclutador y Talent Search (MHVS-007)}
+El motor de búsqueda de talento fue materializado en un \textit{Dashboard} interactivo diseñado exclusivamente para reclutadores. Incluye una barra de búsqueda inteligente y un panel lateral con filtros por "Nivel de Dominio" (Junior, Mid, Senior).
+
+\begin{AlertaDefecto}
+Durante el desarrollo se detectó que búsquedas sin resultados (tecnologías de nicho) devolvían pantallas en blanco. Se mitigó implementando un componente \comando{EmptyState} amigable que sugiere al reclutador utilizar términos más generales o eliminar filtros asíncronos.
+\end{AlertaDefecto}

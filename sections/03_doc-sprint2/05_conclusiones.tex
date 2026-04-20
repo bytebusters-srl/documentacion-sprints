@@ -1,0 +1,20 @@
+\section{Conclusiones y Próximos Pasos}
+\label{sec:conclusiones_sprint2}
+
+El Sprint 2 cerró exitosamente la Epic 3, superando las estimaciones de rendimiento gracias a una delegación estratégica: validaciones en DB, procesamiento de imagen asíncrono en cliente (crop) y consultas paginadas en Backend (QueryDSL). El perfil cuenta ahora con las herramientas de \textit{Marca Personal} esenciales, y el reclutador posee un buscador efectivo.
+
+\subsection{Revisión de la Definition of Done (DoD)}
+\begin{ChecklistDoD}
+    \item Paginación implementada e índices relacionales desplegados para la vista de \textit{Talent Search} del Reclutador.
+    \item Flujo asíncrono (Toast, Spinners, Drag\&Drop) funcionando al 100\% en la gestión de Matriz de Habilidades del perfil.
+    \item Constraints preventivas (\comando{CHECK years\_experience >= 0}, \comando{ON DELETE CASCADE}) materializadas en la base de datos de staging.
+    \item Panel administrativo (Moderación) finalizado, permitiendo control riguroso, trazabilidad de logs y exportación CSV de perfiles.
+\end{ChecklistDoD}
+
+\begin{TablaBacklog}
+    IDEN-007 & Moderación (UI): Modal de doble confirmación para borrado y exportación CSV. & Alt & 3 & 2 & \estadoPass \\ \hline
+    MHVS-005 & Destacar Skills (UI): Lógica de Top 3 con validación de cupos y Drag \& Drop. & Med & 8 & 2 & \estadoPass \\ \hline
+    MHVS-007 & Talent Search: Grid de tarjetas de candidato con paginación dinámica. & Alt & 5 & 2 & \estadoPass \\ \hline
+\end{TablaBacklog}
+
+El próximo paso (Sprint 3) se centrará orgánicamente en la \textbf{Epic 4: Gestión de Proyectos y Evidencias}, permitiendo anclar repositorios y visuales al perfil construido en esta fase.

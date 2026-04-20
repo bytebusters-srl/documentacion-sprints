@@ -1,0 +1,26 @@
+\section{Desarrollo Backend y APIs}
+\label{sec:backend_sprint2}
+
+La capa de servicios (Spring Boot 3) fue escalada para soportar consultas jerárquicas, validación estricta de DTOs y procesamiento de archivos multimedia, manteniendo la inmutabilidad de los datos sensibles del perfil.
+
+\subsection{Validación de Datos y Manejo de Excepciones (MHVS-002)}
+Se establecieron contratos rígidos en los Data Transfer Objects (DTOs) utilizando Jakarta Validation. Se implementaron anotaciones como \comando{@NotBlank}, \comando{@Size(max=250)} para las descripciones de Soft Skills y \comando{@Min(0)} para asegurar años de experiencia numéricos positivos.
+
+Toda excepción de validación es capturada centralizadamente por un \comando{@ControllerAdvice}, el cual estandariza las respuestas HTTP 400 y devuelve un formato JSON limpio al frontend, facilitando la renderización de los errores en los Toasts.
+
+\subsection{Agrupación Categórica de Habilidades (MHVS-006)}
+La resolución de categorías se realiza directamente en la capa de servicios. Se implementó un algoritmo de resolución basado en el \comando{master\_tag\_id} para unificar habilidades repetidas. El endpoint:\\ \comando{GET /profiles/\{id\}/skills-grouped} procesa la matriz plana y devuelve una estructura jerárquica, asignando "Otras Tecnologías" como valor de fallback a aquellas que carecen de categoría.
+
+\begin{BreakingChange}
+La eliminación lógica o física de una habilidad mediante el verbo \comando{DELETE} ahora dispara un \textit{trigger} de negocio a nivel servicio: si la habilidad eliminada estaba marcada como \comando{is\_top}, el servicio recalcula automáticamente los cupos disponibles en el perfil sin intervención del cliente.
+\end{BreakingChange}
+
+\subsection{Motor de Búsqueda de Talento (MHVS-007)}
+El core del módulo de reclutamiento fue resuelto mediante la integración de \textit{Spring Data JPA Specifications} (QueryDSL). Esto permite la composición dinámica de la consulta SQL: evaluando condicionalmente la presencia de \comando{keyword} y \comando{nivelDominio} concatenados por un operador \comando{AND}.
+
+\begin{NotaTecnica}
+El endpoint \comando{GET /api/v1/search/candidates} inyecta el objeto \comando{Pageable} (por defecto \comando{page=0, size=20}). Esta arquitectura previene la saturación de la memoria del servidor frente a resultados masivos y estandariza la respuesta \comando{CandidateCardResponseDTO} (que incluye \textit{id, fotoUrl, nombre, titular, top3Skills, portfolioUrl}).
+\end{NotaTecnica}
+
+\subsection{Moderación y Auditoría (IDEN-007)}
+Para cumplir con los requerimientos de gobernanza, se expusieron endpoints restringidos por rol (solo Administradores) encargados de listar perfiles moderables. Se integró un sistema de logs transaccionales que audita en la base de datos la acción, el administrador responsable, el perfil afectado y el \textit{timestamp} de la ejecución, permitiendo a su vez la exportación de estos registros vía formato CSV.
