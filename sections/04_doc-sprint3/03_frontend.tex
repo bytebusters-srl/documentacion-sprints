@@ -1,0 +1,26 @@
+\section{Desarrollo Frontend y Experiencia de Usuario (UX)}
+\label{sec:frontend_sprint3}
+
+La capa de presentación fue expandida para orquestar la carga dinámica de evidencias y la visualización del portafolio público, implementando patrones de UX defensiva para prevenir bloqueos de renderizado.
+
+\subsection{Gestión Interactiva de Proyectos (GAN-001, GAN-002)}
+Se desarrollaron formularios controlados para la creación y edición de proyectos, integrados directamente con el estado global de la aplicación. Para la gestión de evidencias, se implementó una interfaz de \textit{Drag \& Drop} que permite al perfil reordenar visualmente sus adjuntos y enlaces, garantizando una presentación coherente.
+
+\begin{AlertaDefecto}
+Durante la integración de Iframes para embeber videos y prototipos (ej. YouTube, Figma), se detectó que enlaces mal formados rompían el layout principal. Se mitigó envolviendo el componente en un \textit{ErrorBoundary} e implementando un \textit{fallback} UI ('Contenido no disponible') junto con el uso masivo de \textit{Optional Chaining} (\comando{?.}) en los flujos de datos para evitar \textit{crashes} si faltan propiedades nulas (GAN-006).
+\end{AlertaDefecto}
+
+\subsection{Optimización de Carga con Dropzone (GAN-005)}
+Para la adjunción de archivos físicos, se construyó un componente \comando{Dropzone} altamente intuitivo. Para reducir la latencia y el consumo innecesario de ancho de banda, el componente ejecuta una validación local mediante JavaScript (peso máximo y extensión permitida) previa a la solicitud HTTP. Una barra de progreso reactiva proporciona feedback continuo durante la transferencia de red.
+
+\subsection{Visor de Catálogo y Seguridad de Sesión (GAN-003, GAN-004)}
+La experiencia del reclutador fue materializada en una grilla responsiva basada en tarjetas (Cards), optimizando el \textit{viewport} al ocultar la barra lateral en resoluciones de escritorio. En paralelo, se implementó un panel de administración (\comando{AdminDomainsPage}) con un diseño OLED oscuro para la gestión de dominios permitidos.
+
+Como medida de seguridad proactiva, se inyectó un \textit{Idle Timer} en el \textit{layout} autenticado. Tras 15 minutos de inactividad, la sesión del perfil se invalida localmente, purgando el estado global y forzando una redirección al \textit{login}.
+
+\begin{TablaBacklog}
+    GAN-001 & Frontend: Maquetar formulario de proyecto con estado global. & Alt & 1.5 & 3 & \estadoPass \\ \hline
+    GAN-003 & Frontend: Construir AdminDomainsPage con diseño OLED. & Alt & 1.5 & 3 & \estadoPass \\ \hline
+    GAN-005 & Frontend: Dropzone intuitivo y validación local rápida. & Alt & 2.0 & 3 & \estadoPass \\ \hline
+    GAN-006 & Frontend: Optional Chaining en UI para evitar crashes. & Med & 1.0 & 3 & \estadoPass \\ \hline
+\end{TablaBacklog}

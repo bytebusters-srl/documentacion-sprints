@@ -1,0 +1,17 @@
+\section{Conclusiones y Próximos Pasos}
+\label{sec:conclusiones_sprint3}
+
+El Sprint 3 ha concluido con la entrega exitosa de la \textbf{Epic 4}, dotando al perfil de una herramienta robusta para la demostración de sus capacidades mediante evidencia técnica verificable. La decisión de priorizar historias de usuario técnicas (como la sanitización profunda y la gestión asíncrona de archivos) sobre meras características visuales, ha consolidado la estabilidad del \textit{core} del sistema.
+
+La sinergia entre el \comando{Dropzone} interactivo en el cliente y la inspección de \textit{Magic Numbers} en el servidor ejemplifica el enfoque maduro del equipo hacia la seguridad en profundidad, evitando comprometer la experiencia fluida que los perfiles y reclutadores esperan de EthosHub.
+
+\subsection{Revisión de la Definition of Done (DoD)}
+\begin{ChecklistDoD}
+    \item Esquemas de base de datos (\comando{core}, \comando{admin}) actualizados con tablas de proyectos, \textit{triggers} de ordenamiento secuencial y borrado en cascada.
+    \item Implementación funcional de \textit{Iframes} seguros y componente de \textit{Drag \& Drop} para la jerarquización de evidencias en el perfil.
+    \item Capa de seguridad perimetral activa: Invalidación física de JWTs, prevención de inyecciones XSS y bloqueo por \textit{Rate Limiting}.
+    \item \textit{Worker} asíncrono desplegado en el backend para la auditoría continua y purga automática de archivos huérfanos.
+    \item Documentación técnica de contratos de API e integraciones de base de datos reflejada en la trazabilidad de los commits.
+\end{ChecklistDoD}
+
+Habiendo asegurado la persistencia multimedia y la integridad de las sesiones, la plataforma se encuentra estructuralmente preparada para iniciar la interconexión con fuentes de datos externas. El foco del próximo ciclo de desarrollo se orientará a la integración nativa de APIs de terceros, permitiendo la importación directa de evidencias desde repositorios (ej. GitHub) y plataformas de \textit{networking} profesional.

@@ -1,0 +1,22 @@
+\section{Desarrollo Backend y APIs}
+\label{sec:backend_sprint3}
+
+La arquitectura de microservicios integró estrictos controles de seguridad perimetral y procesos en segundo plano para asegurar la consistencia y resiliencia del sistema de archivos.
+
+\subsection{Seguridad Perimetral y Mitigación (GAN-001, GAN-003)}
+Se refactorizó el \comando{SecurityConfig} para proteger los endpoints de la API. Se integró \textit{Rate Limiting} para evitar ataques de fuerza bruta en los servicios de autenticación. Además, se desarrolló un interceptor \\
+(\comando{JwtAuthenticationFilter}) que valida cada token contra una \textit{blacklist} de base de datos, garantizando un cierre de sesión real y definitivo.
+
+Para la ingesta de datos en la creación de proyectos (GAN-001), se implementó una capa de sanitización XSS estricta en los campos de \comando{titulo} y \comando{descripcion}, previniendo inyecciones de código.
+
+\subsection{Procesamiento Seguro de Archivos (GAN-005)}
+El endpoint encargado de la subida de evidencias (\comando{POST /api/v1/evidences/upload}) fue reescrito bajo un paradigma de 'Confianza Cero' (\textit{Zero Trust}):
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Verificación de Magic Numbers:} Se ignoran las extensiones reportadas por el cliente; el backend analiza las cabeceras binarias del archivo para asegurar su auténtico MIME type.
+    \item \textbf{Prevención Path Traversal:} Se desarrollaron utilidades de sanitización profunda para limpiar caracteres de escape (ej. \comando{../}) en la nomenclatura de archivos.
+    \item \textbf{Descargas Seguras:} Los endpoints de recuperación inyectan \comando{Content-Disposition: attachment} para forzar la descarga y evitar la ejecución arbitraria en el navegador del reclutador.
+\end{itemize}
+
+\subsection{Consistencia Asíncrona y Transaccionalidad (GAN-006)}
+Para optimizar los recursos de almacenamiento, se desplegó un \textit{Worker} asíncrono. Este proceso programado escanea y purga periódicamente los archivos físicos huérfanos que carecen de referencia en el modelo relacional.

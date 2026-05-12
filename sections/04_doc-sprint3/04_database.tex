@@ -1,0 +1,24 @@
+\section{Arquitectura de Persistencia de Datos}
+\label{sec:db_sprint3}
+
+El esquema relacional fue significativamente madurado, aprovechando las capacidades nativas de PostgreSQL 15. Se estructuraron nuevos objetos en los esquemas \comando{core} y \comando{admin} para soportar la integridad referencial de los portafolios y las auditorías de seguridad.
+
+\subsection{Modelado de Proyectos y Entidades Relacionadas}
+Dentro del esquema \comando{core}, se crearon las tablas \comando{proyectos} y \comando{evidencias\_multimedia}. Ambas entidades mantienen una relación directa con \comando{core.profiles} (tabla central de perfiles) a través de llaves foráneas estrictas (\comando{profile\_id}). 
+
+\begin{NotaTecnica}
+Se implementaron directivas \comando{ON DELETE CASCADE} en la tabla de evidencias para garantizar que, si un perfil decide eliminar un proyecto de su portafolio, todos los registros multimedia asociados se destruyan de forma atómica. Esto incluye la limpieza de dependencias referenciadas en \comando{core.profile\_visibility\_settings}.
+\end{NotaTecnica}
+
+\subsection{Estructura de Seguridad y Revocación de Sesiones}
+Se expandió la superficie de seguridad incorporando la tabla \comando{core.security\_tokens}, vinculada al identificador del perfil. Esta tabla almacena los identificadores de tokens JWT invalidados (Blacklist). La restricción \comando{security\_tokens\_user\_id\_fkey} fue configurada con borrado en cascada para mantener limpio el registro cuando un perfil es purgado por el sistema de moderación (\comando{core.profile\_moderation}).
+
+\subsection{Vistas Materializadas y Funciones Disparadoras (GAN-004, GAN-006)}
+Para satisfacer la demanda de lectura asíncrona por parte de los reclutadores sin degradar el rendimiento, se construyeron vistas materializadas en el esquema \comando{admin}, tales como \comando{admin.mv\_user\_growth\_stats} y vistas equivalentes para proyectos públicos. Esto mitiga la necesidad de ejecutar uniones complejas (\textit{JOINs}) en tiempo real.
+
+\begin{TablaHSDoc}
+    GAN-006 & Función para recalcular posiciones secuenciales & Sí (Doc. API) & Sí (Script BD) \\ \hline
+    GAN-004 & Vista materializada de proyectos públicos & No & Sí (Script BD) \\ \hline
+\end{TablaHSDoc}
+
+Adicionalmente, se codificó una función en PL/pgSQL (\comando{fn\_recalcular\_posiciones}) inyectada como un \textit{Trigger} tras eventos \comando{DELETE} en la tabla de evidencias. Esta función reasigna dinámicamente el orden numérico de los archivos restantes, eliminando 'huecos' lógicos en el arreglo de evidencias de un perfil.
