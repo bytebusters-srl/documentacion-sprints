@@ -1,0 +1,79 @@
+% =============================================================================
+% HISTORIAL DE REVISIONES Y TRAZABILIDAD (ISO/IEC/IEEE 15289:2024)
+% =============================================================================
+\chapter*{Historial de Revisiones y Trazabilidad}
+\addcontentsline{toc}{chapter}{Historial de Revisiones y Trazabilidad}
+\markboth{Historial de Revisiones y Trazabilidad}{}
+
+La presente \textbf{Memoria de Producto de Software (P.D.S.)} consolida las
+\textit{Release Notes} incrementales de la plataforma \textbf{EthosHub}, documentadas
+Sprint a Sprint conforme al estándar \textbf{ISO/IEC/IEEE 26515:2024} (desarrollo de
+información para usuarios en entornos ágiles) y a \textbf{ISO/IEC/IEEE 15289:2024}
+(productos de información del ciclo de vida del software). Cada versión emitida queda
+trazada en los registros siguientes, garantizando la responsabilidad
+(\textit{accountability}) sobre el incremento de software descrito.\par
+
+\section*{Control de Versiones del Documento}
+\noindent
+\renewcommand{\arraystretch}{1.4}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\dimexpr\textwidth-2pt\relax}{|c|c|X|c|}
+\hline
+\rowcolor{headerTabla}
+\textbf{Versión} & \textbf{Fecha} & \textbf{Incremento documentado} & \textbf{Estado} \\
+\hline
+0.1.0 & 2026-03-28 & Sprint 0: incepción, arquitectura C4, ER preliminar y boilerplate FE/BE. & Aprobado \\
+\hline
+\rowcolor{grisTecnico}
+1.0.0 & 2026-04-11 & Sprint 1: seguridad, autenticación, JWT y layouts base del frontend. & Aprobado \\
+\hline
+1.1.0 & 2026-04-25 & Sprint 2: habilidades/skills, dominio transaccional, CRUD y pruebas unitarias. & Aprobado \\
+\hline
+\rowcolor{grisTecnico}
+1.2.0 & 2026-05-09 & Sprint 3: vitrina de proyectos, conexiones externas, tiempo real, CV Studio y Talent Discovery. & Aprobado \\
+\hline
+1.3.0 & 2026-05-23 & Sprint 4: visibilidad/privacidad, QA, refuerzo OWASP, pruebas E2E y accesibilidad. & Aprobado \\
+\hline
+\rowcolor{grisTecnico}
+2.0.0 & 2026-06-06 & Sprint 5: estadísticas, despliegue monolítico, backups, Release Notes y cierre de versión. & Aprobado \\
+\hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.5cm}
+
+\section*{Roles del Equipo de Producto}
+La elaboración y validación de esta memoria fue responsabilidad del equipo de
+\textbf{Byte Busters S.R.L.}, con la asignación de roles que se detalla a continuación.\par
+\noindent
+\renewcommand{\arraystretch}{1.4}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\dimexpr\textwidth-2pt\relax}{|>{\bfseries\color{colorPrimario}}l|X|c|}
+\hline
+\rowcolor{headerTabla}
+\textbf{Rol} & \textbf{Responsabilidad sobre la memoria} & \textbf{Validación} \\
+\hline
+Scrum Master & Facilitación de ceremonias y trazabilidad de los incrementos por Sprint. & Proceso \\
+\hline
+\rowcolor{grisTecnico}
+Product Owner & Definición del Backlog, criterios de aceptación y aprobación de incrementos. & Producto \\
+\hline
+Líder de Backend & Documentación de la API, seguridad y persistencia (\texttt{ethoshubB}). & Backend \\
+\hline
+\rowcolor{grisTecnico}
+Líder de Frontend & Documentación de la SPA, componentes y estados (\texttt{ethoshubF}). & Frontend \\
+\hline
+DBA & Modelo de datos, migraciones \texttt{V*.sql} y políticas RLS sobre Supabase. & Base de Datos \\
+\hline
+\rowcolor{grisTecnico}
+QA Lead & Casos de prueba, revisión técnica y usabilidad de la información. & V\&V \\
+\hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.4cm}
+
+\begin{NotaTecnica}
+Este documento es de carácter \textbf{confidencial} y está dirigido al equipo de
+producto de Byte Busters S.R.L.\ y a los evaluadores autorizados de la convocatoria
+CPTIS-2302-2026. Su identificador de trazabilidad es \comando{PDS-ETHOSHUB-2.0.0} y se
+versiona junto al código fuente en los repositorios \comando{ethoshubB} y \comando{ethoshubF}.
+\end{NotaTecnica}
+
+\clearpage

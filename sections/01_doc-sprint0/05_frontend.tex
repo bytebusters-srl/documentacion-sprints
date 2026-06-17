@@ -1,0 +1,126 @@
+\section{Frontend: Prototipado y Arquitectura de la Interfaz}
+\label{sec:s0_frontend}
+
+El frontend (\comando{ethoshubF}) se inicializó como una \textbf{Single Page Application} en
+React 18.3 + TypeScript 5.3 sobre Vite 5.1, con una arquitectura \textit{feature-first} y
+capas compartidas. Esta sección cubre la configuración de dependencias y manejo de estado
+(Sección~\ref{ssec:s0_fe_deps}) y la arquitectura de componentes y lineamientos estéticos
+(Sección~\ref{ssec:s0_fe_componentes}).\par
+
+\subsection{Dependencias Base, Entorno de Desarrollo y Manejo de Estado}
+\label{ssec:s0_fe_deps}
+
+El entorno de desarrollo se configuró con \textbf{Vite} (servidor en el puerto 3000, HMR) y un
+\textit{proxy} que reenvía \comando{/api}, \comando{/auth} y \comando{/v1} hacia el backend en
+el puerto 8080, evitando problemas de CORS en desarrollo. El \comando{tsconfig.json} activa el
+modo \comando{strict} y el alias \comando{@/*} $\to$ \comando{src/*}. La tabla~\ref{tab:s0_fe_deps}
+resume las dependencias base seleccionadas en el Sprint 0.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Categoría}} & \textcolor{white}{\textbf{Tecnología y propósito}} \\ \hline
+        Estado global & Zustand 4.5 --- \textit{stores} por dominio, sin \textit{boilerplate}. \\ \hline
+        \rowcolor{grisTecnico}
+        \textit{Routing} & React Router DOM 6.22 --- rutas con \textit{guards}. \\ \hline
+        HTTP & Axios 1.15 --- cliente con interceptores (\comando{apiClient}). \\ \hline
+        \rowcolor{grisTecnico}
+        Estilos & Tailwind CSS 3.4 + \comando{cva} + \comando{tailwind-merge} + \comando{clsx}. \\ \hline
+        Tiempo real & \comando{@supabase/supabase-js} 2.x --- Realtime, RPCs y auth. \\ \hline
+        \rowcolor{grisTecnico}
+        i18n & i18next + react-i18next (es / en / pt). \\ \hline
+        Calidad & ESLint 10 (\textit{flat config}) + Vitest 4 + Testing Library. \\ \hline
+    \end{tabularx}
+    \caption{Dependencias base del frontend definidas en el Sprint 0.}
+    \label{tab:s0_fe_deps}
+\end{table}
+
+El \textbf{manejo de estado} se basa en \textit{stores} de Zustand segmentados por dominio
+(\comando{authStore}, \comando{projectsStore}, \comando{cvStudioStore}, etc.), que se irán
+incorporando a medida que avancen los sprints. La sesión vive en \comando{sessionStorage}, lo
+que habilita \textbf{sesiones múltiples aisladas por pestaña}, con cierre de sesión global
+propagado vía \comando{BroadcastChannel} (detallado en la Sección~\ref{sec:s1_frontend}).
+
+\subsection{Arquitectura de Componentes y Lineamientos Estéticos}
+\label{ssec:s0_fe_componentes}
+
+La organización de \comando{src/} separa responsabilidades en capas, según se muestra en el
+listado~\ref{lst:s0_fe_tree}.
+
+\begin{lstlisting}[caption={Arquitectura de carpetas del frontend.}, label={lst:s0_fe_tree}]
+src/
+|-- app/        # Composicion: providers, layouts, router
+|-- pages/      # Paginas por rol (auth, dashboard, recruiter, admin, public)
+|-- features/   # Logica de dominio (portfolio, projects, recruiter)
+|-- components/ # Reutilizables (ui, auth, brand, preferences)
+|-- shared/     # Servicios API, tipos, util, motion, landing, ui
+|-- store/      # Stores Zustand por dominio
+|-- hooks/      # Custom hooks
+|-- i18n/       # Configuracion y traducciones (es/en/pt)
+`-- lib/        # Utilidades de bajo nivel
+\end{lstlisting}
+
+El \textbf{flujo de datos} es unidireccional: los componentes consumen \textit{stores} de
+Zustand y servicios (\comando{shared/services/*}) que invocan la API REST (vía Axios) o
+directamente a Supabase (Realtime/RPC). El \textbf{enrutamiento protegido} se define en
+\comando{app/router/} con \comando{ProtectedRoute} (autenticación), \comando{RoleScopeGuard}
+(autorización por rol) y \comando{RouteErrorBoundary}.
+
+Los \textbf{lineamientos estéticos} establecidos como línea base son:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Estética \textit{clean-tech}:} jerarquía visual clara, espaciado generoso y
+    contraste alto, orientada a transmitir profesionalismo.
+    \item \textbf{Sistema de componentes:} primitivas en \comando{components/ui} con variantes
+    tipadas mediante \comando{class-variance-authority}.
+    \item \textbf{Animaciones:} Framer Motion para transiciones y microinteracciones, con la
+    consigna de no introducir latencia perceptible.
+    \item \textbf{Responsividad:} diseño \textit{mobile-first} con Tailwind; el \comando{Sidebar}
+    se reserva para vistas móviles y permanece oculto en escritorio
+    (detallado en la Sección~\ref{sec:s1_frontend}).
+\end{itemize}
+
+\begin{NotaTecnica}
+La internacionalización se fija desde el Sprint 0 con \textbf{español como fuente de verdad y
+\textit{fallback}}; el idioma se hidrata desde el perfil del usuario (\comando{store} $\to$
+i18n vía \comando{setLanguage()}). Las traducciones residen en \comando{src/i18n/locales/\{es,en,pt\}/}.
+\end{NotaTecnica}
+
+\subsection{Capas de la SPA y Convenciones de Código}
+\label{ssec:s0_fe_capas}
+La organización \textit{feature-first} separa responsabilidades en capas con dependencias
+unidireccionales (de \comando{pages} hacia \comando{shared}), según la tabla~\ref{tab:s0_fe_capas}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Capa}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+        \comando{app/} & Providers, layouts y router (composición de la aplicación). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{pages/} & Páginas por rol (auth, dashboard, recruiter, admin, public). \\ \hline
+        \comando{features/} & Lógica de dominio (portfolio, projects, recruiter). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{components/} & Primitivas reutilizables (ui, auth, brand, preferences). \\ \hline
+        \comando{shared/} & Servicios API, tipos, utilidades, \textit{motion}, landing. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{store/} & \textit{Stores} Zustand por dominio. \\ \hline
+        \comando{hooks/} \,/\, \comando{lib/} & \textit{Custom hooks} y utilidades de bajo nivel. \\ \hline
+    \end{tabularx}
+    \caption{Capas de la SPA y su responsabilidad (línea base del Sprint 0).}
+    \label{tab:s0_fe_capas}
+\end{table}
+
+Las convenciones de calidad fijadas son: TypeScript en modo \comando{strict}, alias \comando{@/*}
+$\to$ \comando{src/*}, ESLint 10 (\textit{flat config}) y pruebas con Vitest + Testing Library
+en entorno \comando{jsdom}. El \textit{store} \comando{resetAllStores} centraliza la limpieza de
+estado, garantizando que el cierre de sesión no deje datos residuales entre cuentas.
+
+\clearpage

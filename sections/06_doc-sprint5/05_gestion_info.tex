@@ -1,0 +1,44 @@
+\section{Gestión de la Información (Cumplimiento ISO 26515)}
+\label{sec:s5_gestion}
+
+\subsection{Publicación de las Notas de la Versión (Release Notes)}
+\label{ssec:s5_gi_releasenotes}
+Se publicaron las Notas de la Versión integrales del incremento 2.0.0, consolidando las
+funcionalidades entregadas a lo largo de los seis sprints, los cambios críticos
+(\textit{breaking changes}) y las acciones de seguridad recomendadas.
+
+\subsection{Empaquetado y Versionado de la Base de Conocimiento}
+\label{ssec:s5_gi_empaquetado}
+La base de conocimiento (diagramas, arquitecturas y guías de uso) se empaquetó y versionó
+directamente embebida dentro del repositorio oficial del código fuente, cerrando el ciclo de
+\textit{Documentation as Code}. La presente Memoria P.D.S. se etiqueta como
+\comando{PDS-ETHOSHUB-2.0.0}.
+
+\begin{TablaHSDoc}
+    EPIC-06 & Visibilidad y SEO & Sí (S5) & Sí (S5) \\ \hline
+    Todas & Cierre de versión 2.0.0 & Sí (S5) & Sí (S5) \\ \hline
+\end{TablaHSDoc}
+
+\subsection{Productos de Información del Cierre (ISO 15289)}
+\label{ssec:s5_gi_productos}
+La tabla~\ref{tab:s5_productos} relaciona los productos de información del cierre de versión con
+su artefacto de origen.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Producto de información}} & \textcolor{white}{\textbf{Artefacto de origen}} \\ \hline
+        Release Notes 2.0.0 & Historial de incrementos (Sprints 0--5). \\ \hline
+        \rowcolor{grisTecnico}
+        Guía de despliegue monolítico & \comando{build.sh}, \comando{Dockerfile}, \comando{docker-compose.yml}. \\ \hline
+        Base de conocimiento empaquetada & Diagramas, arquitecturas y guías embebidas en el repo. \\ \hline
+    \end{tabularx}
+    \caption{Productos de información del Sprint 5 y su trazabilidad.}
+    \label{tab:s5_productos}
+\end{table}
+
+\clearpage

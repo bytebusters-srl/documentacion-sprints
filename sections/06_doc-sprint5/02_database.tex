@@ -1,0 +1,73 @@
+\section{Base de Datos: Preparación para Entornos de Producción}
+\label{sec:s5_database}
+
+La preparación para producción combina la siembra de datos maestros y una política de respaldos
+automatizada. La Figura~\ref{fig:s5_backup} resume el ciclo de respaldo y recuperación sobre
+Supabase.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.6cm,
+        s/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.4cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[s] (a) {1. Backup\\programado};
+        \node[s, right=of a] (b) {2. Almacén\\seguro};
+        \node[s, right=of b] (c) {3. Verifica\\integridad};
+        \node[s, right=of c] (d) {4. Restaura\\(contingencia)};
+        \draw[rel] (a)--(b); \draw[rel] (b)--(c); \draw[rel] (c)--(d);
+    \end{tikzpicture}
+    \caption{Ciclo de respaldo y recuperación de datos (Sprint 5).}
+    \label{fig:s5_backup}
+\end{figure}
+
+\subsection{Inyección de Semillas de Datos Maestros (Seeders)}
+\label{ssec:s5_db_seeders}
+Se inyectaron las semillas de datos maestros requeridas para el arranque operativo: catálogos
+base, configuraciones por defecto y datos de referencia, garantizando que el sistema sea
+funcional desde el primer despliegue.
+
+\subsection{Políticas de Respaldos y Recuperación}
+\label{ssec:s5_db_backups}
+Se implementaron políticas automatizadas de respaldos (\textit{backups}) sobre Supabase y
+protocolos de recuperación ante contingencias, definiendo la frecuencia de copia y el
+procedimiento de restauración.
+
+\begin{NotaTecnica}
+Las migraciones se aplican sobre Supabase de forma controlada; cada script se revisa antes de
+ejecutarlo en un entorno compartido para preservar la integridad del schema \comando{core}.
+\end{NotaTecnica}
+
+\subsection{Catálogo de Semillas y Política de Respaldos}
+\label{ssec:s5_db_catalogo}
+La tabla~\ref{tab:s5_seeds} resume los datos maestros sembrados y la política de respaldos
+aplicada para el arranque operativo.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Elemento}} & \textcolor{white}{\textbf{Contenido / criterio}} \\ \hline
+        \comando{global\_skill\_tags} & Catálogo base de \textit{skills} con categorías. \\ \hline
+        \rowcolor{grisTecnico}
+        Cuentas administrativas & Semilla de cuentas \comando{adm.*@ethoshub.dev}. \\ \hline
+        Configuración por defecto & Valores iniciales de \comando{portfolio\_settings}. \\ \hline
+        \rowcolor{grisTecnico}
+        Respaldo programado & Copia periódica gestionada por Supabase. \\ \hline
+        Verificación de integridad & Comprobación del respaldo antes de archivarlo. \\ \hline
+        \rowcolor{grisTecnico}
+        Recuperación & Procedimiento de restauración ante contingencia. \\ \hline
+    \end{tabularx}
+    \caption{Semillas maestras y política de respaldos (Sprint 5).}
+    \label{tab:s5_seeds}
+\end{table}
+
+El ciclo completo de respaldo y recuperación se modela en la Figura~\ref{fig:s5_backup},
+garantizando la continuidad operativa ante incidentes en producción.
+
+\clearpage

@@ -1,0 +1,80 @@
+\section{Frontend: Compilación, Optimización Final y Distribución}
+\label{sec:s5_frontend}
+
+La compilación final optimiza el \textit{bundle} y lo integra en el artefacto monolítico. La
+Figura~\ref{fig:s5_build} ilustra el \textit{pipeline} de empaquetado FE+BE.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.55cm,
+        s/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.3cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[s] (a) {1. tsc + vite\\build};
+        \node[s, right=of a] (b) {2. dist/\\(minificado)};
+        \node[s, right=of b] (c) {3. copia a\\static/};
+        \node[s, right=of c] (d) {4. JAR\\monolítico};
+        \draw[rel] (a)--(b); \draw[rel] (b)--(c); \draw[rel] (c)--(d);
+    \end{tikzpicture}
+    \caption{Pipeline de compilación y empaquetado del frontend en el JAR.}
+    \label{fig:s5_build}
+\end{figure}
+
+\subsection{Compilación Optimizada y Code Splitting}
+\label{ssec:s5_fe_build}
+El proceso de compilación (\comando{tsc \&\& vite build}) genera \comando{dist/} con
+minificación de assets, remoción de dependencias muertas y división del código
+(\textit{Code Splitting}); el \textit{chunk} \comando{vendor} separa \comando{react},
+\comando{react-dom} y \comando{react-router-dom} para mejorar el cacheo. La adaptabilidad final
+incluye i18n (es/en/pt) y modo claro/oscuro.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Minificación:} reducción de JS/CSS y \textit{tree-shaking}.
+    \item \textbf{Code splitting:} \textit{chunk} \comando{vendor} para librerías estables.
+    \item \textbf{Adaptabilidad:} cambio de idioma y de tema sin recarga.
+\end{itemize}
+
+\subsection{Distribución de Artefactos Estáticos}
+\label{ssec:s5_fe_cdn}
+Los artefactos estáticos se sirven desde el JAR de Spring Boot (despliegue monolítico) y pueden
+distribuirse a través de una red de distribución de contenido (CDN) para garantizar mínima
+latencia. El \comando{base} de Vite es \comando{/}.
+
+\begin{NotaTecnica}
+El despliegue monolítico copia \comando{dist/} a \comando{ethoshubB/src/main/resources/static/};
+el \comando{SpaFallbackFilter} sirve \comando{index.html} para las rutas de la SPA, de modo que
+la navegación del cliente no produce errores 404 en recargas profundas.
+\end{NotaTecnica}
+
+\subsection{Optimización del Bundle e Internacionalización Final}
+\label{ssec:s5_fe_bundle}
+La compilación de producción aplica las optimizaciones de la tabla~\ref{tab:s5_bundle} y completa
+la adaptabilidad (i18n y tema).
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Optimización}} & \textcolor{white}{\textbf{Efecto}} \\ \hline
+        Minificación & Reducción de JS/CSS y \textit{tree-shaking}. \\ \hline
+        \rowcolor{grisTecnico}
+        \textit{Vendor chunk} & Separa \comando{react}, \comando{react-dom}, \comando{react-router-dom}. \\ \hline
+        \textit{Code splitting} & Carga diferida por ruta. \\ \hline
+        \rowcolor{grisTecnico}
+        i18n (es/en/pt) & Cambio de idioma sin recarga; \textit{fallback} a \comando{es}. \\ \hline
+        Tema claro/oscuro & Variables de tema persistentes. \\ \hline
+    \end{tabularx}
+    \caption{Optimizaciones del bundle y adaptabilidad final (Sprint 5).}
+    \label{tab:s5_bundle}
+\end{table}
+
+El \textit{bundle} resultante se copia a \comando{static/} del backend para el despliegue
+monolítico; el cacheo del \textit{vendor chunk} reduce el tiempo de carga en visitas recurrentes,
+y la distribución vía CDN minimiza la latencia para usuarios geográficamente dispersos.
+
+\clearpage

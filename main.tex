@@ -1,5 +1,7 @@
 % main.tex
 % Memoria P.D.S. (Release Notes) - ISO/IEC/IEEE 26515:2024 e ISO 15289
+% Producto documentado: EthosHub (ethoshubB / ethoshubF)
+% Estructura alineada al índice indice_documentacion_iso26515.md (Sprints 0 a 5)
 
 \documentclass[10pt, a4paper, twoside]{report} % Base a 10pt para notas de versión
 
@@ -10,12 +12,13 @@
 
 \begin{document}
 
+% ============================= FRONT MATTER =============================
 \include{sections/00_portada}
 
-\clearpage
 \begingroup
   \makeatletter \let\ps@plain\ps@empty \makeatother
   \pagestyle{empty}
+  \include{sections/front/01_historial}
   \tableofcontents
   \clearpage
 \endgroup
@@ -23,46 +26,96 @@
 \pagestyle{fancy}
 \setcounter{page}{1}
 
-% Configuramos las variables dinámicas para este Incremento
+% ============================= CAPÍTULO 1 — SPRINT 0 =============================
 \setSprint{Sprint 0 - Closed}
 \setTag{release/v0.1.0}
 \setTaskID{Jira: SPRINT-00}
+\include{sections/01_doc-sprint0/01_objetivos}
+\include{sections/01_doc-sprint0/02_arquitectura}
+\include{sections/01_doc-sprint0/03_database}
+\include{sections/01_doc-sprint0/04_backend}
+\include{sections/01_doc-sprint0/05_frontend}
+\include{sections/01_doc-sprint0/06_gestion_info}
 
-% --- SPRINT 0 ---
-\include{sections/01_doc-sprint0/01_introduccion}
-\include{sections/01_doc-sprint0/02_infraestructura}
-\include{sections/01_doc-sprint0/03_producto}
-\include{sections/01_doc-sprint0/04_diseno&prototipado}
-\include{sections/01_doc-sprint0/05_cierreSprint}
-
+% ============================= CAPÍTULO 2 — SPRINT 1 =============================
 \setSprint{Sprint 1 - Closed}
 \setTag{release/v1.0.0}
 \setTaskID{Jira: SPRINT-01}
-% --- SPRINT 1 ---
-\include{sections/02_doc-sprint1/01_introduccion}
-\include{sections/02_doc-sprint1/02_backend}
-\include{sections/02_doc-sprint1/03_frontend}
-\include{sections/02_doc-sprint1/04_database}
-\include{sections/02_doc-sprint1/05_conclusiones}
+\include{sections/02_doc-sprint1/01_resumen}
+\include{sections/02_doc-sprint1/02_database}
+\include{sections/02_doc-sprint1/03_backend}
+\include{sections/02_doc-sprint1/04_frontend}
+\include{sections/02_doc-sprint1/05_gestion_info}
 
+% ============================= CAPÍTULO 3 — SPRINT 2 =============================
 \setSprint{Sprint 2 - Closed}
 \setTag{release/v1.1.0}
-\setTaskID{Jira: SPRINT-03}
-% --- SPRINT 2 ---
-\include{sections/03_doc-sprint2/01_introduccion}
-\include{sections/03_doc-sprint2/02_backend}
-\include{sections/03_doc-sprint2/03_frontend}
-\include{sections/03_doc-sprint2/04_database}
-\include{sections/03_doc-sprint2/05_conclusiones}
+\setTaskID{Jira: SPRINT-02}
+\include{sections/03_doc-sprint2/01_resumen}
+\include{sections/03_doc-sprint2/02_database}
+\include{sections/03_doc-sprint2/03_backend}
+\include{sections/03_doc-sprint2/04_frontend}
+\include{sections/03_doc-sprint2/05_gestion_info}
 
+% ============================= CAPÍTULO 4 — SPRINT 3 =============================
 \setSprint{Sprint 3 - Closed}
 \setTag{release/v1.2.0}
 \setTaskID{Jira: SPRINT-03}
-% --- SPRINT 3 ---
-\include{sections/04_doc-sprint3/01_introduccion}
-\include{sections/04_doc-sprint3/02_backend}
-\include{sections/04_doc-sprint3/03_frontend}
-\include{sections/04_doc-sprint3/04_database}
-\include{sections/04_doc-sprint3/05_conclusiones}
+\include{sections/04_doc-sprint3/01_resumen}
+\include{sections/04_doc-sprint3/02_database}
+\include{sections/04_doc-sprint3/03_backend}
+\include{sections/04_doc-sprint3/04_frontend}
+\include{sections/04_doc-sprint3/05_gestion_info}
+
+% ============================= CAPÍTULO 5 — SPRINT 4 =============================
+\setSprint{Sprint 4 - Closed}
+\setTag{release/v1.3.0}
+\setTaskID{Jira: SPRINT-04}
+\include{sections/05_doc-sprint4/01_resumen}
+\include{sections/05_doc-sprint4/02_database}
+\include{sections/05_doc-sprint4/03_backend}
+\include{sections/05_doc-sprint4/04_frontend}
+\include{sections/05_doc-sprint4/05_gestion_info}
+
+% ============================= CAPÍTULO 6 — SPRINT 5 =============================
+\setSprint{Sprint 5 - Closed}
+\setTag{release/v2.0.0}
+\setTaskID{Jira: SPRINT-05}
+\include{sections/06_doc-sprint5/01_resumen}
+\include{sections/06_doc-sprint5/02_database}
+\include{sections/06_doc-sprint5/03_backend}
+\include{sections/06_doc-sprint5/04_frontend}
+\include{sections/06_doc-sprint5/05_gestion_info}
+
+% ============================= CONCLUSIONES =============================
+\setSprint{Cierre - Conclusiones}
+\setTag{release/v2.0.0}
+\setTaskID{Jira: DOC-CIERRE}
+\include{sections/07_conclusiones/00_conclusiones}
+
+% ============================= ANEXOS =============================
+\setSprint{Anexos - Referencia}
+\setTag{release/v2.0.0}
+\setTaskID{Jira: DOC-ANEXOS}
+\appendix
+\include{sections/anexos/00_anexos}
+\include{sections/anexos/01_endpoints_detalle}
+\include{sections/anexos/02_casos_prueba}
+\include{sections/anexos/03_diagramas_estado}
+\include{sections/anexos/04_glosario}
+\include{sections/anexos/05_configuracion}
+\include{sections/anexos/06_mapa_endpoints}
+\include{sections/anexos/07_frontend_inventario}
+\include{sections/anexos/08_metricas_sprints}
+\include{sections/anexos/09_riesgos}
+\include{sections/anexos/10_dependencias}
+\include{sections/anexos/11_estructura_repos}
+\include{sections/anexos/12_cumplimiento_iso}
+\include{sections/anexos/13_estrategia_pruebas}
+\include{sections/anexos/14_mapa_pantallas}
+\include{sections/anexos/15_codigos_error}
+\include{sections/anexos/16_realtime_eventos}
+\include{sections/anexos/17_correos_adr}
+\include{sections/anexos/18_convenciones_api}
 
 \end{document}

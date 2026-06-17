@@ -1,0 +1,108 @@
+\section{Frontend: Interfaz Base y Autenticación de Cuentas}
+\label{sec:s1_frontend}
+
+El frontend materializa la capa de presentación de la identidad: layouts estructurados y
+formularios interactivos de registro, login y gestión del perfil, soportados por el
+\comando{authStore} de Zustand. El acceso a las vistas se filtra por la cadena de
+\textit{guards} de la Figura~\ref{fig:s1_guards}.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.6cm,
+        g/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.6cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        d/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=2.2cm, align=center, minimum height=0.9cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[g] (route) {Ruta solicitada};
+        \node[g, right=of route] (prot) {ProtectedRoute\\(autenticación)};
+        \node[g, right=of prot] (role) {RoleScopeGuard\\(rol)};
+        \node[d, right=of role] (page) {Página por rol};
+        \node[d, below=0.5cm of prot] (login) {Redirige a /login};
+
+        \draw[rel] (route) -- (prot);
+        \draw[rel] (prot) -- node[above]{ok} (role);
+        \draw[rel] (role) -- node[above]{ok} (page);
+        \draw[rel] (prot) -- node[right]{no auth} (login);
+    \end{tikzpicture}
+    \caption{Enrutamiento protegido del frontend: \texttt{ProtectedRoute} y \texttt{RoleScopeGuard}.}
+    \label{fig:s1_guards}
+\end{figure}
+
+\subsection{Layouts: Navbar y Sidebar Responsiva}
+\label{ssec:s1_fe_layouts}
+Se implementó una \comando{Navbar} persistente y un componente \comando{Sidebar} responsivo
+diseñado de forma exclusiva para renderizarse en entornos móviles y permanecer oculto en vistas
+de escritorio. El enrutamiento protegido redirige según el rol tras el inicio de sesión.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Sesiones múltiples:} aislamiento por pestaña vía \comando{sessionStorage}.
+    \item \textbf{Logout global:} propagación entre pestañas con \comando{BroadcastChannel}.
+    \item \textbf{Redirección por rol:} PROFESSIONAL y RECRUITER acceden a paneles distintos.
+    \item \textbf{Sidebar móvil:} se muestra bajo el \textit{breakpoint} móvil y se oculta en escritorio.
+\end{itemize}
+
+\subsection{Formularios Interactivos de Registro y Perfil}
+\label{ssec:s1_fe_formularios}
+Las páginas de \comando{pages/auth/} cubren login, registro, recuperación de contraseña y el
+\textit{callback} OAuth2. Los formularios validan en cliente y muestran retroalimentación
+inmediata; la entrada de OTP usa el componente \comando{input-otp}, y las notificaciones de
+estado se presentan con \textit{toasts} (Sonner). La Figura~\ref{fig:s1_login_ui} muestra la
+interfaz de autenticación.
+
+\begin{figure}[!ht]
+    \centering
+    \fbox{\begin{minipage}[c][4.2cm][c]{0.6\textwidth}
+        \centering
+        \sffamily\color{grisISO}\footnotesize
+        [\,Captura de pantalla pendiente\,]\par
+        \vspace{0.3cm}
+        Formulario de inicio de sesión / registro de EthosHub\par
+        \vspace{0.2cm}
+        \tiny(reemplazar por \texttt{assets/img/screenshots/login.png})
+    \end{minipage}}
+    \caption{Interfaz de autenticación de cuentas (vista de login/registro).}
+    \label{fig:s1_login_ui}
+\end{figure}
+
+\begin{NotaTecnica}
+El idioma del formulario se hidrata desde el perfil del usuario con \textit{fallback} estricto a
+español, conforme a la estrategia i18n fijada en la Sección~\ref{sec:s0_frontend}. El
+\comando{authStore} centraliza el estado de sesión y se limpia mediante \comando{resetAllStores}
+en el cierre de sesión global.
+\end{NotaTecnica}
+
+\subsection{Stores y Servicios de Autenticación}
+\label{ssec:s1_fe_stores}
+La capa de presentación de la identidad se apoya en el \comando{authStore} y el
+\comando{authService}, descritos en la tabla~\ref{tab:s1_fe_stores}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Elemento}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+        \comando{authStore} & Sesión, usuario, rol y estado de autenticación. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{authService} & Llamadas a \comando{/api/auth/*} (registro, login, OAuth, recuperación). \\ \hline
+        \comando{ProtectedRoute} & Bloquea rutas sin sesión y redirige a \comando{/login}. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{RoleScopeGuard} & Autoriza la vista según el rol del perfil. \\ \hline
+        \comando{input-otp} & Componente de captura del código OTP. \\ \hline
+        \rowcolor{grisTecnico}
+        Sonner & \textit{Toasts} de retroalimentación de estado. \\ \hline
+    \end{tabularx}
+    \caption{Stores, servicios y componentes de autenticación (Sprint 1).}
+    \label{tab:s1_fe_stores}
+\end{table}
+
+El aislamiento de sesión por pestaña (\comando{sessionStorage}) habilita varias cuentas
+simultáneas; el \comando{BroadcastChannel} propaga el cierre de sesión a todas las pestañas,
+invocando \comando{resetAllStores} para limpiar el estado global.
+
+\clearpage

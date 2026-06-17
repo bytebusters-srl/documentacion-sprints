@@ -1,0 +1,80 @@
+% =============================================================================
+% ANEXO P — Pila Tecnológica y Dependencias
+% =============================================================================
+\chapter{Anexo P — Pila Tecnológica y Dependencias}
+\label{cap:anexo_deps}
+
+Inventario de las dependencias reales declaradas en \comando{pom.xml} (backend) y
+\comando{package.json} (frontend), agrupadas por función.\par
+
+\section{Dependencias del Backend (\texttt{pom.xml})}
+\label{sec:anexo_deps_be}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Dependencia}} & \textcolor{white}{\textbf{Función}} \\ \hline
+\comando{spring-boot-starter-webmvc} & API REST (Spring Web MVC). \\ \hline
+\rowcolor{grisTecnico}
+\comando{spring-boot-starter-security} & Seguridad y autorización. \\ \hline
+\comando{...-oauth2-resource-server} & Validación de JWT (Resource Server). \\ \hline
+\rowcolor{grisTecnico}
+\comando{spring-boot-starter-validation} & Jakarta Bean Validation en DTO. \\ \hline
+\comando{spring-boot-starter-jooq} / \comando{-jdbc} & Acceso a datos tipado (jOOQ). \\ \hline
+\rowcolor{grisTecnico}
+\comando{postgresql} & Driver JDBC de PostgreSQL. \\ \hline
+\comando{spring-boot-starter-actuator} & \textit{Health checks} y métricas. \\ \hline
+\rowcolor{grisTecnico}
+\comando{spring-boot-starter-mail} & Envío de correo (OTP, avisos). \\ \hline
+\comando{springdoc-openapi-...-ui} & Swagger UI / OpenAPI. \\ \hline
+\rowcolor{grisTecnico}
+\comando{httpclient5} & Cliente HTTP (Supabase Admin / Gemini). \\ \hline
+\comando{commonmark} & Render de Markdown. \\ \hline
+\rowcolor{grisTecnico}
+\comando{testcontainers-postgresql} & Pruebas de integración con contenedores. \\ \hline
+\comando{spring-boot-devtools} & Recarga en caliente (desarrollo). \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Dependencias del Frontend (\texttt{package.json})}
+\label{sec:anexo_deps_fe}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Dependencia}} & \textcolor{white}{\textbf{Función}} \\ \hline
+\comando{react} / \comando{react-dom} & Librería de interfaz. \\ \hline
+\rowcolor{grisTecnico}
+\comando{react-router-dom} & Enrutamiento de la SPA. \\ \hline
+\comando{zustand} & Estado global por dominio. \\ \hline
+\rowcolor{grisTecnico}
+\comando{axios} & Cliente HTTP con interceptores. \\ \hline
+\comando{@supabase/supabase-js} & Realtime, RPC y auth de Supabase. \\ \hline
+\rowcolor{grisTecnico}
+\comando{framer-motion} & Animaciones y microinteracciones. \\ \hline
+\comando{recharts} & Gráficas (funnel, radar, KPIs). \\ \hline
+\rowcolor{grisTecnico}
+\comando{leaflet} / \comando{react-leaflet} & Mapas geográficos. \\ \hline
+\comando{@monaco-editor/react} & Editor de código del CV Studio. \\ \hline
+\rowcolor{grisTecnico}
+\comando{@dnd-kit/*} & \textit{Drag \& drop} del pipeline Kanban. \\ \hline
+\comando{html2pdf.js} & Exportación a PDF. \\ \hline
+\rowcolor{grisTecnico}
+\comando{react-markdown} & Render de Markdown. \\ \hline
+\comando{i18next} / \comando{react-i18next} & Internacionalización (es/en/pt). \\ \hline
+\rowcolor{grisTecnico}
+\comando{input-otp} / \comando{react-webcam} & Captura de OTP y cámara. \\ \hline
+\comando{lucide-react} / \comando{sonner} & Iconos y \textit{toasts}. \\ \hline
+\rowcolor{grisTecnico}
+\comando{tailwind-merge} / \comando{clsx} / \comando{cva} & Composición de estilos Tailwind. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+El \textit{stack} de pruebas del frontend (\textit{devDependencies}) incluye
+\comando{@testing-library/react}, \comando{@testing-library/user-event} y \comando{jest-dom}
+sobre Vitest, ejecutados en entorno \comando{jsdom}.
+\end{NotaTecnica}
+
+\clearpage

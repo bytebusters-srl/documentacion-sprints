@@ -1,0 +1,162 @@
+\section{Backend: Servicios CRUD y Reglas del Dominio}
+\label{sec:s2_backend}
+
+Se implementan los controladores y servicios de la trayectoria profesional y la matriz de
+habilidades, siguiendo el patrón \textit{vertical slice}, con DTO validados y respuestas
+homogéneas vía \comando{ApiResponse}. El recorrido de una petición CRUD se ilustra en la
+Figura~\ref{fig:s2_crud}.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.7cm,
+        l/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.4cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[l] (c) {Controller\\(@Valid DTO)};
+        \node[l, right=of c] (s) {Service\\(reglas dominio)};
+        \node[l, right=of s] (r) {Repository\\(jOOQ)};
+        \node[l, right=of r] (db) {core.* (RLS)};
+        \draw[rel] (c) -- (s); \draw[rel] (s) -- (r); \draw[rel] (r) -- (db);
+        \draw[rel, dashed, ->] (db.south) to[bend left=30] node[below]{ApiResponse} (c.south);
+    \end{tikzpicture}
+    \caption{Recorrido de una operación CRUD (vertical slice) en el Sprint 2.}
+    \label{fig:s2_crud}
+\end{figure}
+
+\subsection{Controladores, Lógica Interna y Servicios de Datos}
+\label{ssec:s2_be_controllers}
+Los dominios \comando{experience}, \comando{education}, \comando{skills} y \comando{profile}
+exponen operaciones CRUD completas. La tabla~\ref{tab:s2_controllers} resume los controladores
+entregados y la tabla~\ref{tab:s2_endpoints} un detalle de los endpoints de \textit{skills}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Controlador}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+        \comando{WorkExperienceController} & Experiencia laboral con campos geográficos. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{AcademicRecordController} & Registros académicos / formación. \\ \hline
+        \comando{SkillController} & Hard y soft skills con soft-delete. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{ProfileController} & Perfil profesional básico del usuario. \\ \hline
+    \end{tabularx}
+    \caption{Controladores CRUD entregados en el Sprint 2.}
+    \label{tab:s2_controllers}
+\end{table}
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        GET & \comando{/api/v1/skills} & Lista las skills activas del perfil. \\ \hline
+        \rowcolor{grisTecnico}
+        POST & \comando{/api/v1/skills} & Crea una hard/soft skill. \\ \hline
+        PUT & \comando{/api/v1/skills/\{id\}} & Actualiza nivel/descripción. \\ \hline
+        \rowcolor{grisTecnico}
+        DELETE & \comando{/api/v1/skills/\{id\}} & Soft-delete (baja lógica). \\ \hline
+    \end{tabularx}
+    \caption{Endpoints del dominio de habilidades (Sprint 2).}
+    \label{tab:s2_endpoints}
+\end{table}
+
+La tabla~\ref{tab:s2_ep_trayectoria} detalla los endpoints de trayectoria (experiencia y
+formación), con sus rutas reales.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} \\ \hline
+        GET & \comando{/api/v1/work-experiences/profile/\{profileId\}} \\ \hline
+        \rowcolor{grisTecnico}
+        POST / PUT & \comando{/api/v1/work-experiences[/\{id\}]} \\ \hline
+        DELETE & \comando{/api/v1/work-experiences/\{id\}/profile/\{profileId\}} \\ \hline
+        \rowcolor{grisTecnico}
+        GET & \comando{/api/v1/academic-records/profile/\{profileId\}} \\ \hline
+        POST / PUT / DELETE & \comando{/api/v1/academic-records[/\{id\}...]} \\ \hline
+    \end{tabularx}
+    \caption{Endpoints de trayectoria profesional (Sprint 2).}
+    \label{tab:s2_ep_trayectoria}
+\end{table}
+
+\subsection{Cobertura de Pruebas Unitarias del Perfil y Reglas Críticas}
+\label{ssec:s2_be_tests}
+Se desarrollaron pruebas unitarias (JUnit 5) sobre los flujos de validación del perfil y las
+reglas críticas del dominio, complementadas con pruebas de integración con Testcontainers
+(PostgreSQL). Se priorizó la cobertura de los caminos de validación de DTO y de las restricciones
+de negocio.
+
+\begin{TablaCasoPrueba}
+    1 & Crear skill con nivel fuera de rango & Rechazo 400 con mensaje de validación & \estadoPass \\ \hline
+    2 & Crear experiencia con fechas inválidas & Rechazo por \textit{constraint} de fechas & \estadoPass \\ \hline
+    3 & Soft-delete de skill y relistado & La skill no aparece en el listado activo & \estadoPass \\ \hline
+    4 & Restaurar skill eliminada (RPC) & La skill vuelve al listado activo & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\subsection{Reglas de Dominio Aplicadas}
+\label{ssec:s2_be_reglas}
+La capa de servicio concentra las reglas de negocio que complementan las validaciones de DTO,
+según la tabla~\ref{tab:s2_reglas}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Regla}} & \textcolor{white}{\textbf{Efecto}} \\ \hline
+        Unicidad de \textit{skill} por perfil & Rechazo de duplicados activos (índice parcial). \\ \hline
+        \rowcolor{grisTecnico}
+        Coherencia de fechas de experiencia & \comando{start\_date} previa a la fecha de fin. \\ \hline
+        Soft-delete reversible & La baja oculta sin perder histórico. \\ \hline
+        \rowcolor{grisTecnico}
+        Propiedad del recurso & Solo el dueño (\comando{auth.uid()}) modifica sus filas. \\ \hline
+    \end{tabularx}
+    \caption{Reglas de dominio del incremento de contenido (Sprint 2).}
+    \label{tab:s2_reglas}
+\end{table}
+
+\subsection{Diagrama de Secuencia: Operación CRUD (Vertical Slice)}
+\label{ssec:s2_seq_crud}
+La Figura~\ref{fig:s2_seq} muestra el recorrido completo de una creación de \textit{skill}, desde
+el controlador validado hasta la persistencia con jOOQ.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex,
+        part/.style={draw=colorPrimario, fill=headerTabla, rounded corners=2pt,
+            minimum height=0.6cm, text width=1.9cm, align=center},
+        msg/.style={-{Latex[length=1.6mm]}, colorPrimario},
+        ret/.style={-{Latex[length=1.6mm]}, dashed, grisISO}]
+        \node[part] (s)  at (0,0)    {SPA};
+        \node[part] (c)  at (3.2,0)  {Controller};
+        \node[part] (sv) at (6.4,0)  {Service};
+        \node[part] (r)  at (9.4,0)  {Repository};
+        \node[part] (db) at (12.4,0) {core (RLS)};
+        \foreach \n in {s,c,sv,r,db} \draw[grisISO, dashed] (\n.south) -- ++(0,-4.8);
+        \draw[msg] (0,-0.9)    -- node[above]{1. POST (@Valid)} (3.2,-0.9);
+        \draw[msg] (3.2,-1.6)  -- node[above]{2. crea} (6.4,-1.6);
+        \draw[msg] (6.4,-2.3)  -- node[above]{3. insert} (9.4,-2.3);
+        \draw[msg] (9.4,-3.0)  -- node[above]{4. SQL} (12.4,-3.0);
+        \draw[ret] (12.4,-3.7) -- node[above]{5. row} (9.4,-3.7);
+        \draw[ret] (9.4,-4.4)  -- node[above]{6. ApiResponse} (0,-4.4);
+    \end{tikzpicture}
+    \caption{Diagrama de secuencia de una operación CRUD (creación de \textit{skill}).}
+    \label{fig:s2_seq}
+\end{figure}
+
+\clearpage

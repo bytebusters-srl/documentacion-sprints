@@ -1,0 +1,88 @@
+\section{Frontend: Pruebas de Extremo a Extremo (E2E) y Accesibilidad}
+\label{sec:s4_frontend}
+
+El frontend entrega las vistas de visibilidad y privacidad del portafolio y se somete a un
+control de calidad exhaustivo: \textit{cross-device}, flujos E2E y accesibilidad. La
+Figura~\ref{fig:s4_visibilidad} muestra el panel de ajustes de visibilidad.\par
+
+\begin{figure}[!ht]
+    \centering
+    \fbox{\begin{minipage}[c][4.0cm][c]{0.62\textwidth}
+        \centering
+        \sffamily\color{grisISO}\footnotesize
+        [\,Captura de pantalla pendiente\,]\par
+        \vspace{0.3cm}
+        Ajustes de visibilidad, SEO y protección con contraseña del portafolio\par
+        \vspace{0.2cm}
+        \tiny(reemplazar por \texttt{assets/img/screenshots/visibilidad.png})
+    \end{minipage}}
+    \caption{Panel de visibilidad y privacidad del portafolio.}
+    \label{fig:s4_visibilidad}
+\end{figure}
+
+\subsection{Inconsistencias Visuales y Cross-device Testing}
+\label{ssec:s4_fe_crossdevice}
+Se resolvieron inconsistencias visuales en distintas pantallas y resoluciones mediante
+\textit{cross-device testing}, garantizando una adaptación fluida sin desbordamientos en móvil,
+tableta y escritorio. La tabla~\ref{tab:s4_breakpoints} resume los \textit{breakpoints} verificados.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Dispositivo}} & \textcolor{white}{\textbf{Ancho}} & \textcolor{white}{\textbf{Verificación}} \\ \hline
+        Móvil & 360--430\,px & Sidebar visible; sin scroll horizontal. \\ \hline
+        \rowcolor{grisTecnico}
+        Tableta & 768--1024\,px & Reflujo de columnas; tablas responsivas. \\ \hline
+        Escritorio & $\geq$1280\,px & Sidebar oculto; layout completo. \\ \hline
+    \end{tabularx}
+    \caption{Breakpoints verificados en el cross-device testing (Sprint 4).}
+    \label{tab:s4_breakpoints}
+\end{table}
+
+\subsection{Flujos Completos y Estándares de Accesibilidad}
+\label{ssec:s4_fe_accesibilidad}
+Se simularon automatizadamente flujos completos de navegación del perfil (Vitest + Testing
+Library, entorno jsdom) y se verificaron los estándares de accesibilidad: contraste de color,
+navegación por teclado y etiquetado semántico.
+
+\begin{TablaCasoPrueba}
+    1 & Navegación login-dashboard por teclado & Foco visible y orden lógico & \estadoPass \\ \hline
+    2 & Contraste de texto sobre fondo primario & Cumple ratio AA (4.5:1) & \estadoPass \\ \hline
+    3 & Render en viewport de 360px & Sin scroll horizontal ni cortes & \estadoPass \\ \hline
+    4 & Portafolio protegido sin contraseña & Acceso bloqueado correctamente & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\subsection{Herramientas y Criterios de Accesibilidad}
+\label{ssec:s4_fe_a11y}
+La verificación de accesibilidad se apoya en los criterios de la tabla~\ref{tab:s4_a11y},
+alineados con las pautas WCAG nivel AA.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Criterio}} & \textcolor{white}{\textbf{Verificación}} \\ \hline
+        Contraste & Ratio $\geq$ 4.5:1 en texto normal (AA). \\ \hline
+        \rowcolor{grisTecnico}
+        Navegación por teclado & Orden de foco lógico y foco visible. \\ \hline
+        Etiquetado semántico & Roles ARIA y etiquetas en formularios. \\ \hline
+        \rowcolor{grisTecnico}
+        Movimiento reducido & Respeto de \comando{prefers-reduced-motion}. \\ \hline
+        Responsividad & Sin scroll horizontal en 360--1280\,px. \\ \hline
+    \end{tabularx}
+    \caption{Criterios de accesibilidad verificados (Sprint 4).}
+    \label{tab:s4_a11y}
+\end{table}
+
+Las pruebas automatizadas (Vitest + Testing Library, \comando{jsdom}) simulan flujos completos de
+navegación; los hallazgos de contraste y foco se resolvieron antes del cierre del incremento,
+conforme al DoD de la Sección~\ref{ssec:s0_dod}.
+
+\clearpage

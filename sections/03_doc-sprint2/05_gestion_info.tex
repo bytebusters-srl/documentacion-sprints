@@ -1,0 +1,66 @@
+\section{Gestión de la Información (Cumplimiento ISO 26515)}
+\label{sec:s2_gestion}
+
+El incremento de contenido se documenta de forma simultánea al desarrollo, actualizando el
+glosario técnico (Sección~\ref{ssec:s2_gi_glosario}) y la especificación de los nuevos endpoints
+(Sección~\ref{ssec:s2_gi_endpoints}).\par
+
+\subsection{Actualización del Glosario Técnico y Bases de Conocimiento}
+\label{ssec:s2_gi_glosario}
+Se actualizó sistemáticamente el glosario técnico interno (entidades, DTO, términos de dominio)
+y las bases de conocimiento del equipo, consultables a través del grafo \comando{graphify-out/}
+de cada repositorio. La tabla~\ref{tab:s2_glosario} recoge una muestra de términos incorporados.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Término}} & \textcolor{white}{\textbf{Definición}} \\ \hline
+        Hard skill & Destreza técnica medible asociada a un nivel de competencia. \\ \hline
+        \rowcolor{grisTecnico}
+        Soft skill & Habilidad interpersonal descrita de forma cualitativa. \\ \hline
+        Soft-delete & Baja lógica reversible (columna \comando{deleted\_at}). \\ \hline
+        \rowcolor{grisTecnico}
+        Vertical slice & Organización por dominio: controller+service+repository+dto. \\ \hline
+    \end{tabularx}
+    \caption{Muestra del glosario técnico actualizado (Sprint 2).}
+    \label{tab:s2_glosario}
+\end{table}
+
+\subsection{Documentación Simultánea de los Nuevos Endpoints}
+\label{ssec:s2_gi_endpoints}
+Conforme al principio de \textit{Continuous Documentation}, los endpoints CRUD desarrollados se
+documentaron simultáneamente en la especificación OpenAPI (Sección~\ref{ssec:s1_gi_openapi}). La
+tabla Historias~vs.~Documentación registró la cobertura de las Épicas de trayectoria y habilidades.
+
+\begin{TablaHSDoc}
+    EPIC-02 & Perfil y trayectoria & Sí (S2) & Sí (S2) \\ \hline
+    EPIC-03 & Matriz de habilidades & Sí (S2) & Sí (S2) \\ \hline
+\end{TablaHSDoc}
+
+\subsection{Productos de Información del Incremento (ISO 15289)}
+\label{ssec:s2_gi_productos}
+La tabla~\ref{tab:s2_productos} relaciona los productos de información del incremento de contenido
+con su artefacto de origen.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Producto de información}} & \textcolor{white}{\textbf{Artefacto de origen}} \\ \hline
+        Glosario técnico actualizado & Entidades y DTO del dominio. \\ \hline
+        \rowcolor{grisTecnico}
+        Documentación de endpoints CRUD & Controladores de \comando{experience/education/skills}. \\ \hline
+        Diccionario de \textit{skills} & \comando{hard\_skills}, \comando{soft\_skills}, \comando{global\_skill\_tags}. \\ \hline
+    \end{tabularx}
+    \caption{Productos de información del Sprint 2 y su trazabilidad.}
+    \label{tab:s2_productos}
+\end{table}
+
+\clearpage

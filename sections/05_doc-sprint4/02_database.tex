@@ -1,0 +1,106 @@
+\section{Base de Datos: Auditoría de Rendimiento y Consistencia}
+\label{sec:s4_database}
+
+La auditoría de la base de datos persigue dos metas: optimizar el rendimiento de las consultas
+críticas y garantizar la consistencia tras la introducción de las funcionalidades de visibilidad
+del portafolio. La Figura~\ref{fig:s4_profiling} resume el ciclo de \textit{query profiling}.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.6cm,
+        s/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.4cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[s] (a) {1. EXPLAIN\\ANALYZE};
+        \node[s, right=of a] (b) {2. Detecta\\seq scans};
+        \node[s, right=of b] (c) {3. Crea\\índice};
+        \node[s, right=of c] (d) {4. Verifica\\mejora};
+        \draw[rel] (a)--(b); \draw[rel] (b)--(c); \draw[rel] (c)--(d);
+        \draw[rel, dashed] (d.south) to[bend left=25] (a.south);
+    \end{tikzpicture}
+    \caption{Ciclo de \textit{Query Profiling} aplicado en el Sprint 4.}
+    \label{fig:s4_profiling}
+\end{figure}
+
+\subsection{Análisis de Planes de Ejecución y Remoción de Huérfanos}
+\label{ssec:s4_db_profiling}
+Se analizaron los planes de ejecución (\textit{Query Profiling}) de las consultas críticas para
+detectar escaneos costosos, y se removieron registros huérfanos. Un \textit{worker} asíncrono del
+backend purga periódicamente los archivos físicos sin referencia en el modelo relacional,
+liberando almacenamiento y preservando la integridad referencial.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Planes de ejecución:} \comando{EXPLAIN ANALYZE} sobre listados de talento y mensajería.
+    \item \textbf{Huérfanos:} archivos sin fila asociada eliminados por el \textit{worker}.
+    \item \textbf{Consistencia:} verificación de claves foráneas y políticas RLS tras cada migración.
+\end{itemize}
+
+\subsection{Scripts de Migración de Optimización Final}
+\label{ssec:s4_db_migracion}
+Se aplicaron migraciones de optimización y corrección, resumidas en la
+tabla~\ref{tab:s4_migraciones}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Migración}} & \textcolor{white}{\textbf{Contenido}} \\ \hline
+        \comando{V11} & Fix de RPCs de chat/perfil + wrapper de talent-views. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V12} & Trigger de sync de email a \comando{profiles\_basic}/\comando{profiles\_company}. \\ \hline
+        \comando{V13} & Tabla de solicitudes de cambio de email. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V15} & Política de SELECT para likes de perfil. \\ \hline
+    \end{tabularx}
+    \caption{Migraciones de optimización y corrección (Sprint 4).}
+    \label{tab:s4_migraciones}
+\end{table}
+
+\begin{NotaTecnica}
+La migración V15 introduce una política RLS de \comando{SELECT} para los \textit{likes} de
+perfil, permitiendo que el dueño consulte quién valoró su portafolio sin exponer datos de
+terceros, manteniendo el aislamiento por usuario.
+\end{NotaTecnica}
+
+\subsection{Sincronización de Email y Solicitudes de Cambio}
+\label{ssec:s4_db_email}
+Las migraciones V12 y V13 endurecen el cambio de email. Un \textit{trigger} propaga el cambio
+confirmado en \comando{auth.users} a las tablas de perfil, y una tabla registra las solicitudes
+pendientes hasta su confirmación.
+
+\begin{lstlisting}[language=SQL, caption={Trigger de sincronización de email (V12).}, label={lst:s4_trigger}]
+CREATE TRIGGER on_auth_email_changed
+  AFTER UPDATE OF email ON auth.users
+  FOR EACH ROW WHEN (OLD.email IS DISTINCT FROM NEW.email)
+  EXECUTE FUNCTION core.sync_auth_email_to_profiles();
+\end{lstlisting}
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \fontsize{8.8}{10.5}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        \comando{auth\_id} & \comando{uuid} & Usuario solicitante. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{new\_email} & \comando{text} & Correo propuesto. \\ \hline
+        \comando{token\_hash} & \comando{text} unique & \textit{Hash} del enlace de confirmación. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{consumed} & \comando{boolean} & Marca de consumo. \\ \hline
+        \comando{expires\_at} & \comando{timestamptz} & Vencimiento de la solicitud. \\ \hline
+    \end{tabularx}
+    \caption{Columnas de \comando{core.email\_change\_requests} (V13).}
+    \label{tab:s4_email_cols}
+\end{table}
+
+La tabla \comando{email\_change\_requests} tiene RLS activo \textbf{sin políticas}: solo el
+backend (rol de servicio) la manipula, evitando cualquier exposición directa al cliente.
+
+\clearpage

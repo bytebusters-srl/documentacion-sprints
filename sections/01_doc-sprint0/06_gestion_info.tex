@@ -1,0 +1,136 @@
+\section{Gestión de la Información (Cumplimiento ISO 26515)}
+\label{sec:s0_gestion_info}
+
+El cumplimiento de ISO/IEC/IEEE 26515:2024 exige que la información para el usuario se planifique
+y desarrolle \textbf{en paralelo} al software, no como una fase posterior. El Sprint 0 define la
+estrategia de documentación continua (Sección~\ref{ssec:s0_estrategia_doc}) e integra las
+Historias de Usuario que orientarán esa información (Sección~\ref{ssec:s0_backlog}).\par
+
+\subsection{Estrategia de Documentación Continua y Repositorios de Información}
+\label{ssec:s0_estrategia_doc}
+
+Se adoptó el paradigma \textbf{\textit{Documentation as Code}}: la documentación técnica vive
+\textbf{junto al código}, versionada en los mismos repositorios y sujeta al mismo flujo de
+\textit{pull request} y revisión. Los pilares de la estrategia son:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Fuentes vivas:} cada repositorio mantiene un \comando{README.md} exhaustivo y
+    un grafo de conocimiento (\comando{graphify-out/}) consultable.
+    \item \textbf{API autodocumentada:} \comando{springdoc-openapi} publica la especificación en
+    \comando{/swagger-ui.html}, sincronizada con el código en cada \textit{build}.
+    \item \textbf{Memorias por Sprint:} este documento (Memoria P.D.S.) se compila en LaTeX y se
+    versiona junto al producto, incrementándose en cada cierre de Sprint.
+    \item \textbf{Trazabilidad:} cada Historia de Usuario cerrada actualiza la documentación
+    asociada, registrándolo en la tabla Historias~vs.~Documentación.
+\end{itemize}
+
+\subsection{Historias de Usuario Orientadas a la Información Técnica}
+\label{ssec:s0_backlog}
+
+Tras las sesiones de \textit{grooming}, la visión se consolidó en un \textit{Product Backlog}
+estructurado en \textbf{ocho Épicas}. Cada Historia indica su prioridad (PRI), esfuerzo estimado
+en puntos (EST.ESF.), Sprint tentativo y criterio de prueba.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{EPIC-01: Identidad, Acceso y Seguridad.} Núcleo de autenticación y gestión de cuentas.
+    \item \textbf{EPIC-02: Perfil Profesional y Trayectoria.} Narrativa del usuario y línea de tiempo.
+    \item \textbf{EPIC-03: Matriz de Habilidades.} Catálogo de competencias \textit{hard} y \textit{soft}.
+    \item \textbf{EPIC-04: Gestión de Proyectos y Evidencias.} Vitrina de logros y contenido multimedia.
+    \item \textbf{EPIC-05: Interconexión y Sincronización Externa.} Conexiones a apps externas.
+    \item \textbf{EPIC-06: Visibilidad, Marca Personal y SEO.} Portafolio público y privacidad.
+    \item \textbf{EPIC-07: Inteligencia de Datos y Analíticas.} Dashboards e \textit{insights} de IA.
+    \item \textbf{EPIC-08: UX y Diseño Adaptable.} Responsividad e internacionalización.
+\end{itemize}
+
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.35}
+
+\subsubsection{EPIC-01: Identidad, Acceso y Seguridad}
+\begin{TablaBacklog}
+    LOG-001 & Registro de usuario profesional & Alt & 5 & 1 & Creación exitosa tras validación. \\ \hline
+    LOG-002 & Registro de usuario reclutador & Alt & 5 & 1 & Registro con rol asignado. \\ \hline
+    LOG-003 & Inicio de sesión & Alt & 3 & 1 & Acceso con credenciales válidas. \\ \hline
+    LOG-004 & Autenticación con proveedores ext. & Med & 5 & 1 & Login vía OAuth exitoso. \\ \hline
+    LOG-005 & Recuperación de contraseña & Alt & 8 & 1 & Cambio de clave mediante enlace seguro. \\ \hline
+    LOG-006 & Cierre de sesión & Alt & 2 & 1 & Invalida token y redirige al login. \\ \hline
+    LOG-007 & Asignación de roles & Alt & 8 & 1 & Rol persistido en BD. \\ \hline
+    LOG-008 & Control de acceso por rol & Alt & 8 & 1 & Bloqueo de rutas sin permisos. \\ \hline
+    LOG-009 & Cambio de contraseña/email (OTP) & Alt & 8 & 1 & Verificación por OTP. \\ \hline
+    LOG-010 & Eliminación de cuenta & Med & 8 & 1 & Baja confirmada con OTP. \\ \hline
+    LOG-011 & Protección de credenciales & Alt & 8 & 1 & Almacenamiento cifrado (Supabase). \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-02: Perfil Profesional y Trayectoria}
+\begin{TablaBacklog}
+    IDEN-001 & Hero Section y branding & Alt & 1 & 2 & Renderiza foto y titular. \\ \hline
+    IDEN-002 & Perfil integral (bio/academia) & Alt & 8 & 2 & Guarda biografía y formación. \\ \hline
+    IDEN-003 & Experiencia laboral (geo) & Alt & 5 & 2 & Registros con campos geográficos. \\ \hline
+    IDEN-004 & Formación académica & Alt & 5 & 2 & Registros académicos persistidos. \\ \hline
+    IDEN-005 & Ajustes de perfil & Med & 3 & 2 & Modificación validada y persistida. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-03: Matriz de Habilidades}
+\begin{TablaBacklog}
+    MHVS-001 & Registro de hard skills & Med & 5 & 2 & Agrega nivel al catálogo. \\ \hline
+    MHVS-002 & Registro de soft skills & Med & 5 & 2 & Guarda habilidad con descripción. \\ \hline
+    MHVS-003 & Soft-delete de skills & Baj & 5 & 2 & Borrado lógico reversible. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-04: Gestión de Proyectos y Evidencias}
+\begin{TablaBacklog}
+    GAN-001 & Crear proyecto & Alt & 8 & 2 & Formulario validado asocia ID a usuario. \\ \hline
+    GAN-002 & Editar/eliminar proyecto & Alt & 8 & 2 & Persiste y borra en cascada. \\ \hline
+    GAN-003 & Listado y detalle & Alt & 5 & 2 & Muestra información completa. \\ \hline
+    GAN-005 & Subida multi-PDF de evidencias & Alt & 8 & 3 & Validación \textit{magic number}. \\ \hline
+    GAN-006 & Purga de archivos huérfanos & Med & 5 & 3 & \textit{Worker} asíncrono. \\ \hline
+    GAN-007 & Importar desde Google Drive & Baj & 8 & 3 & \textit{Picker} integrado. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-05: Interconexión y Sincronización Externa}
+\begin{TablaBacklog}
+    CONX-001 & Conexiones URL-first & Med & 8 & 3 & +15 \textit{providers} + custom. \\ \hline
+    CONX-002 & GitHub heatmap & Baj & 5 & 3 & Mapa de calor en el portafolio. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-06: Visibilidad, Marca Personal y SEO}
+\begin{TablaBacklog}
+    VIS-01 & Ajustes de portafolio público & Med & 8 & 2 & Visibilidad y SEO configurables. \\ \hline
+    VIS-02 & Portafolio con contraseña & Med & 5 & 3 & Bloquea acceso general. \\ \hline
+    VIS-03 & Curriculum PDF del portafolio & Med & 5 & 3 & Descarga del CV en PDF. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-07: Inteligencia de Datos y Analíticas}
+\begin{TablaBacklog}
+    IDAR-001 & Talent Discovery (Kanban) & Alt & 8 & 3 & Pipeline con \textit{drag \& drop}. \\ \hline
+    IDAR-002 & Dashboard de reclutador & Alt & 8 & 3 & Funnel, radar y KPIs. \\ \hline
+    IDAR-003 & Insights de IA (Gemini) & Med & 8 & 3 & 4 modos de análisis. \\ \hline
+    IDAR-004 & Búsqueda NLP de talento & Med & 8 & 3 & Consulta en lenguaje natural. \\ \hline
+    IDAR-005 & Panel de administración & Med & 8 & 4 & Métricas y moderación. \\ \hline
+\end{TablaBacklog}
+
+\subsubsection{EPIC-08: UX y Diseño Adaptable}
+\begin{TablaBacklog}
+    UX-001 & Visualización responsive & Alt & 5 & 1 & Adaptación sin desbordamientos. \\ \hline
+    UX-002 & Cambio de idioma (i18n) & Med & 5 & 2 & Traducción sin recarga. \\ \hline
+    UX-003 & CV Studio (Monaco + IA) & Alt & 8 & 3 & Editor con asistente Gemini. \\ \hline
+    UX-004 & Chat en tiempo real & Alt & 8 & 3 & Mensajería con presencia. \\ \hline
+\end{TablaBacklog}
+\endgroup
+
+La tabla~\ref{tab:s0_hsdoc} inaugura el registro Historias~vs.~Documentación, mecanismo de
+trazabilidad que se actualizará en cada Sprint conforme a ISO 26515.
+
+\begin{TablaHSDoc}
+    EPIC-01 & Autenticación y cuentas & Pendiente (S1) & Pendiente (S1) \\ \hline
+    EPIC-04 & Gestión de proyectos & Pendiente (S2) & Pendiente (S2) \\ \hline
+    EPIC-07 & Reclutador e IA & Pendiente (S3) & Pendiente (S3) \\ \hline
+\end{TablaHSDoc}
+
+\begin{NotaTecnica}
+Las Historias condicionadas a claves externas (p. ej. integraciones que requieren API Keys de
+GitHub o Google) se marcan como bloqueadas hasta que dichas credenciales se aprovisionen en los
+entornos locales, conforme al criterio de aceptación de la Sección~\ref{ssec:s0_dod}.
+\end{NotaTecnica}
+
+\clearpage

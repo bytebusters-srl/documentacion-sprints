@@ -88,6 +88,47 @@
 % Cajas originales de advertencia preservadas
 \newtcolorbox{AlertaDefecto}{colback=white, colframe=bgFail, boxrule=1.2pt, arc=2pt, title={\faBug\ \textbf{Defecto Crítico Detectado}}, coltitle=bgFail, fonttitle=\sffamily, attach title to upper=\par\vspace{0.2em}}
 
+% --- ESTILO DE CÓDIGO FUENTE (listings) ---
+\definecolor{codeBg}{HTML}{F7F9FC}
+\definecolor{codeKeyword}{HTML}{1A75FB}
+\definecolor{codeComment}{HTML}{6A9955}
+\definecolor{codeString}{HTML}{B5651D}
+\definecolor{codeFrame}{HTML}{BBDDFC}
+
+\lstdefinestyle{ethos}{
+    backgroundcolor=\color{codeBg},
+    basicstyle=\ttfamily\fontsize{8}{9.6}\selectfont,
+    keywordstyle=\color{codeKeyword}\bfseries,
+    commentstyle=\color{codeComment}\itshape,
+    stringstyle=\color{codeString},
+    numbers=left,
+    numberstyle=\tiny\color{grisISO},
+    numbersep=6pt,
+    frame=single,
+    rulecolor=\color{codeFrame},
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    tabsize=2,
+    captionpos=b,
+    columns=fullflexible,
+    keepspaces=true,
+    upquote=true,
+    aboveskip=0.4em,
+    belowskip=0.4em
+}
+\lstset{style=ethos}
+
+% Sintaxis Java/Spring básica adicional
+\lstdefinelanguage{json}{
+    keywords={true,false,null},
+    keywordstyle=\color{codeKeyword},
+    sensitive=false,
+    morestring=[b]",
+    stringstyle=\color{codeString},
+    comment=[l]{//}
+}
+
 % --- ENTORNO PARA EL PRODUCT BACKLOG ---
 \newenvironment{TablaBacklog}{
     \par\vspace{0.2cm}\noindent

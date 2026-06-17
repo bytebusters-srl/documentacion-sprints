@@ -1,0 +1,72 @@
+% =============================================================================
+% ANEXO M — Inventario de Stores y Servicios del Frontend
+% =============================================================================
+\chapter{Anexo M — Inventario del Frontend (\texttt{ethoshubF})}
+\label{cap:anexo_frontend_inv}
+
+Inventario de los \textit{stores} de estado (Zustand) y los servicios de acceso a datos del
+frontend, organizados por dominio. El flujo de datos es unidireccional: componente $\to$
+\textit{store}/servicio $\to$ API REST (Axios) o Supabase (Realtime/RPC).\par
+
+\section{Stores de Estado (Zustand)}
+\label{sec:anexo_fe_stores}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Store}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+\comando{authStore} & Sesión, usuario autenticado y rol. \\ \hline
+\rowcolor{grisTecnico}
+\comando{projectsStore} & Estado de la vitrina de proyectos. \\ \hline
+\comando{skillsStore} & Hard/soft skills del perfil. \\ \hline
+\rowcolor{grisTecnico}
+\comando{cvStudioStore} & Documento de CV, edición y asistente IA. \\ \hline
+\comando{portfolioStore} & Ajustes de visibilidad y portafolio. \\ \hline
+\rowcolor{grisTecnico}
+\comando{connectionsStore} & Conexiones a apps externas. \\ \hline
+\comando{notificationsStore} & Notificaciones del usuario. \\ \hline
+\rowcolor{grisTecnico}
+\comando{preferencesStore} & Idioma y preferencias de UI. \\ \hline
+\comando{uiStore} & Estado transversal de interfaz (modales, tema). \\ \hline
+\rowcolor{grisTecnico}
+\comando{resetAllStores} & Limpieza global en el cierre de sesión. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Servicios de Acceso a Datos}
+\label{sec:anexo_fe_services}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Servicio}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+\comando{apiClient} & Cliente Axios con interceptores (token, errores). \\ \hline
+\rowcolor{grisTecnico}
+\comando{authService} & Registro, login, recuperación, OAuth. \\ \hline
+\comando{companyProfileService} & Perfil del reclutador. \\ \hline
+\rowcolor{grisTecnico}
+\comando{experienceService} / \comando{educationService} & Trayectoria y formación. \\ \hline
+\comando{fileService} & Subida y descarga de evidencias. \\ \hline
+\rowcolor{grisTecnico}
+\comando{portfolioService} & Ajustes y vista pública del portafolio. \\ \hline
+\comando{cvStudioService} & CV Studio (edición, IA, compilación). \\ \hline
+\rowcolor{grisTecnico}
+\comando{dashboardService} & Métricas e \textit{insights} del reclutador. \\ \hline
+\comando{notificationsService} & Notificaciones. \\ \hline
+\rowcolor{grisTecnico}
+\comando{preferencesService} & Preferencias e idioma. \\ \hline
+\comando{adminService} & Operaciones del panel de administración. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Guards de Enrutamiento}
+\label{sec:anexo_fe_guards}
+\begin{itemize}[noitemsep]
+    \item \comando{ProtectedRoute}: exige sesión autenticada.
+    \item \comando{RoleScopeGuard}: autoriza según el rol (PROFESSIONAL/RECRUITER/ADMIN).
+    \item \comando{RouteErrorBoundary}: captura errores de renderizado por ruta.
+\end{itemize}
+
+\clearpage

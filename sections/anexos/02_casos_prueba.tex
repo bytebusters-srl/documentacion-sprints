@@ -1,0 +1,87 @@
+% =============================================================================
+% ANEXO H — Catálogo de Casos de Prueba E2E por dominio
+% =============================================================================
+\chapter{Anexo H — Catálogo de Casos de Prueba (E2E)}
+\label{cap:anexo_e2e}
+
+Este anexo consolida los casos de prueba de extremo a extremo ejecutados sobre los dominios
+funcionales de EthosHub, conforme al control de calidad del Sprint~4 (Capítulo~\ref{cap:sprint4}).
+Cada caso indica el paso, la acción y el resultado esperado, con su estado final de ejecución.\par
+
+\section{Autenticación e Identidad}
+\label{sec:anexo_e2e_auth}
+\begin{TablaCasoPrueba}
+    1 & Registro con email ya existente & Rechazo 409 (conflicto) sin crear cuenta & \estadoPass \\ \hline
+    2 & Registro con password $<$ 8 caracteres & Rechazo 400 con mensaje de validación & \estadoPass \\ \hline
+    3 & Login con credenciales válidas & Token emitido y cookie \comando{HttpOnly} & \estadoPass \\ \hline
+    4 & Login con contraseña incorrecta & Rechazo 401, sin emisión de token & \estadoPass \\ \hline
+    5 & Acceso a recurso con token expirado & Rechazo 401 (no autorizado) & \estadoPass \\ \hline
+    6 & Logout y reuso del token & Rechazo por \textit{blacklist} & \estadoPass \\ \hline
+    7 & Callback OAuth con cuenta nueva & Perfil sincronizado y redirección por rol & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\section{Operaciones Sensibles con OTP}
+\label{sec:anexo_e2e_otp}
+\begin{TablaCasoPrueba}
+    1 & Solicitar cambio de email & OTP enviado por SMTP al correo & \estadoPass \\ \hline
+    2 & Verificar OTP correcto dentro de 15 min & Operación ejecutada; código invalidado & \estadoPass \\ \hline
+    3 & Verificar OTP expirado ($>$15 min) & Rechazo; operación no ejecutada & \estadoPass \\ \hline
+    4 & Reuso de OTP ya consumido & Rechazo (\comando{used = true}) & \estadoPass \\ \hline
+    5 & Eliminación de cuenta confirmada & \comando{delete\_profile\_cascade}; email anonimizado & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\section{Perfil, Trayectoria y Habilidades}
+\label{sec:anexo_e2e_perfil}
+\begin{TablaCasoPrueba}
+    1 & Crear hard skill sin \comando{tagId} & Rechazo 400 (\comando{@NotBlank}) & \estadoPass \\ \hline
+    2 & Crear soft skill con título $>$100 car. & Rechazo 400 (\comando{@Size}) & \estadoPass \\ \hline
+    3 & Soft-delete de skill y relistado & La skill no aparece en el listado activo & \estadoPass \\ \hline
+    4 & Re-crear skill previamente eliminada & Permitido (índice único parcial) & \estadoPass \\ \hline
+    5 & Crear experiencia con dirección geocodificada & Latitud/longitud persistidas & \estadoPass \\ \hline
+    6 & Editar bio del perfil & Cambio persistido y reflejado en portafolio & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\section{Proyectos y Evidencias}
+\label{sec:anexo_e2e_proyectos}
+\begin{TablaCasoPrueba}
+    1 & Crear proyecto con título vacío & Rechazo 400 (\comando{@NotBlank}) & \estadoPass \\ \hline
+    2 & Subir evidencia con extensión falsificada & Rechazo por \textit{magic number} & \estadoPass \\ \hline
+    3 & Subir PDF válido como evidencia & Persistida y asociada al proyecto & \estadoPass \\ \hline
+    4 & Descargar evidencia & \comando{Content-Disposition: attachment} forzado & \estadoPass \\ \hline
+    5 & Nombre con secuencia \comando{../} & Sanitizado (anti \textit{path traversal}) & \estadoPass \\ \hline
+    6 & Eliminar proyecto con evidencias & Borrado en cascada; \textit{worker} purga huérfanos & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\section{Chat en Tiempo Real}
+\label{sec:anexo_e2e_chat}
+\begin{TablaCasoPrueba}
+    1 & Enviar mensaje & Entregado en vivo al destinatario (Realtime) & \estadoPass \\ \hline
+    2 & Doble clic en "Enviar" (mismo \comando{client\_message\_id}) & Un solo mensaje (idempotencia) & \estadoPass \\ \hline
+    3 & Reconexión tras caída de canal & Re-suscripción sin duplicar mensajes & \estadoPass \\ \hline
+    4 & Borrado lógico de mensaje & Mensaje ocultado en ambos extremos & \estadoPass \\ \hline
+    5 & Indicador de presencia & Estado en línea/desconectado correcto & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\section{Reclutador: Pipeline e Insights}
+\label{sec:anexo_e2e_reclutador}
+\begin{TablaCasoPrueba}
+    1 & Mover candidato entre etapas (Kanban) & \comando{stage}/\comando{stage\_order} persistidos & \estadoPass \\ \hline
+    2 & Acceder a notas de otro reclutador & Denegado (\comando{auth.uid()} en RPC) & \estadoPass \\ \hline
+    3 & Crear nota $>$4000 caracteres & Rechazo (\textit{check constraint}) & \estadoPass \\ \hline
+    4 & Generar insight IA (Gemini) & Resumen accionable devuelto & \estadoPass \\ \hline
+    5 & Saturación de IA (HTTP 429) & \comando{AiServiceException} mapea 429 & \estadoPass \\ \hline
+    6 & Consultar funnel/radar/leaderboard & Métricas coherentes con los datos & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\section{Visibilidad, Portafolio y Administración}
+\label{sec:anexo_e2e_visibilidad}
+\begin{TablaCasoPrueba}
+    1 & Portafolio privado sin contraseña & Acceso general bloqueado & \estadoPass \\ \hline
+    2 & Portafolio con contraseña correcta & Acceso concedido a la vista pública & \estadoPass \\ \hline
+    3 & SEO: título $>$60 / descripción $>$160 & Truncado/validado según límites & \estadoPass \\ \hline
+    4 & Compilar curriculum a PDF & PDF generado y URL persistida & \estadoPass \\ \hline
+    5 & Admin: moderar perfil (soft-delete) & Perfil ocultado; restaurable & \estadoPass \\ \hline
+    6 & Admin: métricas de overview & KPIs agregados correctos & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\clearpage

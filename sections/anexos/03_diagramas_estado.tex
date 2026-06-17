@@ -1,0 +1,114 @@
+% =============================================================================
+% ANEXO I — Diagramas de Estado (máquinas de estado del dominio)
+% =============================================================================
+\chapter{Anexo I — Diagramas de Estado}
+\label{cap:anexo_estados}
+
+Este anexo modela el ciclo de vida de las entidades con estados explícitos definidos en el
+esquema real (\textit{check constraints} y enumeraciones), conforme a las migraciones del
+repositorio.\par
+
+\section{Ciclo de Vida del Pipeline de Reclutamiento}
+\label{sec:anexo_estado_pipeline}
+La columna \comando{stage} de \comando{core.profile\_likes} admite los valores
+\comando{saved}, \comando{review}, \comando{interview}, \comando{offer} y \comando{hired}
+(\textit{check constraint}, V6). La Figura~\ref{fig:est_pipeline} modela las transiciones.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex, node distance=1.9cm,
+        st/.style={draw=colorPrimario, fill=headerTabla, rounded corners=6pt,
+            minimum width=1.7cm, minimum height=0.7cm, align=center},
+        ini/.style={circle, fill=colorPrimario, minimum size=3mm, inner sep=0},
+        tr/.style={-{Latex[length=1.6mm]}, colorPrimario}]
+        \node[ini] (i) {};
+        \node[st, right=1.0cm of i] (s) {saved};
+        \node[st, right=of s] (r) {review};
+        \node[st, right=of r] (e) {interview};
+        \node[st, right=of e] (o) {offer};
+        \node[st, right=of o] (h) {hired};
+        \draw[tr] (i) -- (s);
+        \draw[tr] (s) -- (r); \draw[tr] (r) -- (e); \draw[tr] (e) -- (o); \draw[tr] (o) -- (h);
+        \draw[tr] (r.south) to[bend left=30] node[below,font=\tiny]{descarta} (s.south);
+        \draw[tr] (e.north) to[bend right=30] node[above,font=\tiny]{retrocede} (r.north);
+    \end{tikzpicture}
+    \caption{Máquina de estados del \comando{stage} de un candidato en el pipeline.}
+    \label{fig:est_pipeline}
+\end{figure}
+
+\section{Salud de una Conexión Externa}
+\label{sec:anexo_estado_conexion}
+La columna \comando{api\_health} de \comando{core.profile\_connections} toma los valores
+\comando{healthy}, \comando{degraded} y \comando{down}, y \comando{status} alterna entre
+\comando{connected}, \comando{disconnected} y \comando{pending}. La Figura~\ref{fig:est_conn}
+modela la salud de la conexión.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex, node distance=2.4cm,
+        st/.style={draw=colorPrimario, fill=headerTabla, rounded corners=6pt,
+            minimum width=1.8cm, minimum height=0.7cm, align=center},
+        tr/.style={-{Latex[length=1.6mm]}, colorPrimario}]
+        \node[st] (hh) {healthy};
+        \node[st, right=of hh] (dg) {degraded};
+        \node[st, right=of dg] (dn) {down};
+        \draw[tr] (hh.north) to[bend left=20] node[above,font=\tiny]{latencia/errores} (dg.north);
+        \draw[tr] (dg.south) to[bend left=20] node[below,font=\tiny]{recupera} (hh.south);
+        \draw[tr] (dg.north) to[bend left=20] node[above,font=\tiny]{falla sync} (dn.north);
+        \draw[tr] (dn.south) to[bend left=20] node[below,font=\tiny]{reconecta} (dg.south);
+    \end{tikzpicture}
+    \caption{Máquina de estados de \comando{api\_health} de una conexión externa.}
+    \label{fig:est_conn}
+\end{figure}
+
+\section{Ciclo de Vida de un Código OTP}
+\label{sec:anexo_estado_otp}
+Los registros de \comando{core.profile\_security\_codes} nacen activos, expiran a los 15 minutos
+o se consumen (\comando{used = true}). La Figura~\ref{fig:est_otp} lo modela.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex, node distance=2.6cm,
+        st/.style={draw=colorPrimario, fill=headerTabla, rounded corners=6pt,
+            minimum width=1.9cm, minimum height=0.7cm, align=center},
+        fin/.style={draw=grisISO, fill=grisTecnico, rounded corners=6pt,
+            minimum width=1.9cm, minimum height=0.7cm, align=center},
+        ini/.style={circle, fill=colorPrimario, minimum size=3mm, inner sep=0},
+        tr/.style={-{Latex[length=1.6mm]}, colorPrimario}]
+        \node[ini] (i) {};
+        \node[st, right=1.0cm of i] (a) {emitido};
+        \node[fin, above right=0.6cm and 2.2cm of a] (u) {consumido};
+        \node[fin, below right=0.6cm and 2.2cm of a] (x) {expirado};
+        \draw[tr] (i) -- (a);
+        \draw[tr] (a) -- node[above,font=\tiny,sloped]{verifica OK} (u);
+        \draw[tr] (a) -- node[below,font=\tiny,sloped]{15 min} (x);
+    \end{tikzpicture}
+    \caption{Ciclo de vida de un código OTP de seguridad.}
+    \label{fig:est_otp}
+\end{figure}
+
+\section{Ciclo de Vida de la Cuenta y el Portafolio}
+\label{sec:anexo_estado_cuenta}
+Una cuenta transita de \comando{activa} a \comando{baja lógica} (\comando{deleted\_at}); el
+portafolio alterna entre \comando{borrador}, \comando{publicado} y \comando{protegido} según
+\comando{is\_published} y la contraseña. La Figura~\ref{fig:est_portfolio} modela el portafolio.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex, node distance=2.6cm,
+        st/.style={draw=colorPrimario, fill=headerTabla, rounded corners=6pt,
+            minimum width=1.9cm, minimum height=0.7cm, align=center},
+        tr/.style={-{Latex[length=1.6mm]}, colorPrimario}]
+        \node[st] (b) {borrador};
+        \node[st, right=of b] (p) {publicado};
+        \node[st, right=of p] (pr) {protegido};
+        \draw[tr] (b) -- node[above,font=\tiny]{publica} (p);
+        \draw[tr] (p.south) to[bend left=25] node[below,font=\tiny]{despublica} (b.south);
+        \draw[tr] (p) -- node[above,font=\tiny]{+contraseña} (pr);
+        \draw[tr] (pr.south) to[bend left=25] node[below,font=\tiny]{quita clave} (p.south);
+    \end{tikzpicture}
+    \caption{Máquina de estados de la visibilidad del portafolio.}
+    \label{fig:est_portfolio}
+\end{figure}
+
+\clearpage

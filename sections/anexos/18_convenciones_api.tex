@@ -1,0 +1,35 @@
+% =============================================================================
+% ANEXO BB — Convenciones de la API
+% =============================================================================
+\chapter{Anexo BB — Convenciones de la API}
+\label{cap:anexo_conv_api}
+
+Convenciones transversales que rigen el diseño y el consumo de la API REST de \comando{ethoshubB}.\par
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Convención}} & \textcolor{white}{\textbf{Detalle}} \\ \hline
+Envoltorio uniforme & Todas las respuestas usan \comando{ApiResponse<T>}. \\ \hline
+\rowcolor{grisTecnico}
+Versionado de rutas & Prefijos \comando{/api/v1/...}; identidad en \comando{/api/auth}. \\ \hline
+Fechas en UTC & Jackson serializa \comando{timestamptz} en UTC. \\ \hline
+\rowcolor{grisTecnico}
+Inclusión de nulos & \comando{default-property-inclusion: NON\_NULL}. \\ \hline
+Validación & Jakarta Bean Validation; errores en \comando{errors}. \\ \hline
+\rowcolor{grisTecnico}
+Idempotencia & \comando{client\_message\_id} en mensajes de chat. \\ \hline
+Autorización & JWT por cookie \comando{HttpOnly}; RBAC por rol/dominio. \\ \hline
+\rowcolor{grisTecnico}
+Documentación & OpenAPI viva en \comando{/swagger-ui.html}. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+La convivencia de prefijos (\comando{/api}, \comando{/api/v1}, \comando{/api/auth}) responde a la
+evolución histórica del proyecto; el \textit{proxy} de Vite reenvía \comando{/api}, \comando{/auth}
+y \comando{/v1} al backend en desarrollo, de modo transparente para el cliente.
+\end{NotaTecnica}
+
+\clearpage

@@ -1,0 +1,80 @@
+\section{Frontend: Interactividad Avanzada y Experiencia del Perfil}
+\label{sec:s2_frontend}
+
+El frontend incorpora las vistas de gestión de la trayectoria y la matriz de habilidades,
+soportadas por el \textit{store} \comando{skillsStore} y los servicios de dominio
+(\comando{experienceService}, \comando{educationService}). La Figura~\ref{fig:s2_ui} muestra la
+vista de gestión del perfil.\par
+
+\begin{figure}[!ht]
+    \centering
+    \fbox{\begin{minipage}[c][4.2cm][c]{0.62\textwidth}
+        \centering
+        \sffamily\color{grisISO}\footnotesize
+        [\,Captura de pantalla pendiente\,]\par
+        \vspace{0.3cm}
+        Panel de habilidades y trayectoria del profesional\par
+        \vspace{0.2cm}
+        \tiny(reemplazar por \texttt{assets/img/screenshots/skills.png})
+    \end{minipage}}
+    \caption{Vista de gestión de habilidades y experiencia del perfil.}
+    \label{fig:s2_ui}
+\end{figure}
+
+\subsection{Vistas Dinámicas, Tablas Operativas y Paneles de Detalle}
+\label{ssec:s2_fe_vistas}
+Se desarrollaron listas y tablas de datos para experiencia, formación y skills, con paneles de
+detalle y formularios de edición en contexto. Los servicios encapsulan las llamadas a la API y
+el \textit{store} mantiene el estado sincronizado.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Listas dinámicas:} renderizado eficiente con estados de carga y vacío.
+    \item \textbf{Paneles de detalle:} edición en contexto sin abandonar la vista.
+    \item \textbf{Optimismo de UI:} actualización inmediata del \textit{store} tras la mutación.
+    \item \textbf{Soft-delete visible:} las skills dadas de baja se ocultan y pueden restaurarse.
+\end{itemize}
+
+\subsection{Animaciones, Microinteracciones e Iconografía Reactiva}
+\label{ssec:s2_fe_animaciones}
+Se incorporaron transiciones fluidas con Framer Motion, microinteracciones visuales e
+iconografía reactiva (lucide-react) en el manejo de estados de carga, éxito y error. Las
+notificaciones se presentan con \textit{toasts} (Sonner), reforzando la retroalimentación.
+
+\begin{NotaTecnica}
+El criterio de diseño es que ninguna animación introduzca latencia perceptible: las transiciones
+se mantienen por debajo del umbral de 200\,ms y respetan la preferencia de movimiento reducido
+(\comando{prefers-reduced-motion}).
+\end{NotaTecnica}
+
+\subsection{Stores y Servicios de Contenido}
+\label{ssec:s2_fe_stores}
+La gestión de la trayectoria y las habilidades se apoya en los elementos de la
+tabla~\ref{tab:s2_fe_stores}, que sincronizan el estado con la API REST.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Elemento}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+        \comando{skillsStore} & Estado de hard/soft skills (con baja lógica). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{experienceService} & CRUD de \comando{/api/v1/work-experiences}. \\ \hline
+        \comando{educationService} & CRUD de \comando{/api/v1/academic-records}. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{companyProfileService} & Datos del perfil profesional/empresa. \\ \hline
+        lucide-react & Iconografía reactiva de estados. \\ \hline
+        \rowcolor{grisTecnico}
+        Framer Motion & Animaciones y microinteracciones. \\ \hline
+    \end{tabularx}
+    \caption{Stores y servicios de la gestión de contenido (Sprint 2).}
+    \label{tab:s2_fe_stores}
+\end{table}
+
+El patrón de \textbf{actualización optimista} aplica la mutación en el \textit{store} antes de
+confirmar la respuesta del servidor, revirtiéndola si la API devuelve error; esto mantiene la
+interfaz fluida sin sacrificar la consistencia eventual con la base de datos.
+
+\clearpage

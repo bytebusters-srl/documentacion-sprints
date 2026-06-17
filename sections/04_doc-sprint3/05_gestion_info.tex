@@ -1,0 +1,87 @@
+\section{Gestión de la Información (Cumplimiento ISO 26515)}
+\label{sec:s3_gestion}
+
+Las funcionalidades concurrentes exigen documentación operativa específica: manuales de monitoreo
+(Sección~\ref{ssec:s3_gi_monitoreo}) y guías de resolución de conflictos
+(Sección~\ref{ssec:s3_gi_troubleshooting}).\par
+
+\subsection{Manuales de Monitoreo de Servicios en Tiempo Real}
+\label{ssec:s3_gi_monitoreo}
+Se generaron manuales operativos para el monitoreo de los servicios web en tiempo real (estado de
+los canales Realtime, salud de la conexión y latencia), apoyados en Spring Boot Actuator y en el
+\comando{HealthController}. La tabla~\ref{tab:s3_monitoreo} resume las señales monitorizadas.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Señal}} & \textcolor{white}{\textbf{Fuente / criterio}} \\ \hline
+        Salud del servicio & \comando{/actuator/health} (UP/DOWN). \\ \hline
+        \rowcolor{grisTecnico}
+        Estado de canales & Suscripciones Realtime activas vs. esperadas. \\ \hline
+        Latencia de IA & Tiempos de respuesta de Gemini y tasa de 429/5xx. \\ \hline
+        \rowcolor{grisTecnico}
+        Archivos huérfanos & Conteo purgado por el \textit{worker} asíncrono. \\ \hline
+    \end{tabularx}
+    \caption{Señales de monitoreo de los servicios en tiempo real (Sprint 3).}
+    \label{tab:s3_monitoreo}
+\end{table}
+
+\subsection{Guías de Troubleshooting de Concurrencia}
+\label{ssec:s3_gi_troubleshooting}
+Se redactaron guías específicas para la resolución de conflictos derivados de la concurrencia,
+recogidas en la tabla~\ref{tab:s3_troubleshooting}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Síntoma}} & \textcolor{white}{\textbf{Mitigación}} \\ \hline
+        Mensaje duplicado tras reconexión & Idempotencia por clave de deduplicación (V7). \\ \hline
+        \rowcolor{grisTecnico}
+        Condición de carrera en el pipeline & Mutaciones vía RPC \comando{SECURITY DEFINER} (V8). \\ \hline
+        Canal Realtime caído & Reintentos de suscripción con \textit{backoff}. \\ \hline
+        \rowcolor{grisTecnico}
+        Saturación de IA (429) & Mapeo \comando{AiServiceException} y reintento diferido. \\ \hline
+    \end{tabularx}
+    \caption{Guía de troubleshooting de concurrencia (Sprint 3).}
+    \label{tab:s3_troubleshooting}
+\end{table}
+
+La tabla Historias~vs.~Documentación cubrió las Épicas de proyectos, conexiones y reclutador.
+
+\begin{TablaHSDoc}
+    EPIC-04 & Vitrina de proyectos & Sí (S3) & Sí (S3) \\ \hline
+    EPIC-05 & Conexiones externas & Sí (S3) & Sí (S3) \\ \hline
+    EPIC-07 & Reclutador e IA & Sí (S3) & Sí (S3) \\ \hline
+\end{TablaHSDoc}
+
+\subsection{Productos de Información del Incremento (ISO 15289)}
+\label{ssec:s3_gi_productos}
+La tabla~\ref{tab:s3_productos} relaciona los productos de información de las funcionalidades
+avanzadas con su artefacto de origen.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Producto de información}} & \textcolor{white}{\textbf{Artefacto de origen}} \\ \hline
+        Manual de monitoreo Realtime & Actuator + \comando{HealthController} + canales. \\ \hline
+        \rowcolor{grisTecnico}
+        Guía de troubleshooting de concurrencia & RPCs V7/V8 e idempotencia. \\ \hline
+        Documentación de RPCs del reclutador & Funciones \comando{SECURITY DEFINER} (V6/V11). \\ \hline
+    \end{tabularx}
+    \caption{Productos de información del Sprint 3 y su trazabilidad.}
+    \label{tab:s3_productos}
+\end{table}
+
+\clearpage

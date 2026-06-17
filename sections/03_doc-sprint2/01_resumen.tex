@@ -1,0 +1,88 @@
+% =============================================================================
+% CAPÍTULO 3 — SPRINT 2: Lógica de Negocio y Entidades Transaccionales
+% =============================================================================
+\chapter{Sprint 2 — Lógica de Negocio y Entidades Transaccionales}
+\label{cap:sprint2}
+
+El Sprint 2 expande el dominio de EthosHub más allá de la identidad: se implementan las
+entidades de contenido del portafolio (proyectos, experiencia, formación y \textit{skills}) con
+sus operaciones CRUD, reglas de negocio y pruebas unitarias.\par
+
+\textbf{Periodo de ejecución:} del lunes 13 al sábado 25 de abril de 2026 (2 semanas).
+\textbf{Módulo entregado (Plan General):} \textit{Habilidades y Validaciones de la Comunidad}.\par
+
+\section{Evaluación del Sprint Anterior y Ajustes en el Product Backlog}
+\label{sec:s2_resumen}
+
+Cerrado el incremento de seguridad (Sección~\ref{sec:s1_resumen}), la retrospectiva confirmó la
+estabilidad de la autenticación y habilitó el desarrollo del contenido. Se repriorizaron las
+Épicas EPIC-02, EPIC-03 y EPIC-04, y se ajustaron estimaciones según la velocidad observada.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.35}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Capa}} & \textcolor{white}{\textbf{Funcionalidad entregada}} \\ \hline
+        Base de datos & Tablas transaccionales (V1--V5, V9/V10), constraints y vistas. \\ \hline
+        \rowcolor{grisTecnico}
+        Backend & CRUD de proyectos, experiencia, formación y skills; pruebas unitarias. \\ \hline
+        Frontend & Vistas dinámicas, tablas, paneles de detalle y microinteracciones. \\ \hline
+        \rowcolor{grisTecnico}
+        ISO 26515 & Glosario técnico y documentación continua de endpoints. \\ \hline
+    \end{tabularx}
+    \caption{Alcance del Sprint 2 por capa.}
+    \label{tab:s2_alcance}
+\end{table}
+
+\subsection{Objetivos del Incremento}
+\label{ssec:s2_objetivos}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Matriz de habilidades:} catálogo de \textit{hard} y \textit{soft skills} con
+    baja lógica reversible.
+    \item \textbf{Trayectoria:} experiencia laboral (con geolocalización) y formación académica.
+    \item \textbf{Reglas de dominio:} validación de DTO y restricciones de integridad referencial.
+    \item \textbf{Cobertura de pruebas:} pruebas unitarias y de integración de los flujos críticos.
+\end{enumerate}
+
+\subsection{Historias de Usuario Abordadas}
+\label{ssec:s2_backlog}
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.35}
+\begin{TablaBacklog}
+    IDEN-003 & Experiencia laboral (geo) & Alt & 5 & 2 & Registros con campos geográficos. \\ \hline
+    IDEN-004 & Formación académica & Alt & 5 & 2 & Registros académicos persistidos. \\ \hline
+    MHVS-001 & Registro de hard skills & Med & 5 & 2 & Agrega nivel al catálogo. \\ \hline
+    MHVS-002 & Registro de soft skills & Med & 5 & 2 & Guarda habilidad con descripción. \\ \hline
+    MHVS-003 & Soft-delete de skills & Baj & 5 & 2 & Borrado lógico reversible. \\ \hline
+    IDEN-005 & Ajustes de perfil & Med & 3 & 2 & Modificación validada y persistida. \\ \hline
+\end{TablaBacklog}
+\endgroup
+
+\subsection{Ceremonias del Sprint}
+\label{ssec:s2_ceremonias}
+La tabla~\ref{tab:s2_ceremonias} resume las ceremonias Scrum del incremento (13--25 abr 2026).
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Ceremonia}} & \textcolor{white}{\textbf{Resultado}} \\ \hline
+        Planning & Selección de Historias IDEN/MHVS y estimación. \\ \hline
+        \rowcolor{grisTecnico}
+        Daily & Sincronización diaria y eliminación de bloqueos. \\ \hline
+        Review & Demostración del CRUD de contenido al Product Owner. \\ \hline
+        \rowcolor{grisTecnico}
+        Retrospective & Mejora del flujo de pruebas y del glosario. \\ \hline
+    \end{tabularx}
+    \caption{Ceremonias Scrum del Sprint 2.}
+    \label{tab:s2_ceremonias}
+\end{table}
+
+\clearpage

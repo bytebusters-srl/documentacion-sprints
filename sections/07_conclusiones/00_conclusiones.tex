@@ -1,0 +1,89 @@
+% =============================================================================
+% CAPÍTULO 7 — Conclusiones Generales y Lecciones Aprendidas
+% =============================================================================
+\chapter{Conclusiones Generales y Lecciones Aprendidas}
+\label{cap:conclusiones}
+
+Este capítulo cierra la memoria consolidando los logros del desarrollo de \textbf{EthosHub} a lo
+largo de los seis incrementos (Sprint~0 a Sprint~5), las lecciones aprendidas y las líneas de
+trabajo futuro, conforme al cierre de versión documentado en el Capítulo~\ref{cap:sprint5}.\par
+
+\section{Logros del Producto}
+\label{sec:concl_logros}
+El proyecto entregó una plataforma funcional de portafolios profesionales y descubrimiento de
+talento, con un despliegue monolítico verificable. Los logros más relevantes son:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Seguridad delegada y robusta:} identidad en Supabase Auth, validación de JWT
+    como \textit{Resource Server}, OTP para operaciones sensibles y mitigaciones OWASP
+    (Capítulos~\ref{cap:sprint1} y~\ref{cap:sprint4}).
+    \item \textbf{Dominio completo:} perfil, trayectoria, habilidades, proyectos con evidencias y
+    conexiones externas, todo aislado por RLS (Capítulos~\ref{cap:sprint2} y~\ref{cap:sprint3}).
+    \item \textbf{Funcionalidades en tiempo real:} chat con presencia e idempotencia, pipeline
+    Kanban e \textit{insights} de IA (Capítulo~\ref{cap:sprint3}).
+    \item \textbf{Calidad y despliegue:} pruebas E2E, accesibilidad y empaquetado monolítico
+    productivo (Capítulos~\ref{cap:sprint4} y~\ref{cap:sprint5}).
+\end{itemize}
+
+\section{Lecciones Aprendidas}
+\label{sec:concl_lecciones}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Seguridad por diseño:} canalizar las escrituras sensibles por RPCs
+    \comando{SECURITY DEFINER} con \comando{auth.uid()} evitó fugas de datos entre usuarios.
+    \item \textbf{Idempotencia temprana:} introducir \comando{client\_message\_id} desde el
+    diseño del chat eliminó los duplicados bajo reconexión.
+    \item \textbf{Documentation as Code:} versionar la documentación junto al código mantuvo la
+    información sincronizada con el producto, cumpliendo ISO 26515.
+    \item \textbf{Deuda técnica acotada:} planificar su reducción en el Sprint de QA evitó que se
+    acumulara hasta el lanzamiento.
+\end{enumerate}
+
+\section{Trabajo Futuro}
+\label{sec:concl_futuro}
+\begin{itemize}[noitemsep]
+    \item Ampliar las integraciones con \textit{providers} externos (importación automática).
+    \item Profundizar los \textit{insights} de IA con más modos de análisis.
+    \item Incorporar observabilidad avanzada (trazas distribuidas) y \textit{dashboards} de SLO.
+    \item Externalizar y rotar de forma definitiva todos los secretos del historial de git.
+\end{itemize}
+
+\section{Cumplimiento Normativo}
+\label{sec:concl_iso}
+La memoria evidencia el cumplimiento de \textbf{ISO/IEC/IEEE 26515:2024} (información en entornos
+ágiles) y \textbf{ISO/IEC/IEEE 15289:2024} (productos de información), según la matriz de
+cumplimiento del Anexo~\ref{cap:anexo_iso}. Cada actividad y producto de información exigido tiene
+una evidencia trazable en este documento o en sus anexos, versionada junto al código fuente.
+
+\section{Indicadores Globales del Proyecto}
+\label{sec:concl_indicadores}
+La tabla~\ref{tab:concl_indicadores} consolida los indicadores del desarrollo completo de
+EthosHub, desde la incepción hasta el cierre de la versión 2.0.0.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|l|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Indicador}} & \textcolor{white}{\textbf{Valor}} \\ \hline
+        Incrementos entregados (Sprint 0--5) & 6 \\ \hline
+        \rowcolor{grisTecnico}
+        Duración del desarrollo (Sprints 1--5) & 10 semanas (30 mar--6 jun 2026) \\ \hline
+        Épicas completadas & 8 \\ \hline
+        \rowcolor{grisTecnico}
+        Migraciones de base de datos & V1--V15 \\ \hline
+        Dominios funcionales del backend & 16 \\ \hline
+        \rowcolor{grisTecnico}
+        Versión final del producto & \comando{ethoshub:2.0.0} \\ \hline
+        Estándares cumplidos & ISO/IEC/IEEE 26515 y 15289 \\ \hline
+    \end{tabularx}
+    \caption{Indicadores globales del proyecto EthosHub.}
+    \label{tab:concl_indicadores}
+\end{table}
+
+Con el cierre del Sprint~5, EthosHub alcanza un producto desplegable, documentado y trazable, que
+satisface los compromisos de entrega del Plan General y los criterios de aceptación fijados en la
+incepción (Sección~\ref{ssec:s0_dod}).
+
+\clearpage

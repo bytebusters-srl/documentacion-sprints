@@ -1,0 +1,85 @@
+\section{Gestión de la Información (Cumplimiento ISO 26515)}
+\label{sec:s1_gestion}
+
+El incremento de seguridad se acompaña de su documentación técnica, generada en paralelo al
+código conforme a ISO/IEC/IEEE 26515. Se publica el primer borrador de la especificación de la
+API (Sección~\ref{ssec:s1_gi_openapi}) y el diagrama de componentes del módulo de seguridad
+(Sección~\ref{ssec:s1_gi_diagrama}).\par
+
+\subsection{Primer Borrador Formal de la Especificación de la API}
+\label{ssec:s1_gi_openapi}
+Se publicó el primer borrador de la especificación OpenAPI mediante \comando{springdoc-openapi},
+accesible en \comando{/swagger-ui.html} y \comando{/v3/api-docs}. La especificación documenta los
+endpoints de \comando{auth} y \comando{security}, sus DTO validados (Jakarta Bean Validation) y
+los códigos de respuesta envueltos en \comando{ApiResponse}.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Contrato vivo:} la spec se regenera en cada \textit{build}, evitando desfase
+    con el código.
+    \item \textbf{Ejemplos de petición/respuesta:} documentados por endpoint para facilitar el
+    consumo desde el frontend.
+    \item \textbf{Códigos normalizados:} 400 (validación), 401 (no autenticado), 403 (rol
+    insuficiente) y 200/201 en éxito.
+\end{itemize}
+
+\subsection{Diagrama de Componentes del Módulo de Seguridad}
+\label{ssec:s1_gi_diagrama}
+Se elaboró un diagrama de componentes centrado en el flujo de seguridad (Figura~\ref{fig:s1_componentes}):
+el cliente atraviesa la cadena de filtros hasta el \textit{Resource Server}, que valida el JWT
+contra el JWKS de Supabase antes de alcanzar los controladores de dominio.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.7cm and 1.0cm,
+        comp/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.6cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        ext/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=2.4cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[comp] (cli) {Cliente (SPA)};
+        \node[comp, right=of cli] (chain) {Cadena de filtros};
+        \node[comp, right=of chain] (rs) {Resource Server};
+        \node[ext, below=of rs] (jwks) {JWKS Supabase};
+        \node[comp, left=of jwks] (ctrl) {Controladores\\auth / security};
+
+        \draw[rel] (cli) -- (chain);
+        \draw[rel] (chain) -- (rs);
+        \draw[rel] (rs) -- node[right]{valida} (jwks);
+        \draw[rel] (rs) -- node[above]{ok} (ctrl);
+    \end{tikzpicture}
+    \caption{Diagrama de componentes del módulo de seguridad (Sprint 1).}
+    \label{fig:s1_componentes}
+\end{figure}
+
+La tabla Historias~vs.~Documentación se actualizó marcando la EPIC-01 como documentada, cerrando
+el ciclo de \textit{Continuous Documentation} del sprint.
+
+\begin{TablaHSDoc}
+    EPIC-01 & Autenticación y cuentas & Sí (S1) & Sí (S1) \\ \hline
+\end{TablaHSDoc}
+
+\subsection{Productos de Información del Incremento (ISO 15289)}
+\label{ssec:s1_gi_productos}
+La tabla~\ref{tab:s1_productos} relaciona cada producto de información generado con su artefacto
+de origen en el código, conforme a ISO/IEC/IEEE 15289.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Producto de información}} & \textcolor{white}{\textbf{Artefacto de origen}} \\ \hline
+        Especificación OpenAPI (auth/security) & \comando{springdoc-openapi} + controladores. \\ \hline
+        \rowcolor{grisTecnico}
+        Diagrama de componentes de seguridad & Cadena de filtros de \comando{config/}. \\ \hline
+        Guía del flujo OTP & \comando{SecurityController} + \comando{profile\_security\_codes}. \\ \hline
+    \end{tabularx}
+    \caption{Productos de información del Sprint 1 y su trazabilidad.}
+    \label{tab:s1_productos}
+\end{table}
+
+\clearpage

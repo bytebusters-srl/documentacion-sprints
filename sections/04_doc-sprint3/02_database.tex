@@ -1,0 +1,134 @@
+\section{Base de Datos: Optimización y Almacenamiento Volátil}
+\label{sec:s3_database}
+
+El incremento introduce las entidades de la vitrina de proyectos y las estructuras de soporte de
+las funcionalidades concurrentes (chat, pipeline, conexiones). La Figura~\ref{fig:s3_er} muestra
+el modelo de proyectos y evidencias.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        ent/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.7cm, align=center, minimum height=0.9cm, font=\sffamily\scriptsize},
+        entx/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=2.6cm, align=center, minimum height=0.8cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, grisISO, font=\sffamily\tiny}
+    ]
+        \node[ent] (prof) {core.profiles\_basic};
+        \node[entx, right=1.8cm of prof] (proj) {projects};
+        \node[entx, right=1.8cm of proj] (ev) {project\_evidences\\\tiny(PDF)};
+        \node[entx, below=0.8cm of proj] (conn) {profile\_connections\\\tiny(URL-first, V14)};
+        \node[entx, below=0.8cm of prof] (msg) {chat\_messages\\\tiny(idempotencia, V7)};
+
+        \draw[rel] (prof) -- node[above]{1:N} (proj);
+        \draw[rel] (proj) -- node[above]{1:N} (ev);
+        \draw[rel] (prof) -- node[right]{1:N} (conn);
+        \draw[rel] (prof) -- node[left]{1:N} (msg);
+    \end{tikzpicture}
+    \caption{Modelo de proyectos, evidencias, conexiones y mensajería (Sprint 3).}
+    \label{fig:s3_er}
+\end{figure}
+
+\subsection{Índices Estratégicos para Consultas Pesadas}
+\label{ssec:s3_db_indices}
+Se crearon índices sobre las columnas de filtrado y ordenación más frecuentes (búsqueda de
+talento, listados de mensajes por conversación y proyectos por perfil) para optimizar el
+rendimiento ante consultas pesadas, reduciendo los escaneos secuenciales en las vistas del
+reclutador.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Mensajería:} índice por \comando{(conversation\_id, created\_at)} para paginación.
+    \item \textbf{Talento:} índices de apoyo a los filtros del descubrimiento.
+    \item \textbf{Proyectos:} índice por \comando{profile\_id} para el listado del portafolio.
+\end{itemize}
+
+La tabla~\ref{tab:s3_indices} detalla los índices más relevantes creados en el incremento.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Índice}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        \comando{uq\_chat\_messages\_client\_id} & Único parcial; idempotencia por \comando{client\_message\_id}. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{idx\_profile\_likes\_company\_stage} & Acelera el pipeline por empresa y etapa. \\ \hline
+        \comando{idx\_profile\_connections\_profile\_id} & Listado de conexiones por perfil. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{uq\_profile\_connections\_known\_provider} & Único por \textit{provider} conocido. \\ \hline
+        \comando{idx\_rcn\_company\_basic} & Notas por reclutador y candidato. \\ \hline
+    \end{tabularx}
+    \caption{Índices estratégicos del Sprint 3.}
+    \label{tab:s3_indices}
+\end{table}
+
+\subsection{Almacenamiento Temporal de Sesiones y Eventos Concurrentes}
+\label{ssec:s3_db_volatil}
+El módulo de Talent Discovery introduce estructuras para el manejo de eventos concurrentes,
+materializadas en las migraciones de la tabla~\ref{tab:s3_migraciones}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Migración}} & \textcolor{white}{\textbf{Contenido}} \\ \hline
+        \comando{V6} & Fases de Talent Discovery (Kanban, notas, dashboard). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V7} & Idempotencia de mensajes / RPCs de notas seguras. \\ \hline
+        \comando{V8} & RPCs seguros de pipeline. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V3} & Creación de conexiones de perfil. \\ \hline
+        \comando{V14} & Conexiones URL-first (+15 providers + custom). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V5} & Curriculum PDF del portafolio. \\ \hline
+    \end{tabularx}
+    \caption{Migraciones de funcionalidades avanzadas (Sprint 3).}
+    \label{tab:s3_migraciones}
+\end{table}
+
+\begin{NotaTecnica}
+La \textbf{idempotencia} de mensajes (V7) emplea una clave de deduplicación por mensaje: si el
+cliente reintenta el envío (p. ej. por reconexión), el RPC reconoce la clave y no inserta un
+duplicado, preservando la consistencia del hilo de conversación bajo concurrencia.
+\end{NotaTecnica}
+
+\subsection{Detalle de Columnas: Conexiones y Pipeline}
+\label{ssec:s3_db_columnas}
+La tabla~\ref{tab:s3_cols} detalla las columnas de \comando{profile\_connections} (V14) y
+\comando{profile\_likes} (V6/V8), núcleo de la interconexión externa y del pipeline de reclutamiento.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \fontsize{8.8}{10.5}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Tabla.columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        \comando{profile\_connections.provider} & \comando{text} & \textit{Provider} (\textit{check}: github, linkedin, \dots, custom). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{profile\_connections.provider\_kind} & \comando{text} & \comando{auth} / \comando{manual} / \comando{custom}. \\ \hline
+        \comando{profile\_connections.provider\_url} & \comando{text} & URL del enlace (\textit{URL-first}). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{profile\_connections.api\_health} & \comando{text} & \comando{healthy}/\comando{degraded}/\comando{down}. \\ \hline
+        \comando{profile\_connections.provider\_metadata} & \comando{jsonb} & Metadatos flexibles del proveedor. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{profile\_likes.stage} & \comando{varchar} & Etapa Kanban (saved$\to$hired). \\ \hline
+        \comando{profile\_likes.stage\_order} & \comando{integer} & Orden dentro de la etapa. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{profile\_likes.company\_profile\_id} & \comando{uuid} FK & $\to$ \comando{profiles\_company.id\_auth}. \\ \hline
+    \end{tabularx}
+    \caption{Detalle de columnas de conexiones y pipeline (Sprint 3).}
+    \label{tab:s3_cols}
+\end{table}
+
+Los \textbf{índices únicos} de \comando{profile\_connections} distinguen entre proveedores
+conocidos (uno por perfil) y enlaces \comando{custom} (únicos por URL), lo que permite múltiples
+enlaces personalizados sin perder la unicidad de los proveedores estándar.
+
+\clearpage

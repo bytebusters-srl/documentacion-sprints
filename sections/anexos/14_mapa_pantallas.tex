@@ -1,0 +1,86 @@
+% =============================================================================
+% ANEXO V — Mapa de Pantallas de la SPA
+% =============================================================================
+\chapter{Anexo V — Mapa de Pantallas de la SPA}
+\label{cap:anexo_pantallas}
+
+Inventario de las páginas de la SPA (\comando{ethoshubF}), organizadas por rol y protegidas por
+los \textit{guards} de enrutamiento (Anexo~\ref{cap:anexo_frontend_inv}).\par
+
+\section{Pantallas por Rol}
+\label{sec:anexo_pantallas_rol}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Grupo (\texttt{pages/})}} & \textcolor{white}{\textbf{Pantallas}} \\ \hline
+\comando{auth/} & Login, registro, recuperación de contraseña, \textit{callback} OAuth. \\ \hline
+\rowcolor{grisTecnico}
+\comando{dashboard/} & Proyectos, experiencia, formación, skills, CV Studio, conexiones, portafolio, chat, preferencias. \\ \hline
+\comando{recruiter/} & Talent Discovery (Kanban), dashboard analítico, leaderboard, chat, \textit{insights}. \\ \hline
+\rowcolor{grisTecnico}
+\comando{admin/} & Métricas, moderación, gestión de perfiles y skills, correos. \\ \hline
+\comando{public/} & Landing, portafolio público (con/sin contraseña), explorar talento, páginas legales. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Protección de Rutas}
+\label{sec:anexo_pantallas_guards}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Grupo}} & \textcolor{white}{\textbf{Protección}} \\ \hline
+\comando{auth/}, \comando{public/} & Acceso libre (sin sesión). \\ \hline
+\rowcolor{grisTecnico}
+\comando{dashboard/} & \comando{ProtectedRoute} + rol PROFESSIONAL. \\ \hline
+\comando{recruiter/} & \comando{ProtectedRoute} + rol RECRUITER. \\ \hline
+\rowcolor{grisTecnico}
+\comando{admin/} & \comando{ProtectedRoute} + rol ADMIN (dominio). \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+El portafolio público (\comando{public/}) admite protección con contraseña por configuración del
+profesional; el \comando{RouteErrorBoundary} captura errores de renderizado sin romper la SPA.
+\end{NotaTecnica}
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo W — Recorridos de Usuario (User Journeys)}
+\label{cap:anexo_journeys}
+
+Recorridos clave de los actores principales, encadenando pantallas y endpoints reales.\par
+
+\section{Profesional: del Registro al Portafolio Público}
+\label{sec:anexo_journey_prof}
+\begin{enumerate}[noitemsep]
+    \item Registro en \comando{/api/auth/register} (rol PROFESSIONAL) y redirección al dashboard.
+    \item Completar el perfil (\comando{/api/v1/profile}) y la trayectoria (experiencia, formación).
+    \item Añadir hard/soft skills y crear proyectos con evidencias (subida Zero Trust).
+    \item Editar el CV en CV Studio y compilarlo a PDF.
+    \item Configurar visibilidad y SEO; publicar el portafolio (opcionalmente con contraseña).
+\end{enumerate}
+
+\section{Reclutador: del Descubrimiento a la Contratación}
+\label{sec:anexo_journey_recruiter}
+\begin{enumerate}[noitemsep]
+    \item Registro (rol RECRUITER) y acceso a Talent Discovery.
+    \item Búsqueda NLP y exploración de talento; \textit{like} a candidatos.
+    \item Organizar candidatos en el pipeline Kanban (\comando{saved}$\to$\comando{hired}).
+    \item Tomar notas privadas y consultar \textit{insights} de IA y dashboards.
+    \item Contactar por chat en tiempo real y avanzar la etapa hasta \comando{hired}.
+\end{enumerate}
+
+\section{Administrador: Moderación y Métricas}
+\label{sec:anexo_journey_admin}
+\begin{enumerate}[noitemsep]
+    \item Acceso al panel (\comando{/api/admin/metrics/overview}).
+    \item Revisión de métricas de crecimiento, roles y \textit{top skills}.
+    \item Moderación de perfiles (soft-delete y restauración).
+    \item Gestión del catálogo de skills y envío de correos.
+\end{enumerate}
+
+\clearpage

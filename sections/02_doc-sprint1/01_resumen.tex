@@ -1,0 +1,113 @@
+% =============================================================================
+% CAPÍTULO 2 — SPRINT 1: Cimientos, Seguridad y Flujos Centrales
+% =============================================================================
+\chapter{Sprint 1 — Cimientos, Seguridad y Flujos Centrales}
+\label{cap:sprint1}
+
+El Sprint 1 entrega el primer incremento de software con valor para el usuario: el sistema de
+\textbf{identidad, acceso y seguridad} (EPIC-01), cimiento sobre el que se construyen todos los
+flujos posteriores. Se materializa la autenticación delegada en Supabase, la validación de JWT
+en el backend como \textit{Resource Server} y los layouts base del frontend.\par
+
+\textbf{Periodo de ejecución:} del lunes 30 de marzo al sábado 11 de abril de 2026 (2 semanas).
+\textbf{Módulo entregado (Plan General):} \textit{Cuentas de Usuario y Perfil Personal}.\par
+
+\section{Resumen del Incremento y Funcionalidades Abordadas}
+\label{sec:s1_resumen}
+
+Durante este incremento (\textit{tag} \comando{release/v1.0.0}) se completaron las Historias
+LOG-001 a LOG-011: registro de profesionales y reclutadores, inicio de sesión, autenticación con
+proveedores externos (OAuth), recuperación de contraseña, cierre de sesión, control de acceso por
+rol, cambio de contraseña/email con OTP y eliminación de cuenta. La tabla~\ref{tab:s1_alcance}
+resume el alcance abordado por capa, que se desarrolla en las
+Secciones~\ref{sec:s1_database}--\ref{sec:s1_gestion}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.35}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Capa}} & \textcolor{white}{\textbf{Funcionalidad entregada}} \\ \hline
+        Base de datos & Esquema de roles y políticas RLS para datos sensibles (Sección~\ref{sec:s1_database}). \\ \hline
+        \rowcolor{grisTecnico}
+        Backend & API de \comando{auth} y \comando{security}; filtros JWT y CORS (Sección~\ref{sec:s1_backend}). \\ \hline
+        Frontend & Navbar, Sidebar responsiva, formularios de auth y de perfil (Sección~\ref{sec:s1_frontend}). \\ \hline
+        \rowcolor{grisTecnico}
+        ISO 26515 & Borrador de la spec OpenAPI y diagrama de componentes de seguridad (Sección~\ref{sec:s1_gestion}). \\ \hline
+    \end{tabularx}
+    \caption{Alcance del Sprint 1 por capa.}
+    \label{tab:s1_alcance}
+\end{table}
+
+\subsection{Objetivos del Incremento}
+\label{ssec:s1_objetivos}
+Los objetivos concretos comprometidos para este sprint fueron:
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{Identidad federada:} integrar Supabase Auth como proveedor de identidad y
+    configurar el backend como \textit{Resource Server} que valida JWT vía JWKS.
+    \item \textbf{Registro diferenciado por rol:} habilitar el alta de cuentas
+    \comando{PROFESSIONAL} y \comando{RECRUITER} con redirección posterior según el rol.
+    \item \textbf{Operaciones sensibles protegidas:} implementar el flujo OTP para cambio de
+    contraseña, cambio de email y eliminación de cuenta.
+    \item \textbf{Blindaje perimetral:} desplegar la cadena de filtros de seguridad (cookie de
+    token, cabeceras, no-cache, CORS) y la política RBAC de administración.
+    \item \textbf{Cimiento de la interfaz:} entregar los layouts base (Navbar y Sidebar
+    responsiva) y los formularios de autenticación y perfil.
+\end{enumerate}
+
+\subsection{Historias de Usuario Abordadas}
+\label{ssec:s1_backlog}
+La tabla siguiente recoge las Historias de la EPIC-01 comprometidas y cerradas en el sprint,
+con su esfuerzo en puntos y criterio de aceptación.
+
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.35}
+\begin{TablaBacklog}
+    LOG-001 & Registro de usuario profesional & Alt & 5 & 1 & Creación exitosa tras validación. \\ \hline
+    LOG-002 & Registro de usuario reclutador & Alt & 5 & 1 & Registro con rol asignado. \\ \hline
+    LOG-003 & Inicio de sesión & Alt & 3 & 1 & Acceso con credenciales válidas. \\ \hline
+    LOG-004 & Autenticación con proveedores ext. & Med & 5 & 1 & Login vía OAuth exitoso. \\ \hline
+    LOG-005 & Recuperación de contraseña & Alt & 8 & 1 & Cambio de clave por enlace seguro. \\ \hline
+    LOG-006 & Cierre de sesión & Alt & 2 & 1 & Invalida token (blacklist) y redirige. \\ \hline
+    LOG-007 & Asignación de roles & Alt & 8 & 1 & Rol según tabla de perfil (basic/company). \\ \hline
+    LOG-008 & Control de acceso por rol & Alt & 8 & 1 & Bloqueo de rutas sin permisos. \\ \hline
+    LOG-009 & Cambio de contraseña/email (OTP) & Alt & 8 & 1 & Verificación por código OTP. \\ \hline
+    LOG-010 & Eliminación de cuenta & Med & 8 & 1 & Baja confirmada con OTP. \\ \hline
+    LOG-011 & Protección de credenciales & Alt & 8 & 1 & Cifrado delegado en Supabase. \\ \hline
+\end{TablaBacklog}
+\endgroup
+
+\begin{NotaTecnica}
+La velocidad comprometida (60 puntos de historia) se ajustó a la capacidad real del equipo tras
+la incepción. El criterio de cierre exige que cada Historia satisfaga la \textit{Definition of
+Done} transversal fijada en la Sección~\ref{ssec:s0_dod}.
+\end{NotaTecnica}
+
+\subsection{Ceremonias del Sprint}
+\label{ssec:s1_ceremonias}
+La tabla~\ref{tab:s1_ceremonias} resume las ceremonias Scrum del incremento (30 mar--11 abr 2026).
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Ceremonia}} & \textcolor{white}{\textbf{Resultado}} \\ \hline
+        Planning & Selección de las Historias LOG-001--011 y estimación. \\ \hline
+        \rowcolor{grisTecnico}
+        Daily & Sincronización diaria; foco en la integración de Supabase Auth. \\ \hline
+        Review & Demostración del registro, login y OTP al Product Owner. \\ \hline
+        \rowcolor{grisTecnico}
+        Retrospective & Acuerdo sobre convenciones de seguridad y filtros. \\ \hline
+    \end{tabularx}
+    \caption{Ceremonias Scrum del Sprint 1.}
+    \label{tab:s1_ceremonias}
+\end{table}
+
+\clearpage

@@ -1,0 +1,180 @@
+\section{Backend: Autenticación y Servicios Esenciales}
+\label{sec:s1_backend}
+
+Los paquetes \comando{auth} y \comando{security} implementan el ciclo completo de identidad. El
+backend opera como \textbf{OAuth2 Resource Server}: valida los JWT emitidos por Supabase contra
+su JWKS, sin gestionar sesiones de servidor. El flujo de autenticación de extremo a extremo se
+muestra en la Figura~\ref{fig:s1_login}.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.55cm and 0.7cm,
+        step/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.5cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        ext/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=2.5cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[step] (u) {1. Usuario\\(credenciales)};
+        \node[step, right=of u] (spa) {2. SPA React\\(authService)};
+        \node[ext, right=of spa] (sup) {3. Supabase Auth\\(emite JWT)};
+        \node[step, below=of sup] (cookie) {4. Cookie segura\\(token)};
+        \node[step, left=of cookie] (be) {5. Backend RS\\(valida JWKS)};
+        \node[step, left=of be] (res) {6. Recurso\\protegido};
+
+        \draw[rel] (u) -- (spa);
+        \draw[rel] (spa) -- (sup);
+        \draw[rel] (sup) -- (cookie);
+        \draw[rel] (cookie) -- (be);
+        \draw[rel] (be) -- node[above]{200 OK} (res);
+    \end{tikzpicture}
+    \caption{Flujo de autenticación: emisión del JWT por Supabase y validación por el Resource Server.}
+    \label{fig:s1_login}
+\end{figure}
+
+\subsection{API de Inicio de Sesión, Registro y Verificación}
+\label{ssec:s1_be_api}
+El \comando{AuthController} expone el registro (profesional/reclutador), el inicio de sesión y la
+sincronización OAuth; el \comando{ForgotPasswordController} gestiona la recuperación de
+contraseña; y el \comando{SecurityController} el cambio de contraseña/email y la eliminación de
+cuenta mediante OTP. La tabla~\ref{tab:s1_endpoints} detalla los endpoints principales.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        POST & \comando{/api/auth/register} & Registro con rol (PROFESSIONAL/RECRUITER). \\ \hline
+        \rowcolor{grisTecnico}
+        POST & \comando{/api/auth/login} & Inicio de sesión y emisión de token. \\ \hline
+        POST & \comando{/api/auth/oauth/sync} & Sincronización de cuenta tras OAuth. \\ \hline
+        \rowcolor{grisTecnico}
+        POST & \comando{/api/auth/forgot-password/request} & Envío de enlace/código de recuperación. \\ \hline
+        POST & \comando{/api/v1/auth/request-password-change} & Solicitud de OTP para cambio de contraseña. \\ \hline
+        \rowcolor{grisTecnico}
+        POST & \comando{/api/v1/auth/verify-otp} & Verificación OTP de operación sensible. \\ \hline
+        DELETE & \comando{/api/v1/auth/account} & Eliminación de cuenta (confirmada con OTP). \\ \hline
+    \end{tabularx}
+    \caption{Endpoints esenciales de autenticación y seguridad del Sprint 1.}
+    \label{tab:s1_endpoints}
+\end{table}
+
+El \textbf{flujo OTP} para operaciones sensibles sigue estos pasos, garantizando que ninguna
+acción crítica se ejecute sin verificación:
+
+\begin{enumerate}[noitemsep]
+    \item El usuario solicita la operación (p. ej. cambio de email) desde la SPA.
+    \item El backend genera un código OTP efímero y lo envía por SMTP al correo registrado.
+    \item El usuario introduce el código en el componente \comando{input-otp} del frontend.
+    \item El \comando{SecurityController} verifica el código contra \comando{core.profile\_security\_codes}.
+    \item Si es válido y no ha expirado, la operación se ejecuta y el código se invalida.
+\end{enumerate}
+
+\subsection{Middlewares de Seguridad, Tokens (JWT) y Cifrado}
+\label{ssec:s1_be_middlewares}
+La configuración de \comando{config/} incorpora una cadena de filtros personalizados que blindan
+la API antes de alcanzar los controladores, según la Figura~\ref{fig:s1_filtros}.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.45cm,
+        f/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.3cm, align=center, minimum height=1.1cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario}
+    ]
+        \node[f] (a) {CookieToken\\Filter};
+        \node[f, right=of a] (b) {SecurityHeaders\\Filter};
+        \node[f, right=of b] (c) {NoCache\\Filter};
+        \node[f, right=of c] (d) {Jwt\\Authentication};
+        \node[f, right=of d] (e) {Controller};
+        \draw[rel] (a)--(b); \draw[rel] (b)--(c); \draw[rel] (c)--(d); \draw[rel] (d)--(e);
+    \end{tikzpicture}
+    \caption{Cadena de filtros de seguridad del backend (orden de ejecución).}
+    \label{fig:s1_filtros}
+\end{figure}
+
+\begin{itemize}[noitemsep]
+    \item \comando{CookieTokenFilter}: extrae el token JWT desde una cookie segura \comando{HttpOnly}.
+    \item \comando{SecurityHeadersFilter}: añade cabeceras de seguridad a cada respuesta.
+    \item \comando{NoCacheFilter}: evita el cacheo de respuestas sensibles.
+    \item \comando{CorsConfig}: restringe los orígenes permitidos (\comando{CORS\_ALLOWED\_ORIGINS}).
+    \item \comando{AdminEmailPolicy}: RBAC que limita operaciones administrativas por dominio.
+\end{itemize}
+
+La validación del JWT se delega en el \textit{Resource Server} de Spring Security, configurado
+con el \comando{jwk-set-uri} de Supabase:
+
+\begin{lstlisting}[language=Java, caption={Configuración del Resource Server (validación por JWKS).}, label={lst:s1_rs}]
+http.oauth2ResourceServer(oauth2 ->
+    oauth2.jwt(jwt -> jwt.jwkSetUri(supabaseJwkSetUri)));
+\end{lstlisting}
+
+El ciclo de vida del token sigue las fases de la tabla~\ref{tab:s1_token}, desde la emisión por
+Supabase hasta su invalidación en el cierre de sesión.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Fase}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+        Emisión & Supabase Auth firma el JWT (RS256) tras el login. \\ \hline
+        \rowcolor{grisTecnico}
+        Transporte & Se almacena en cookie \comando{HttpOnly} y viaja en cada petición. \\ \hline
+        Validación & El \textit{Resource Server} verifica la firma contra el JWKS. \\ \hline
+        \rowcolor{grisTecnico}
+        Expiración & Tras el vencimiento, el acceso devuelve 401. \\ \hline
+        Invalidación & El \comando{logout} añade el token a la \textit{blacklist}. \\ \hline
+    \end{tabularx}
+    \caption{Ciclo de vida del token JWT (Sprint 1).}
+    \label{tab:s1_token}
+\end{table}
+
+\subsection{Verificación: Casos de Prueba de Autenticación}
+\label{ssec:s1_be_tests}
+La tabla siguiente recoge una muestra de los casos de prueba ejecutados sobre los flujos de
+autenticación, todos con resultado satisfactorio.
+
+\begin{TablaCasoPrueba}
+    1 & Login con credenciales válidas & Token emitido y cookie establecida & \estadoPass \\ \hline
+    2 & Acceso a recurso con token expirado & Rechazo 401 (no autorizado) & \estadoPass \\ \hline
+    3 & Logout y reuso del token & Rechazo por \textit{blacklist} & \estadoPass \\ \hline
+    4 & OTP incorrecto en cambio de email & Operación no ejecutada & \estadoPass \\ \hline
+\end{TablaCasoPrueba}
+
+\subsection{Diagrama de Secuencia: Inicio de Sesión y Validación JWT}
+\label{ssec:s1_seq_login}
+La Figura~\ref{fig:s1_seq} detalla el intercambio de mensajes del inicio de sesión, desde la
+captura de credenciales hasta la validación del JWT contra el JWKS de Supabase.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex,
+        part/.style={draw=colorPrimario, fill=headerTabla, rounded corners=2pt,
+            minimum height=0.6cm, text width=2.2cm, align=center},
+        msg/.style={-{Latex[length=1.6mm]}, colorPrimario},
+        ret/.style={-{Latex[length=1.6mm]}, dashed, grisISO}]
+        \node[part] (u)  at (0,0)    {Usuario};
+        \node[part] (s)  at (3.6,0)  {SPA React};
+        \node[part] (sa) at (7.6,0)  {Supabase Auth};
+        \node[part] (be) at (11.4,0) {Backend RS};
+        \foreach \n in {u,s,sa,be} \draw[grisISO, dashed] (\n.south) -- ++(0,-5.3);
+        \draw[msg] (0,-0.9)    -- node[above]{1. credenciales} (3.6,-0.9);
+        \draw[msg] (3.6,-1.7)  -- node[above]{2. signInWithPassword} (7.6,-1.7);
+        \draw[ret] (7.6,-2.5)  -- node[above]{3. JWT (cookie HttpOnly)} (3.6,-2.5);
+        \draw[msg] (3.6,-3.3)  -- node[above]{4. GET recurso + cookie} (11.4,-3.3);
+        \draw[msg] (11.4,-4.1) -- ++(0.7,0) -- ++(0,-0.5) -- node[below,xshift=4pt]{5. valida JWT (JWKS)} ++(-0.7,0);
+        \draw[ret] (11.4,-5.0) -- node[above]{6. 200 ApiResponse} (3.6,-5.0);
+    \end{tikzpicture}
+    \caption{Diagrama de secuencia del inicio de sesión y validación del JWT.}
+    \label{fig:s1_seq}
+\end{figure}
+
+\clearpage

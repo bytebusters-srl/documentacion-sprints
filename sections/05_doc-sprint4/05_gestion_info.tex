@@ -1,0 +1,43 @@
+\section{Gestión de la Información (Cumplimiento ISO 26515)}
+\label{sec:s4_gestion}
+
+\subsection{Revisión Editorial y de Precisión Técnica}
+\label{ssec:s4_gi_review}
+Se ejecutó una revisión editorial y de precisión técnica (\textit{Technical Review}) de toda la
+documentación recopilada, corrigiendo inconsistencias terminológicas y verificando que cada
+afirmación tuviera respaldo en un artefacto real del código.
+
+\subsection{Pruebas de Usabilidad de la Información}
+\label{ssec:s4_gi_usabilidad}
+Se realizaron pruebas de usabilidad de la información, confirmando que manuales y diagramas
+describen exactamente el estado actual del producto. La tabla Historias~vs.~Documentación cubrió
+las Épicas de administración y UX.
+
+\begin{TablaHSDoc}
+    EPIC-07 & Panel de administración & Sí (S4) & Sí (S4) \\ \hline
+    EPIC-08 & UX y diseño adaptable & Sí (S4) & Sí (S4) \\ \hline
+\end{TablaHSDoc}
+
+\subsection{Productos de Información del Incremento (ISO 15289)}
+\label{ssec:s4_gi_productos}
+La tabla~\ref{tab:s4_productos} relaciona los productos de información del control de calidad con
+su artefacto de origen.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Producto de información}} & \textcolor{white}{\textbf{Artefacto de origen}} \\ \hline
+        Informe de \textit{technical review} & Revisión editorial de toda la documentación. \\ \hline
+        \rowcolor{grisTecnico}
+        Catálogo de casos E2E & Suite Vitest + Testing Library (Anexo~\ref{cap:anexo_e2e}). \\ \hline
+        Matriz de controles OWASP & \comando{SecurityConfig} y filtros del Sprint 4. \\ \hline
+    \end{tabularx}
+    \caption{Productos de información del Sprint 4 y su trazabilidad.}
+    \label{tab:s4_productos}
+\end{table}
+
+\clearpage

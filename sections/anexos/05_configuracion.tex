@@ -1,0 +1,92 @@
+% =============================================================================
+% ANEXO K — Configuración y Variables de Entorno
+% =============================================================================
+\chapter{Anexo K — Configuración y Variables de Entorno}
+\label{cap:anexo_config}
+
+Este anexo documenta la configuración externalizable de ambos repositorios, base de la gestión
+de secretos del despliegue (Sprint~5, Sección~\ref{ssec:s5_be_secretos}).\par
+
+\section{Variables del Backend (\texttt{ethoshubB})}
+\label{sec:anexo_config_be}
+El backend lee la configuración de \comando{application.yml} con \textit{placeholders}
+\comando{\$\{VAR:default\}}; el perfil \comando{prod} usa \comando{application-prod.yml}
+(ignorado por git).
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Variable}} & \textcolor{white}{\textbf{Descripción}} & \textcolor{white}{\textbf{Defecto}} \\ \hline
+\comando{SPRING\_PROFILES\_ACTIVE} & Perfil activo (\comando{local}/\comando{prod}). & \comando{local} \\ \hline
+\rowcolor{grisTecnico}
+\comando{SERVER\_PORT} & Puerto HTTP. & \comando{8080} \\ \hline
+\comando{DATABASE\_URL} & JDBC URL (Supabase pooler). & --- \\ \hline
+\rowcolor{grisTecnico}
+\comando{DATABASE\_USERNAME/PASSWORD} & Credenciales de BD. & --- \\ \hline
+\comando{SUPABASE\_URL} & URL del proyecto Supabase. & --- \\ \hline
+\rowcolor{grisTecnico}
+\comando{SUPABASE\_ANON\_KEY} & Clave pública (anon). & --- \\ \hline
+\comando{SUPABASE\_SERVICE\_ROLE\_KEY} & Clave de servicio (admin). & --- \\ \hline
+\rowcolor{grisTecnico}
+\comando{SUPABASE\_JWT\_SECRET} & Secreto HS256 de Supabase Auth. & --- \\ \hline
+\comando{...JWT\_JWK\_SET\_URI} & JWKS (RS256) para validar JWT. & --- \\ \hline
+\rowcolor{grisTecnico}
+\comando{GEMINI\_API\_KEY} & Clave de Google Gemini (IA). & --- \\ \hline
+\comando{MAIL\_USERNAME/PASSWORD} & Credenciales SMTP. & --- \\ \hline
+\rowcolor{grisTecnico}
+\comando{MAIL\_FROM/FROM\_NAME} & Remitente del correo. & --- \\ \hline
+\comando{CORS\_ALLOWED\_ORIGINS} & Orígenes permitidos. & --- \\ \hline
+\rowcolor{grisTecnico}
+\comando{APP\_BASE\_URL} & URL base del backend. & \comando{http://localhost:8080} \\ \hline
+\comando{APP\_FRONTEND\_URL} & URL del frontend. & \comando{http://localhost:5173} \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Variables del Frontend (\texttt{ethoshubF})}
+\label{sec:anexo_config_fe}
+Solo las variables con prefijo \comando{VITE\_} se exponen al cliente (son \textbf{públicas}).
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Variable}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+\comando{VITE\_API\_URL} / \comando{VITE\_API\_BASE\_URL} & URL base de la API (opcional en dev; el proxy de Vite la cubre). \\ \hline
+\rowcolor{grisTecnico}
+\comando{VITE\_SUPABASE\_URL} & URL del proyecto Supabase. \\ \hline
+\comando{VITE\_SUPABASE\_ANON\_KEY} & Clave anon (pública, protegida por RLS). \\ \hline
+\rowcolor{grisTecnico}
+\comando{VITE\_GOOGLE\_CLIENT\_ID} & OAuth Client ID para el Google Drive Picker. \\ \hline
+\comando{VITE\_GOOGLE\_API\_KEY} & API Key para Google Picker / Drive API. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Modos de Compilación y Perfiles}
+\label{sec:anexo_config_build}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Comando}} & \textcolor{white}{\textbf{Efecto}} \\ \hline
+\comando{mvn spring-boot:run} & Arranque en desarrollo (perfil \comando{local}). \\ \hline
+\rowcolor{grisTecnico}
+\comando{mvn clean package} & JAR con tests. \\ \hline
+\comando{mvn clean package -Pprod} & JAR de producción (omite tests de integración). \\ \hline
+\rowcolor{grisTecnico}
+\comando{npm run dev} & Servidor Vite (puerto 3000, HMR, proxy a :8080). \\ \hline
+\comando{npm run build} & \comando{tsc \&\& vite build} $\to$ \comando{dist/}. \\ \hline
+\rowcolor{grisTecnico}
+\comando{./build.sh [--skip-fe|--prod]} & Empaquetado monolítico FE+BE. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{BreakingChange}
+Las claves expuestas en el historial de git deben rotarse antes de publicar el repositorio. La
+\comando{VITE\_SUPABASE\_ANON\_KEY} es pública por diseño (protegida por RLS), pero la
+\comando{SUPABASE\_SERVICE\_ROLE\_KEY} \textbf{nunca} debe enviarse al cliente.
+\end{BreakingChange}
+
+\clearpage

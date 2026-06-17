@@ -1,0 +1,76 @@
+% =============================================================================
+% ANEXO L — Mapa completo de endpoints por controlador (rutas reales)
+% =============================================================================
+\chapter{Anexo L — Mapa Completo de Endpoints por Controlador}
+\label{cap:anexo_mapa_ep}
+
+Mapa exhaustivo de los \textit{endpoints} REST de \comando{ethoshubB}, agrupados por controlador
+real, con su prefijo de \comando{@RequestMapping}. Complementa el detalle de \textit{payloads}
+del Anexo~\ref{cap:anexo_ep_detalle}.\par
+
+\section{Perfil, Portafolio y Contenido}
+\label{sec:anexo_mapa_perfil}
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Controlador}} & \textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} \\ \hline
+ProfileController & GET/PATCH & \comando{/api/v1/profile/basic}, \comando{/bio} \\ \hline
+\rowcolor{grisTecnico}
+WorkExperienceController & GET/POST/PUT/DELETE & \comando{/api/v1/work-experiences[...]} \\ \hline
+AcademicRecordController & GET/POST/PUT/DELETE & \comando{/api/v1/academic-records[...]} \\ \hline
+\rowcolor{grisTecnico}
+SkillController & GET/POST/PUT/DELETE & \comando{/api/skills/...}, \comando{/api/profiles/\{id\}/skills/...} \\ \hline
+ProjectController & GET/POST/DELETE & \comando{/api/projects[...]}, \comando{/api/v1/projects/public/\{id\}} \\ \hline
+\rowcolor{grisTecnico}
+PortfolioSettingsController & GET/PUT/POST & \comando{/api/v1/portfolio/settings}, \comando{/items}, \comando{/curriculum/compile} \\ \hline
+PortfolioPublicController & GET & \comando{/api/v1/portfolio/public/explore}, \comando{/\{slug\}} \\ \hline
+\rowcolor{grisTecnico}
+ConnectionController & GET/POST/DELETE & \comando{/api/v1/connections[...]/disconnect|reconnect|sync} \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{CV Studio, Chat, Notificaciones y Preferencias}
+\label{sec:anexo_mapa_cv}
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Controlador}} & \textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} \\ \hline
+CvDocumentController & GET/POST/PUT/DELETE & \comando{/api/v1/cv-documents[/\{id\}]} \\ \hline
+\rowcolor{grisTecnico}
+CvDocumentController & POST & \comando{/ai-assist}, \comando{/compile-latex} (PDF) \\ \hline
+ChatController & --- & Mensajería (Supabase Realtime + RPCs) \\ \hline
+\rowcolor{grisTecnico}
+NotificationController & GET/PATCH/POST & \comando{/api/v1/notifications}, \comando{/\{id\}/read}, \comando{/read-all} \\ \hline
+PreferenceController & GET/PUT & \comando{/api/v1/preferences} \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Reclutador y Administración}
+\label{sec:anexo_mapa_admin}
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Controlador}} & \textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} \\ \hline
+TalentController & GET & \comando{/api/v1/talents} \\ \hline
+\rowcolor{grisTecnico}
+RecruiterAiController & POST & \comando{/api/v1/recruiter/ai-insights} \\ \hline
+AdminMetricsController & GET & \comando{/api/admin/metrics/overview|growth|roles|top-skills|health}, \comando{/logs} \\ \hline
+\rowcolor{grisTecnico}
+AdminModerationController & GET/DELETE/POST & \comando{/api/admin/moderation/profiles/\{id\}[...]/restore} \\ \hline
+HealthController & GET & \comando{/actuator/health} \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+Los prefijos conviven por motivos históricos: el dominio de identidad usa \comando{/api/auth} y
+\comando{/api/v1/auth}; el contenido moderno usa \comando{/api/v1/...}; y algunos recursos de
+proyectos/skills mantienen el prefijo \comando{/api/...}. El \textit{proxy} de Vite reenvía
+\comando{/api} y \comando{/v1} al backend en desarrollo.
+\end{NotaTecnica}
+
+\clearpage

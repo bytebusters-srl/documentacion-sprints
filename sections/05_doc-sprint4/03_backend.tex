@@ -1,0 +1,150 @@
+\section{Backend: Refactorización, Seguridad Avanzada y Pruebas de Carga}
+\label{sec:s4_backend}
+
+El backend se endurece bajo directrices OWASP y se entrega el módulo de visibilidad del
+portafolio. La Figura~\ref{fig:s4_owasp} resume las capas de mitigación incorporadas al
+\comando{SecurityConfig}.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.45cm,
+        m/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.3cm, align=center, minimum height=1.1cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario}
+    ]
+        \node[m] (a) {Rate\\Limiting};
+        \node[m, right=of a] (b) {JWT\\Blacklist};
+        \node[m, right=of b] (c) {Sanitización\\XSS};
+        \node[m, right=of c] (d) {Zero Trust\\Upload};
+        \draw[rel] (a)--(b); \draw[rel] (b)--(c); \draw[rel] (c)--(d);
+    \end{tikzpicture}
+    \caption{Capas de mitigación OWASP del Sprint 4.}
+    \label{fig:s4_owasp}
+\end{figure}
+
+\subsection{Mitigación de Vulnerabilidades (OWASP) y Deuda Técnica}
+\label{ssec:s4_be_owasp}
+Se reforzó el \comando{SecurityConfig} con un conjunto de mitigaciones alineadas a OWASP, y se
+optimizaron los tiempos de respuesta. Se entregaron además los controladores de visibilidad
+\comando{PortfolioSettingsController} y \comando{PortfolioPublicController} (vista pública con o
+sin contraseña). Las principales medidas de seguridad se listan a continuación.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Rate limiting:} freno a ataques de fuerza bruta en autenticación.
+    \item \textbf{Blacklist de JWT:} el \comando{JwtAuthenticationFilter} valida cada token
+    contra una lista negra, garantizando un cierre de sesión real.
+    \item \textbf{Sanitización XSS:} limpieza estricta de campos de texto (título, descripción).
+    \item \textbf{Subida Zero Trust:} verificación de \textit{magic numbers}, prevención de
+    \textit{path traversal} y \comando{Content-Disposition: attachment} en descargas.
+    \item \textbf{Portafolio protegido:} acceso público condicionado a contraseña cuando el
+    perfil así lo configura.
+\end{itemize}
+
+\begin{AlertaDefecto}
+Se detectó que las extensiones reportadas por el cliente no son fiables; la mitigación analiza
+las cabeceras binarias del archivo para determinar su auténtico tipo MIME antes de aceptarlo.
+\end{AlertaDefecto}
+
+\subsection{Logging Estructurado, Auditoría y Telemetría}
+\label{ssec:s4_be_telemetria}
+Se configuró \textit{logging} estructurado, auditoría interna y herramientas de telemetría para
+observabilidad. La gestión de errores de IA se centraliza en \comando{AiServiceException},
+mapeando los fallos upstream de Gemini sin exponer 500 genéricos. Las señales de observabilidad
+monitorizadas se resumen en la tabla~\ref{tab:s4_observabilidad}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Señal}} & \textcolor{white}{\textbf{Fuente / uso}} \\ \hline
+        Logs estructurados & Trazas por petición con identificador de correlación. \\ \hline
+        \rowcolor{grisTecnico}
+        Métricas Actuator & Latencia, errores y uso de recursos. \\ \hline
+        Salud del servicio & \comando{/actuator/health} (UP/DOWN). \\ \hline
+        \rowcolor{grisTecnico}
+        Auditoría de seguridad & Intentos de acceso y eventos OWASP. \\ \hline
+        Errores de IA & Tasa de 429/5xx mapeada por \comando{AiServiceException}. \\ \hline
+    \end{tabularx}
+    \caption{Señales de observabilidad y telemetría (Sprint 4).}
+    \label{tab:s4_observabilidad}
+\end{table}
+
+La tabla~\ref{tab:s4_owasp_map} relaciona cada categoría OWASP con su control.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Riesgo OWASP}} & \textcolor{white}{\textbf{Control implementado}} \\ \hline
+        Control de acceso roto & RLS + RBAC \comando{AdminEmailPolicy}. \\ \hline
+        \rowcolor{grisTecnico}
+        Inyección & Sanitización XSS y validación Jakarta. \\ \hline
+        Fallos de identificación & \textit{Blacklist} de JWT y rate limiting. \\ \hline
+        \rowcolor{grisTecnico}
+        Carga de archivos insegura & Verificación \textit{magic number} + anti path-traversal. \\ \hline
+    \end{tabularx}
+    \caption{Mapeo de riesgos OWASP a controles del backend (Sprint 4).}
+    \label{tab:s4_owasp_map}
+\end{table}
+
+\subsection{Gestión de la Deuda Técnica}
+\label{ssec:s4_be_deuda}
+El control de calidad incluyó la reducción sistemática de la deuda técnica acumulada en los
+incrementos previos, priorizada por impacto en seguridad y rendimiento, según la
+tabla~\ref{tab:s4_deuda}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|X|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Deuda}} & \textcolor{white}{\textbf{Prioridad}} & \textcolor{white}{\textbf{Resolución}} \\ \hline
+        RPCs sin \comando{search\_path} fijado & Alta & Bloqueo del esquema en V11. \\ \hline
+        \rowcolor{grisTecnico}
+        Desfase de email auth$\to$perfil & Alta & Trigger de sincronización (V12). \\ \hline
+        Consultas con \textit{seq scan} & Media & Índices estratégicos. \\ \hline
+        \rowcolor{grisTecnico}
+        Archivos huérfanos & Media & \textit{Worker} de purga asíncrona. \\ \hline
+        \textit{Carry-over} de concurrencia (S3) & Media & Cierre con RPCs seguras de pipeline. \\ \hline
+    \end{tabularx}
+    \caption{Deuda técnica gestionada en el Sprint 4.}
+    \label{tab:s4_deuda}
+\end{table}
+
+\subsection{Diagrama de Secuencia: Petición Protegida (Rate Limit + Blacklist)}
+\label{ssec:s4_seq_owasp}
+La Figura~\ref{fig:s4_seq} muestra cómo una petición atraviesa el control de tasa y la
+verificación de \textit{blacklist} de JWT antes de alcanzar el controlador.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex,
+        part/.style={draw=colorPrimario, fill=headerTabla, rounded corners=2pt,
+            minimum height=0.6cm, text width=2.1cm, align=center},
+        msg/.style={-{Latex[length=1.6mm]}, colorPrimario},
+        ret/.style={-{Latex[length=1.6mm]}, dashed, grisISO}]
+        \node[part] (c)  at (0,0)    {Cliente};
+        \node[part] (rl) at (3.8,0)  {Rate Limiter};
+        \node[part] (jf) at (7.8,0)  {JwtAuthFilter};
+        \node[part] (ct) at (11.6,0) {Controller};
+        \foreach \n in {c,rl,jf,ct} \draw[grisISO, dashed] (\n.south) -- ++(0,-5.0);
+        \draw[msg] (0,-0.9)    -- node[above]{1. request} (3.8,-0.9);
+        \draw[msg] (3.8,-1.7)  -- node[above]{2. dentro de cuota} (7.8,-1.7);
+        \draw[msg] (7.8,-2.5)  -- ++(0.7,0) -- ++(0,-0.5) -- node[below,xshift=2pt]{3. token en blacklist?} ++(-0.7,0);
+        \draw[msg] (7.8,-3.5)  -- node[above]{4. JWT válido} (11.6,-3.5);
+        \draw[ret] (11.6,-4.3) -- node[above]{5. 200 / 401 / 429} (0,-4.3);
+    \end{tikzpicture}
+    \caption{Diagrama de secuencia de una petición protegida (rate limit y blacklist).}
+    \label{fig:s4_seq}
+\end{figure}
+
+\clearpage

@@ -1,0 +1,58 @@
+% =============================================================================
+% ANEXO S — Matriz de Cumplimiento ISO/IEC/IEEE 26515 y 15289
+% =============================================================================
+\chapter{Anexo S — Matriz de Cumplimiento Normativo}
+\label{cap:anexo_iso}
+
+Este anexo mapea las actividades exigidas por \textbf{ISO/IEC/IEEE 26515:2024} (desarrollo de
+información en entornos ágiles) y \textbf{ISO/IEC/IEEE 15289:2024} (productos de información del
+ciclo de vida) con las secciones de esta memoria que las evidencian.\par
+
+\section{ISO/IEC/IEEE 26515 — Información en Entornos Ágiles}
+\label{sec:anexo_iso_26515}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|X|X|c|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Actividad exigida}} & \textcolor{white}{\textbf{Evidencia en la memoria}} & \textcolor{white}{\textbf{Ref.}} \\ \hline
+Planificación de la información por iteración & Sección de Gestión de la Información en cada sprint. & \ref{sec:s1_gestion} \\ \hline
+\rowcolor{grisTecnico}
+Información desarrollada en paralelo al código & \textit{Documentation as Code}; spec OpenAPI viva. & \ref{ssec:s0_estrategia_doc} \\ \hline
+Historias de usuario para la información & Backlog de Épicas e Historias. & \ref{ssec:s0_backlog} \\ \hline
+\rowcolor{grisTecnico}
+Documentación continua de incrementos & Documentación de endpoints por sprint. & \ref{ssec:s2_gi_endpoints} \\ \hline
+Revisión técnica de la información & \textit{Technical review} del Sprint 4. & \ref{ssec:s4_gi_review} \\ \hline
+\rowcolor{grisTecnico}
+Pruebas de usabilidad de la información & Validación de manuales y diagramas. & \ref{ssec:s4_gi_usabilidad} \\ \hline
+Empaquetado de la información con el producto & Base de conocimiento embebida en el repo. & \ref{ssec:s5_gi_empaquetado} \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{ISO/IEC/IEEE 15289 — Productos de Información}
+\label{sec:anexo_iso_15289}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|X|X|c|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Producto de información}} & \textcolor{white}{\textbf{Ubicación}} & \textcolor{white}{\textbf{Ref.}} \\ \hline
+Descripción de la arquitectura & Modelo C4 (contexto, contenedores, componentes). & \ref{sec:s0_arquitectura} \\ \hline
+\rowcolor{grisTecnico}
+Especificación de la base de datos & Diccionario de datos y migraciones. & \ref{cap:anexo_datos} \\ \hline
+Especificación de interfaces (API) & Endpoints, payloads y validaciones. & \ref{cap:anexo_ep_detalle} \\ \hline
+\rowcolor{grisTecnico}
+Registros de verificación y validación & Casos de prueba E2E. & \ref{cap:anexo_e2e} \\ \hline
+Historial de revisiones & Control de versiones del documento. & --- \\ \hline
+\rowcolor{grisTecnico}
+Matriz de trazabilidad & Épicas $\leftrightarrow$ sprints $\leftrightarrow$ capítulos. & \ref{cap:anexo_trazabilidad} \\ \hline
+Notas de la versión & Release Notes 2.0.0. & \ref{ssec:s5_gi_releasenotes} \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+La cobertura normativa es completa: cada actividad de ISO 26515 y cada producto de ISO 15289
+tiene al menos una evidencia trazable en esta memoria o en sus anexos, versionada junto al
+código fuente conforme al principio de \textit{Documentation as Code}.
+\end{NotaTecnica}
+
+\clearpage

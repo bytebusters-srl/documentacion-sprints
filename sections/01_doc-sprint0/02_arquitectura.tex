@@ -1,0 +1,166 @@
+\section{Arquitectura del Sistema}
+\label{sec:s0_arquitectura}
+
+La arquitectura de \textbf{EthosHub} se documenta mediante el \textbf{modelo C4} (Context,
+Containers, Components, Code), del que en el Sprint 0 se formalizan los dos primeros niveles:
+el \textit{Diagrama de Contexto} (Sección~\ref{ssec:s0_c4_contexto}) y el \textit{Diagrama de
+Contenedores} (Sección~\ref{ssec:s0_c4_contenedores}). Esta elección satisface el requisito de
+ISO/IEC/IEEE 26515 de describir el sistema en niveles progresivos de detalle, aptos tanto para
+\textit{stakeholders} de negocio como para el equipo técnico.\par
+
+\subsection{Diagrama de Contexto (Modelo C4) y Alcance General}
+\label{ssec:s0_c4_contexto}
+
+El nivel de contexto sitúa a EthosHub como un sistema central que interactúa con dos actores
+humanos (Profesional y Reclutador, además del Administrador) y con un conjunto de sistemas
+externos de los que depende: \textbf{Supabase} (autenticación, base de datos PostgreSQL y
+\textit{Realtime}), \textbf{Google Gemini} (servicios de IA), \textbf{Google Drive}
+(importación de evidencias) y un \textbf{servidor SMTP} (correo transaccional). La
+Figura~\ref{fig:s0_c4_contexto} resume estas relaciones.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.1cm and 1.4cm,
+        actor/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.3cm, align=center, minimum height=1.0cm, font=\sffamily\footnotesize},
+        system/.style={draw=colorPrimario, fill=colorPrimario, text=white, thick,
+            rounded corners=3pt, text width=3.2cm, align=center, minimum height=1.4cm,
+            font=\sffamily\bfseries\small},
+        ext/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=2.4cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, grisISO, font=\sffamily\tiny}
+    ]
+        \node[system] (sys) {EthosHub\\\scriptsize Portafolios \& Talento};
+        \node[actor, left=of sys] (prof) {Profesional};
+        \node[actor, above=of sys] (recr) {Reclutador};
+        \node[ext, right=of sys] (supa) {Supabase\\(Auth/DB/Realtime)};
+        \node[ext, below left=of sys] (gem) {Google Gemini (IA)};
+        \node[ext, below=of sys] (drive) {Google Drive};
+        \node[ext, below right=of sys] (smtp) {SMTP (correo)};
+
+        \draw[rel] (prof) -- node[above]{publica portafolio} (sys);
+        \draw[rel] (recr) -- node[right]{descubre talento} (sys);
+        \draw[rel] (sys) -- node[above]{JWT/SQL/RPC} (supa);
+        \draw[rel] (sys) -- node[left]{\textit{insights}} (gem);
+        \draw[rel] (sys) -- node[left]{evidencias} (drive);
+        \draw[rel] (sys) -- node[right]{OTP/avisos} (smtp);
+    \end{tikzpicture}
+    \caption{Diagrama de Contexto C4 (Nivel 1) de EthosHub y sus sistemas externos.}
+    \label{fig:s0_c4_contexto}
+\end{figure}
+
+El \textbf{alcance general} acordado para el producto se segmentó en ocho macro-funcionalidades
+(Épicas), que se detallan en la Sección~\ref{ssec:s0_backlog}. La autenticación se
+\textbf{delega en Supabase Auth}; el backend actúa como \textit{Resource Server} y únicamente
+valida los JWT emitidos, operando sobre el schema \comando{core} con jOOQ.
+
+\subsection{Diagrama de Contenedores y Tecnologías Seleccionadas}
+\label{ssec:s0_c4_contenedores}
+
+En el nivel de contenedores se materializa la decisión arquitectónica clave del Sprint 0: el
+\textbf{despliegue monolítico}. El \textit{build} de producción del frontend (\comando{dist/})
+se copia a \comando{src/main/resources/static/} del backend y se empaqueta dentro de un único
+JAR ejecutable de Spring Boot. Un filtro \comando{SpaFallbackFilter} sirve \comando{index.html}
+para las rutas de la SPA, mientras que los controladores REST atienden \comando{/api},
+\comando{/auth} y \comando{/v1}. La Figura~\ref{fig:s0_c4_contenedores} ilustra el patrón
+\textit{Controllers $\to$ Services $\to$ Repositories} (jOOQ).
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        layer/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=3.0cm, align=center, minimum height=0.9cm, font=\sffamily\scriptsize},
+        store/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=3.0cm, align=center, minimum height=0.9cm, font=\sffamily\scriptsize},
+        jar/.style={draw=colorPrimario, thick, dashed, rounded corners=4pt, inner sep=10pt},
+        rel/.style={-{Latex[length=2mm]}, grisISO, font=\sffamily\tiny}
+    ]
+        \node[layer] (spa) {SPA React (static/)};
+        \node[layer, below=0.7cm of spa] (ctrl) {Controllers (REST)};
+        \node[layer, below=0.7cm of ctrl] (svc) {Services (dominio)};
+        \node[layer, below=0.7cm of svc] (repo) {Repositories (jOOQ)};
+        \node[store, right=2.2cm of repo] (db) {PostgreSQL (Supabase)};
+        \node[store, right=2.2cm of svc] (apis) {Gemini / SMTP / Drive};
+
+        \draw[rel] (spa) -- node[right]{fetch \comando{/api}} (ctrl);
+        \draw[rel] (ctrl) -- (svc);
+        \draw[rel] (svc) -- (repo);
+        \draw[rel] (repo) -- node[above]{SQL / RPC} (db);
+        \draw[rel] (svc) -- node[above]{REST} (apis);
+
+        \begin{scope}[on background layer]
+            \node[jar, fit=(spa)(ctrl)(svc)(repo)] (box) {};
+        \end{scope}
+        \node[font=\sffamily\bfseries\tiny\color{colorPrimario}, above=1pt of box.north]
+            {JAR monolítico EthosHub};
+    \end{tikzpicture}
+    \caption{Diagrama de Contenedores C4 (Nivel 2): empaquetado monolítico FE+BE.}
+    \label{fig:s0_c4_contenedores}
+\end{figure}
+
+La tabla~\ref{tab:s0_stack} justifica cada tecnología seleccionada. La elección prioriza la
+\textbf{seguridad delegada} (Supabase Auth + RLS), el \textbf{SQL tipado} (jOOQ frente a un ORM
+de propósito general) y la \textbf{cohesión de despliegue} (un solo artefacto).
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.35}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Capa}} & \textcolor{white}{\textbf{Tecnología}} & \textcolor{white}{\textbf{Justificación}} \\ \hline
+        Lenguaje (BE) & Java 17 & LTS, \textit{records}, \textit{pattern matching} y rendimiento estable. \\ \hline
+        \rowcolor{grisTecnico}
+        Framework (BE) & Spring Boot 4.0.6 & Web MVC, Security, Validation y Actuator integrados. \\ \hline
+        Acceso a datos & jOOQ + Spring JDBC & SQL tipado contra el schema \comando{core}; control total de consultas. \\ \hline
+        \rowcolor{grisTecnico}
+        Base de datos & PostgreSQL (Supabase) & RLS, RPCs \comando{SECURITY DEFINER} y \textit{pooler} gestionado. \\ \hline
+        Seguridad & Spring Security (OAuth2 RS) & Validación de JWT de Supabase vía JWKS. \\ \hline
+        \rowcolor{grisTecnico}
+        Framework (FE) & React 18.3 + TS 5.3 & Componentes, \textit{strict mode} y tipado estático. \\ \hline
+        \textit{Bundler} (FE) & Vite 5.1 & HMR veloz y \textit{build} optimizado con \textit{code splitting}. \\ \hline
+        \rowcolor{grisTecnico}
+        Estado (FE) & Zustand 4.5 & \textit{Stores} por dominio, sin \textit{boilerplate}. \\ \hline
+        Documentación API & springdoc-openapi 2.7 & Swagger UI en \comando{/swagger-ui.html}. \\ \hline
+    \end{tabularx}
+    \caption{Stack tecnológico seleccionado y su justificación.}
+    \label{tab:s0_stack}
+\end{table}
+
+\begin{NotaTecnica}
+La organización del backend sigue un patrón de \textbf{\textit{vertical slice}}: cada dominio
+funcional (\comando{auth}, \comando{project}, \comando{recruiter}, etc.) es un paquete que
+contiene su \comando{Controller}, \comando{Service}, \comando{Repository} y sus \comando{dto/}.
+Este principio, fijado en el Sprint 0, se mantiene invariante a lo largo de todos los sprints.
+\end{NotaTecnica}
+
+\subsection{Vista de Componentes (Modelo C4 — Nivel 3)}
+\label{ssec:s0_c4_componentes}
+Descendiendo al tercer nivel C4, la Figura~\ref{fig:s0_c4_componentes} desglosa los componentes
+internos de un \textit{vertical slice} típico y su relación con la seguridad transversal.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex, node distance=0.7cm and 1.0cm,
+        comp/.style={draw=colorPrimario, fill=headerTabla, rounded corners=2pt,
+            text width=2.5cm, align=center, minimum height=0.9cm},
+        sec/.style={draw=grisISO, fill=grisTecnico, rounded corners=2pt,
+            text width=2.5cm, align=center, minimum height=0.9cm},
+        rel/.style={-{Latex[length=1.8mm]}, colorPrimario, font=\tiny}]
+        \node[comp] (ct) {Controller};
+        \node[comp, right=of ct] (sv) {Service};
+        \node[comp, right=of sv] (rp) {Repository (jOOQ)};
+        \node[sec, below=of sv] (fil) {Filtros de seguridad};
+        \node[sec, below=of rp] (db) {core (RLS) / RPC};
+        \draw[rel] (ct) -- node[above]{DTO} (sv);
+        \draw[rel] (sv) -- node[above]{entidad} (rp);
+        \draw[rel] (fil) -- node[left]{JWT} (ct);
+        \draw[rel] (rp) -- node[right]{SQL} (db);
+    \end{tikzpicture}
+    \caption{Vista de componentes C4 (Nivel 3) de un \textit{vertical slice} con seguridad transversal.}
+    \label{fig:s0_c4_componentes}
+\end{figure}
+
+\clearpage

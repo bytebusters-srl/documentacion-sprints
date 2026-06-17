@@ -1,0 +1,49 @@
+% =============================================================================
+% ANEXO Y — Eventos en Tiempo Real y Notificaciones
+% =============================================================================
+\chapter{Anexo Y — Eventos en Tiempo Real y Notificaciones}
+\label{cap:anexo_realtime}
+
+Catálogo de los canales de Supabase Realtime y de las notificaciones del sistema, base de las
+funcionalidades en vivo del Sprint~3 (Capítulo~\ref{cap:sprint3}).\par
+
+\section{Canales Realtime}
+\label{sec:anexo_rt_canales}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Canal}} & \textcolor{white}{\textbf{Evento difundido}} & \textcolor{white}{\textbf{Origen}} \\ \hline
+Chat & Nuevo mensaje / borrado lógico. & \comando{chat\_messages} (V7) \\ \hline
+\rowcolor{grisTecnico}
+Presencia & Estado en línea/desconectado. & Canal de \textit{presence} \\ \hline
+Likes & Nuevo \textit{like} al portafolio propio. & \comando{profile\_likes} (RLS V15) \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+La difusión de \textit{likes} en vivo se habilitó con la política RLS de \comando{SELECT} de la
+migración V15: sin ella, Supabase Realtime no emitía eventos al dueño del portafolio y el contador
+no se actualizaba en tiempo real.
+
+\section{Notificaciones del Sistema}
+\label{sec:anexo_rt_notif}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Endpoint}} & \textcolor{white}{\textbf{Función}} \\ \hline
+GET \comando{/api/v1/notifications} & Lista las notificaciones del usuario. \\ \hline
+\rowcolor{grisTecnico}
+PATCH \comando{/api/v1/notifications/\{id\}/read} & Marca una notificación como leída. \\ \hline
+POST \comando{/api/v1/notifications/read-all} & Marca todas como leídas. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+En el frontend, las notificaciones se reflejan con \textit{toasts} (Sonner) y un contador en la
+\comando{Navbar}; el \comando{notificationsStore} mantiene el estado sincronizado con los eventos
+Realtime y con los endpoints REST.
+\end{NotaTecnica}
+
+\clearpage

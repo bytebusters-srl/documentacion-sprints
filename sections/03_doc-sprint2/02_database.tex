@@ -1,0 +1,112 @@
+\section{Base de Datos: Expansión del Dominio y Relaciones Complejas}
+\label{sec:s2_database}
+
+El dominio se amplía con las entidades de la \textbf{trayectoria profesional} y la
+\textbf{matriz de habilidades}: experiencia laboral, formación académica y \textit{skills}
+(\textit{hard} y \textit{soft}). Estas entidades cuelgan de \comando{core.profiles\_basic}
+(mediante \comando{profile\_id} $\to$ \comando{id\_auth}) y se materializan mediante migraciones
+versionadas estilo Flyway. La Figura~\ref{fig:s2_er} muestra el modelo relacional resultante.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        ent/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.7cm, align=center, minimum height=0.9cm, font=\sffamily\scriptsize},
+        entx/.style={draw=grisISO, fill=grisTecnico, thick, rounded corners=2pt,
+            text width=2.6cm, align=center, minimum height=0.8cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, grisISO, font=\sffamily\tiny}
+    ]
+        \node[ent] (prof) {core.profiles\_basic};
+        \node[entx, above right=0.5cm and 1.8cm of prof] (exp) {work\_experiences\\\tiny(geo, V1)};
+        \node[entx, right=1.8cm of prof] (edu) {academic\_records};
+        \node[entx, below right=0.5cm and 1.8cm of prof] (hs) {hard\_skills\\\tiny(soft-delete, V9)};
+        \node[entx, below=0.8cm of prof] (ss) {soft\_skills + global\_skill\_tags};
+
+        \draw[rel] (prof) -- node[above]{1:N} (exp);
+        \draw[rel] (prof) -- node[above]{1:N} (edu);
+        \draw[rel] (prof) -- node[below]{1:N} (hs);
+        \draw[rel] (prof) -- node[right]{1:N} (ss);
+    \end{tikzpicture}
+    \caption{Modelo relacional de trayectoria y habilidades (Sprint 2).}
+    \label{fig:s2_er}
+\end{figure}
+
+\subsection{Tablas Transaccionales y Entidades Centrales de Negocio}
+\label{ssec:s2_db_tablas}
+Se crean e iteran las entidades de negocio con sus migraciones asociadas, según la
+tabla~\ref{tab:s2_migraciones}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Migración}} & \textcolor{white}{\textbf{Contenido}} \\ \hline
+        \comando{V1} & Campos geográficos en experiencias laborales. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V9} & Soft-delete de hard skills. \\ \hline
+        \comando{V10} & RPCs de soft-delete de hard skills. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{V4} & Ajustes extendidos de perfil/portafolio. \\ \hline
+    \end{tabularx}
+    \caption{Migraciones de expansión del dominio (Sprint 2).}
+    \label{tab:s2_migraciones}
+\end{table}
+
+\subsection{Constraints, Vistas Operativas y Optimización Referencial}
+\label{ssec:s2_db_constraints}
+Se definieron restricciones de integridad referencial (claves foráneas hacia
+\comando{core.profiles\_basic}), \textit{constraints} de unicidad y \comando{NOT NULL}, y vistas
+operativas que simplifican las consultas de lectura del portafolio. El borrado lógico
+(\textit{soft-delete}) preserva la integridad histórica sin eliminar filas físicamente.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Integridad:} \comando{ON DELETE CASCADE} controlado para datos dependientes.
+    \item \textbf{Soft-delete:} columna \comando{deleted\_at} de baja lógica reversible.
+    \item \textbf{Vistas:} proyecciones de solo lectura para el portafolio público.
+    \item \textbf{Unicidad:} una misma \textit{skill} no se duplica por perfil.
+\end{itemize}
+
+\begin{NotaTecnica}
+El \textit{soft-delete} de \textit{hard skills} (V9/V10) permite ocultar una destreza sin perder
+su histórico de validaciones, habilitando además su restauración mediante los RPCs
+\comando{SECURITY DEFINER} introducidos en la migración V10.
+\end{NotaTecnica}
+
+\subsection{Detalle de Columnas: Experiencia y Habilidades}
+\label{ssec:s2_db_columnas}
+La tabla~\ref{tab:s2_cols} detalla las columnas relevantes de \comando{work\_experiences} y
+\comando{hard\_skills}, con su tipo y propósito.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \fontsize{8.8}{10.5}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Tabla.columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        \comando{work\_experiences.profile\_id} & \comando{uuid} FK & $\to$ \comando{profiles\_basic.id\_auth}. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{work\_experiences.job\_title} & \comando{text} & Cargo desempeñado. \\ \hline
+        \comando{work\_experiences.start\_date} & \comando{date} & Fecha de inicio. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{work\_experiences.is\_current} & \comando{boolean} & Empleo vigente. \\ \hline
+        \comando{work\_experiences.latitude/longitude} & \comando{double} & Geolocalización (V1, opcional). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{work\_experiences.deleted\_at} & \comando{timestamptz} & Baja lógica. \\ \hline
+        \comando{hard\_skills.tag\_id} & \comando{uuid} FK & $\to$ \comando{global\_skill\_tags.id}. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{hard\_skills.deleted\_at} & \comando{timestamptz} & Baja lógica (índice único parcial). \\ \hline
+    \end{tabularx}
+    \caption{Detalle de columnas de experiencia y habilidades (Sprint 2).}
+    \label{tab:s2_cols}
+\end{table}
+
+El \textbf{índice único parcial} \comando{uq\_profile\_tag} (\comando{WHERE deleted\_at IS NULL})
+permite que un perfil vuelva a añadir una \textit{skill} previamente eliminada sin colisionar con
+la fila dada de baja, conservando el histórico para fines de auditoría.
+
+\clearpage

@@ -1,0 +1,62 @@
+% =============================================================================
+% ANEXO X — Catálogo de Códigos de Error y Respuesta
+% =============================================================================
+\chapter{Anexo X — Catálogo de Códigos de Error y Respuesta}
+\label{cap:anexo_errores}
+
+Códigos de estado HTTP empleados por la API y su semántica en el envoltorio
+\comando{ApiResponse} (Sección~\ref{sec:anexo_ep_envelope}), junto con el mapeo de errores de IA.\par
+
+\section{Códigos HTTP}
+\label{sec:anexo_err_http}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Código}} & \textcolor{white}{\textbf{Semántica}} \\ \hline
+200 OK & Operación exitosa con \textit{payload} en \comando{data}. \\ \hline
+\rowcolor{grisTecnico}
+201 Created & Recurso creado (registro, proyecto, skill). \\ \hline
+400 Bad Request & Error de validación; \comando{errors} con los mensajes. \\ \hline
+\rowcolor{grisTecnico}
+401 Unauthorized & Token ausente, inválido o expirado. \\ \hline
+403 Forbidden & Rol insuficiente (RBAC / \comando{RoleScopeGuard}). \\ \hline
+\rowcolor{grisTecnico}
+404 Not Found & Recurso o RPC inexistente. \\ \hline
+409 Conflict & Conflicto (p. ej. email ya registrado). \\ \hline
+\rowcolor{grisTecnico}
+429 Too Many Requests & Límite de tasa superado (\textit{rate limiting}). \\ \hline
+503 Service Unavailable & Indisponibilidad \textit{upstream} (IA). \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Mapeo de Errores de IA (\texttt{AiServiceException})}
+\label{sec:anexo_err_ia}
+El manejador centraliza los fallos \textit{upstream} de Gemini para no exponer 500 genéricos,
+según la tabla~\ref{tab:anexo_err_ia}.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Upstream}} & \textcolor{white}{\textbf{Devuelto}} & \textcolor{white}{\textbf{Interpretación}} \\ \hline
+        429 & 429 & Saturación del proveedor; reintento diferido. \\ \hline
+        \rowcolor{grisTecnico}
+        5xx & 503 & Indisponibilidad temporal del servicio de IA. \\ \hline
+        otros & 502 & Error de pasarela no clasificado. \\ \hline
+    \end{tabularx}
+    \caption{Mapeo de errores \textit{upstream} de IA (\comando{AiServiceException}).}
+    \label{tab:anexo_err_ia}
+\end{table}
+
+\begin{NotaTecnica}
+El manejador global de excepciones de \comando{shared/} traduce las excepciones de validación y
+de negocio a respuestas \comando{ApiResponse} consistentes, garantizando que el cliente reciba
+siempre la misma estructura, con \comando{success=false} y la lista \comando{errors} poblada.
+\end{NotaTecnica}
+
+\clearpage

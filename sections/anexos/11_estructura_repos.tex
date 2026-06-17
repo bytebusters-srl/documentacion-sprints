@@ -1,0 +1,96 @@
+% =============================================================================
+% ANEXO Q — Estructura de Repositorios
+% =============================================================================
+\chapter{Anexo Q — Estructura de los Repositorios}
+\label{cap:anexo_repos}
+
+Árbol de directorios real de ambos repositorios, base de la organización \textit{vertical slice}
+(backend) y \textit{feature-first} (frontend).\par
+
+\section{Backend (\texttt{ethoshubB})}
+\label{sec:anexo_repo_be}
+\begin{lstlisting}[caption={Estructura del repositorio backend.}, label={lst:anexo_be_tree}]
+ethoshubB/
+|-- build.sh                  # Empaquetado monolitico (FE + BE -> JAR)
+|-- pom.xml                   # Dependencias y plugins Maven
+|-- Dockerfile / docker-compose.yml
+`-- src/
+    |-- main/
+    |   |-- java/com/ethoshub/
+    |   |   |-- EthosHubApplication.java
+    |   |   |-- auth/ security/ profile/ project/ experience/
+    |   |   |-- education/ skills/ portfolio/ cvstudio/
+    |   |   |-- connections/ chat/ notifications/ preferences/
+    |   |   |-- recruiter/ admin/
+    |   |   |-- config/        # Seguridad, CORS, filtros
+    |   |   `-- shared/        # ApiResponse, excepciones, util
+    |   `-- resources/
+    |       |-- application.yml / application-prod.yml
+    |       |-- db/migration/V*.sql
+    |       `-- static/        # dist del frontend (generado)
+    `-- test/java/             # JUnit 5 + Testcontainers
+\end{lstlisting}
+
+\section{Frontend (\texttt{ethoshubF})}
+\label{sec:anexo_repo_fe}
+\begin{lstlisting}[caption={Estructura del repositorio frontend.}, label={lst:anexo_fe_tree}]
+ethoshubF/
+|-- index.html
+|-- vite.config.ts            # Vite + proxy /api,/auth,/v1 -> :8080 + Vitest
+|-- tailwind.config.js / tsconfig.json / eslint.config.js
+`-- src/
+    |-- main.tsx
+    |-- app/                  # providers, layouts, router
+    |-- pages/{auth,dashboard,recruiter,admin,public}/
+    |-- features/{portfolio,projects,recruiter}/
+    |-- components/{ui,auth,brand,preferences}/
+    |-- shared/{api,services,types,lib,motion,landing,ui}/
+    |-- store/                # Stores Zustand por dominio
+    |-- hooks/
+    `-- i18n/locales/{es,en,pt}/
+\end{lstlisting}
+
+\begin{NotaTecnica}
+Ambos repositorios mantienen un grafo de conocimiento en \comando{graphify-out/}, consultable con
+\comando{graphify query "<pregunta>"}, que documenta de forma navegable las relaciones del código.
+\end{NotaTecnica}
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo R — Convenciones de Código y Control de Versiones}
+\label{cap:anexo_convenciones}
+
+Convenciones transversales del proyecto, fijadas en el Sprint~0 y mantenidas en todos los
+incrementos.\par
+
+\section{Control de Versiones (GitFlow)}
+\label{sec:anexo_conv_git}
+\begin{itemize}[noitemsep]
+    \item Ramas \comando{main} (producción), \comando{develop} (integración) y
+    \comando{feature/*} (trabajo aislado).
+    \item \textit{Tags} semánticos por sprint: \comando{release/v0.1.0} \dots \comando{release/v2.0.0}.
+    \item Cada \textit{pull request} actualiza la documentación asociada (\textit{Documentation as Code}).
+\end{itemize}
+
+\section{Convenciones de Código}
+\label{sec:anexo_conv_code}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Ámbito}} & \textcolor{white}{\textbf{Convención}} \\ \hline
+Backend & Organización \textit{vertical slice}: \comando{controller+service+repository+dto}. \\ \hline
+\rowcolor{grisTecnico}
+DTO & \comando{record} validados con Jakarta Bean Validation. \\ \hline
+Respuestas & Envoltorio común \comando{ApiResponse<T>}. \\ \hline
+\rowcolor{grisTecnico}
+Serialización & Jackson en UTC; \comando{default-property-inclusion: NON\_NULL}. \\ \hline
+Frontend & TypeScript \comando{strict}; alias \comando{@/*} $\to$ \comando{src/*}. \\ \hline
+\rowcolor{grisTecnico}
+Lint & ESLint 10 (\textit{flat config}). \\ \hline
+Estado & \textit{Stores} Zustand por dominio; \comando{resetAllStores} en logout. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage

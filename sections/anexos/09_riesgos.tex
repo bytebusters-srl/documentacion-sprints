@@ -1,0 +1,39 @@
+% =============================================================================
+% ANEXO O — Matriz de Riesgos y Mitigaciones
+% =============================================================================
+\chapter{Anexo O — Matriz de Riesgos y Mitigaciones}
+\label{cap:anexo_riesgos}
+
+Registro de riesgos técnicos del proyecto y sus controles, con la probabilidad e impacto
+estimados y la mitigación aplicada en el sprint correspondiente.\par
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|X|c|c|X|c|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Riesgo}} & \textcolor{white}{\textbf{Prob.}} & \textcolor{white}{\textbf{Imp.}} & \textcolor{white}{\textbf{Mitigación}} & \textcolor{white}{\textbf{Sprint}} \\ \hline
+Fuga de credenciales en historial git & Media & Alto & Externalización a variables de entorno y rotación de claves. & 5 \\ \hline
+\rowcolor{grisTecnico}
+Acceso a datos de otro usuario & Baja & Alto & RLS + RPCs \comando{SECURITY DEFINER} con \comando{auth.uid()}. & 1--3 \\ \hline
+Carga de archivos maliciosos & Media & Alto & Verificación de \textit{magic numbers} y anti \textit{path traversal}. & 3--4 \\ \hline
+\rowcolor{grisTecnico}
+Mensajes duplicados por reintento & Media & Medio & Idempotencia por \comando{client\_message\_id} (V7). & 3 \\ \hline
+Saturación del proveedor de IA (429) & Media & Medio & \comando{AiServiceException} con mapeo y reintento diferido. & 3--4 \\ \hline
+\rowcolor{grisTecnico}
+Fuerza bruta en autenticación & Media & Alto & \textit{Rate limiting} y \textit{blacklist} de JWT. & 4 \\ \hline
+Desfase entre código y documentación & Media & Medio & \textit{Documentation as Code} y spec OpenAPI viva. & 0--5 \\ \hline
+\rowcolor{grisTecnico}
+Pérdida de datos en producción & Baja & Alto & Política de \textit{backups} y recuperación (Supabase). & 5 \\ \hline
+Inconsistencia entre dispositivos & Media & Bajo & \textit{Cross-device testing} y diseño responsive. & 4 \\ \hline
+\rowcolor{grisTecnico}
+Concurrencia en el pipeline Kanban & Baja & Medio & RPCs seguras de pipeline (V8). & 3 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+La matriz se revisó en cada retrospectiva; los riesgos de seguridad (acceso indebido, carga de
+archivos, fuerza bruta) se cerraron con los controles OWASP del Sprint~4
+(Sección~\ref{ssec:s4_be_owasp}).
+\end{NotaTecnica}
+
+\clearpage

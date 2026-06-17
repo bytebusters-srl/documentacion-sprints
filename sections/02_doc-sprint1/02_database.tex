@@ -1,0 +1,121 @@
+\section{Base de Datos: Seguridad y Persistencia de Credenciales}
+\label{sec:s1_database}
+
+La seguridad de la cuenta se apoya en \textbf{Supabase Auth} (schema \comando{auth}) para el
+almacenamiento cifrado de credenciales, y en el schema \comando{core} para los datos de
+negocio, aislados por \textit{Row Level Security} (RLS). La Figura~\ref{fig:s1_rls} ilustra la
+separación de responsabilidades entre ambos schemas.\par
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        schema/.style={draw=colorPrimario, thick, rounded corners=4pt, inner sep=8pt},
+        tab/.style={draw=grisISO, fill=grisTecnico, rounded corners=2pt, text width=2.6cm,
+            align=center, minimum height=0.8cm, font=\sffamily\scriptsize},
+        tabp/.style={draw=colorPrimario, fill=headerTabla, rounded corners=2pt, text width=2.6cm,
+            align=center, minimum height=0.8cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, grisISO, font=\sffamily\tiny}
+    ]
+        \node[tab] (users) {auth.users\\\tiny(credenciales cifradas)};
+        \node[tabp, right=2.6cm of users] (prof) {profiles\_basic /\\profiles\_company};
+        \node[tab, below=0.7cm of prof] (otp) {profile\_security\_codes\\\tiny(OTP efímeros)};
+
+        \draw[rel] (users) -- node[above]{id\_auth (1:1)} (prof);
+        \draw[rel] (prof) -- node[right]{N:1} (otp);
+
+        \begin{scope}[on background layer]
+            \node[schema, fit=(users), label={[font=\sffamily\tiny\color{grisISO}]above:schema \texttt{auth} (Supabase)}] {};
+            \node[schema, fit=(prof)(otp), label={[font=\sffamily\tiny\color{colorPrimario}]above:schema \texttt{core} (RLS)}] {};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{Separación de credenciales (\texttt{auth}) y datos de negocio (\texttt{core}) con RLS.}
+    \label{fig:s1_rls}
+\end{figure}
+
+\subsection{Tablas para el Almacenamiento Seguro de Datos Sensibles}
+\label{ssec:s1_db_credenciales}
+Las contraseñas \textbf{no se almacenan} en el dominio de la aplicación: residen cifradas en
+\comando{auth.users} bajo la gestión de Supabase. EthosHub solo persiste el perfil asociado en
+\comando{core.profiles\_basic} / \comando{core.profiles\_company} y los códigos OTP de un solo uso
+en \comando{core.profile\_security\_codes} (\comando{code char(6)}, \comando{purpose},
+\comando{expires\_at} a 15 minutos) para operaciones sensibles (cambio de contraseña/email,
+eliminación de cuenta vía \comando{delete\_profile\_cascade}).
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Cifrado delegado:} el \textit{hashing} y el salado de la contraseña son
+    responsabilidad de Supabase Auth; el backend nunca ve el material en claro.
+    \item \textbf{OTP efímeros:} códigos con marca de expiración y de un solo uso, verificados en
+    el servidor antes de ejecutar la operación crítica.
+    \item \textbf{Sin secretos en \comando{core}:} el dominio jamás lee ni escribe material
+    criptográfico; opera exclusivamente sobre datos de negocio.
+\end{itemize}
+
+\subsection{Esquemas de Roles y Niveles de Acceso del Perfil}
+\label{ssec:s1_db_roles}
+El rol del usuario se deriva de la \textbf{tabla de perfil} en que existe la cuenta:
+\comando{profiles\_basic} (profesional) o \comando{profiles\_company} (reclutador); las cuentas
+administrativas se identifican por dominio (\comando{adm.*@ethoshub.dev}). Las políticas RLS
+garantizan que cada usuario solo accede a sus filas, y las operaciones que cruzan ese límite usan
+RPCs \comando{SECURITY DEFINER}. La tabla~\ref{tab:s1_roles} resume los niveles de acceso.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Rol}} & \textcolor{white}{\textbf{Identificación}} & \textcolor{white}{\textbf{Nivel de acceso}} \\ \hline
+        PROFESSIONAL & tabla \comando{profiles\_basic} & Gestiona su propio perfil y portafolio. \\ \hline
+        \rowcolor{grisTecnico}
+        RECRUITER & tabla \comando{profiles\_company} & Descubre talento; gestiona su pipeline. \\ \hline
+        ADMIN & dominio \comando{adm.*@ethoshub.dev} & Operaciones de moderación y métricas. \\ \hline
+    \end{tabularx}
+    \caption{Roles y niveles de acceso del perfil (Sprint 1).}
+    \label{tab:s1_roles}
+\end{table}
+
+A modo ilustrativo, una política RLS típica restringe el acceso a las filas propias mediante la
+comparación del identificador autenticado con el dueño de la fila:
+
+\begin{lstlisting}[language=SQL, caption={Política RLS de acceso a perfil propio.}, label={lst:s1_rls}]
+CREATE POLICY profiles_owner_select ON core.profiles_basic
+  FOR SELECT USING (auth.uid() = id_auth);
+\end{lstlisting}
+
+\begin{NotaTecnica}
+Nunca se demota el rol dentro de una función \comando{SECURITY DEFINER}: el privilegio elevado
+se acota a la operación estrictamente necesaria, conforme al principio de mínimo privilegio
+fijado en el Sprint 0 (Sección~\ref{ssec:s0_entidades_centrales}).
+\end{NotaTecnica}
+
+\subsection{Detalle de Columnas: Códigos de Seguridad}
+\label{ssec:s1_db_columnas}
+La tabla~\ref{tab:s1_cols} detalla \comando{core.profile\_security\_codes} (V4), soporte de las
+operaciones sensibles con OTP.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \fontsize{8.8}{10.5}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Propósito}} \\ \hline
+        \comando{profile\_id} & \comando{uuid} FK & $\to$ \comando{profiles\_basic.id\_auth} (cascade). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{code} & \comando{char(6)} & Código numérico de un solo uso. \\ \hline
+        \comando{purpose} & \comando{varchar(30)} & Operación asociada (password/email/baja). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{used} & \comando{boolean} & Indica si ya fue consumido. \\ \hline
+        \comando{expires\_at} & \comando{timestamptz} & Vence a los 15 minutos de su emisión. \\ \hline
+    \end{tabularx}
+    \caption{Columnas de \comando{core.profile\_security\_codes} (Sprint 1).}
+    \label{tab:s1_cols}
+\end{table}
+
+El índice parcial \comando{idx\_psc\_profile\_purpose} (\comando{WHERE used = FALSE}) acelera la
+búsqueda del último código activo por perfil y propósito, evitando recorrer los códigos ya
+consumidos o expirados.
+
+\clearpage

@@ -1,0 +1,157 @@
+\section{Backend: Comunicación en Tiempo Real e Integraciones}
+\label{sec:s3_backend}
+
+Este es el incremento de mayor superficie funcional del backend: vitrina de proyectos con subida
+segura de evidencias, conexiones externas, mensajería en tiempo real, CV Studio asistido por IA
+y el módulo de reclutamiento. La tabla~\ref{tab:s3_controllers} enumera los controladores
+involucrados.\par
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Controlador}} & \textcolor{white}{\textbf{Responsabilidad}} \\ \hline
+        \comando{ProjectController} & CRUD de proyectos y subida multi-PDF. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{FileUploadController} & Ingesta Zero Trust de evidencias y descargas seguras. \\ \hline
+        \comando{ConnectionController} & Conexiones URL-first (+15 providers + custom). \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{ChatController} & Mensajería Realtime con idempotencia y borrado lógico. \\ \hline
+        \comando{CvDocumentController} & CV Studio: edición y compilación a PDF. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{TalentController} & Descubrimiento de talento y pipeline Kanban. \\ \hline
+        \comando{RecruiterAiController} & \textit{Insights} IA (Gemini) y búsqueda NLP. \\ \hline
+    \end{tabularx}
+    \caption{Controladores del Sprint 3.}
+    \label{tab:s3_controllers}
+\end{table}
+
+\subsection{Protocolos Bidireccionales y Subida Segura de Evidencias}
+\label{ssec:s3_be_realtime}
+La subida de evidencias (\comando{POST /api/v1/evidences/upload}) se diseñó bajo el paradigma
+\textbf{Zero Trust}, ilustrado en la Figura~\ref{fig:s3_upload}: el backend no confía en las
+extensiones del cliente y valida el contenido binario.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.5cm,
+        s/.style={draw=colorPrimario, fill=headerTabla, thick, rounded corners=2pt,
+            text width=2.45cm, align=center, minimum height=1.0cm, font=\sffamily\scriptsize},
+        rel/.style={-{Latex[length=2mm]}, colorPrimario, font=\sffamily\tiny}
+    ]
+        \node[s] (a) {1. Upload\\multipart};
+        \node[s, right=of a] (b) {2. Magic\\numbers};
+        \node[s, right=of b] (c) {3. Sanitiza\\nombre};
+        \node[s, right=of c] (d) {4. Persiste\\+ referencia};
+        \draw[rel] (a)--(b); \draw[rel] (b)--(c); \draw[rel] (c)--(d);
+    \end{tikzpicture}
+    \caption{Flujo Zero Trust de subida de evidencias.}
+    \label{fig:s3_upload}
+\end{figure}
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Verificación de \textit{magic numbers}:} se analizan las cabeceras binarias
+    para determinar el verdadero tipo MIME, ignorando la extensión reportada.
+    \item \textbf{Prevención \textit{path traversal}:} sanitización profunda de los nombres de
+    archivo (eliminación de secuencias \comando{../}).
+    \item \textbf{Descargas seguras:} se inyecta \comando{Content-Disposition: attachment} para
+    forzar la descarga y evitar la ejecución en el navegador.
+    \item \textbf{Importación Drive:} el \comando{ProjectController} integra el Google Drive
+    Picker para adjuntar evidencias sin descarga manual.
+\end{itemize}
+
+La \textbf{mensajería} usa Supabase Realtime para la entrega bidireccional; el
+\comando{ChatController} aplica idempotencia (V7) y borrado lógico. El \textbf{CV Studio}
+(\comando{CvDocumentController}) compila el documento a PDF e integra un asistente IA Gemini
+multi-turno. Un ejemplo de respuesta envuelta en \comando{ApiResponse}:
+
+\begin{lstlisting}[language=json, caption={Respuesta de creación de proyecto (ApiResponse).}, label={lst:s3_resp}]
+{ "success": true,
+  "data": { "id": "a1b2", "titulo": "Portafolio EthosHub", "evidences": 2 },
+  "error": null }
+\end{lstlisting}
+
+\subsection{Control de Concurrencia y Estado de Conexión}
+\label{ssec:s3_be_concurrencia}
+La sincronización distribuida de eventos y la gestión del estado de conexión activa del perfil
+(presencia) se resuelven con RPCs seguros (V8) que preservan la consistencia bajo acceso
+concurrente. Para optimizar el almacenamiento, un \textit{worker} asíncrono purga periódicamente
+los archivos físicos huérfanos sin referencia relacional.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Presencia:} canales Realtime publican el estado en línea del usuario.
+    \item \textbf{RPCs seguros:} las mutaciones del pipeline se ejecutan con \comando{SECURITY DEFINER}.
+    \item \textbf{Errores de IA:} \comando{AiServiceException} mapea 429$\to$429, 5xx$\to$503,
+    otros$\to$502, evitando 500 genéricos.
+    \item \textbf{Búsqueda NLP:} \comando{RecruiterAiController} traduce consultas en lenguaje
+    natural a filtros de talento.
+\end{itemize}
+
+\begin{NotaTecnica}
+Los \textit{insights} del reclutador ofrecen cuatro modos de análisis asistidos por Gemini; cada
+modo construye un \textit{prompt} estructurado a partir de los datos del candidato y devuelve un
+resumen accionable para la toma de decisiones.
+\end{NotaTecnica}
+
+\subsection{Diagrama de Secuencia: Mensaje en Tiempo Real con Idempotencia}
+\label{ssec:s3_seq_chat}
+La Figura~\ref{fig:s3_seq} muestra el envío de un mensaje de chat: la deduplicación por
+\comando{client\_message\_id} (V7) y la difusión por Supabase Realtime al destinatario.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex,
+        part/.style={draw=colorPrimario, fill=headerTabla, rounded corners=2pt,
+            minimum height=0.6cm, text width=2.1cm, align=center},
+        msg/.style={-{Latex[length=1.6mm]}, colorPrimario},
+        ret/.style={-{Latex[length=1.6mm]}, dashed, grisISO}]
+        \node[part] (a)  at (0,0)    {Cliente A};
+        \node[part] (be) at (3.8,0)  {Backend};
+        \node[part] (sb) at (7.8,0)  {Supabase Realtime};
+        \node[part] (b)  at (11.8,0) {Cliente B};
+        \foreach \n in {a,be,sb,b} \draw[grisISO, dashed] (\n.south) -- ++(0,-5.0);
+        \draw[msg] (0,-0.9)    -- node[above]{1. POST msg (client\_message\_id)} (3.8,-0.9);
+        \draw[msg] (3.8,-1.8)  -- ++(0.7,0) -- ++(0,-0.5) -- node[below,xshift=2pt]{2. dedup idempotente} ++(-0.7,0);
+        \draw[msg] (3.8,-2.8)  -- node[above]{3. insert chat\_messages} (7.8,-2.8);
+        \draw[msg] (7.8,-3.6)  -- node[above]{4. broadcast evento} (11.8,-3.6);
+        \draw[ret] (3.8,-4.4)  -- node[above]{5. ApiResponse} (0,-4.4);
+    \end{tikzpicture}
+    \caption{Diagrama de secuencia de un mensaje de chat en tiempo real (idempotente).}
+    \label{fig:s3_seq}
+\end{figure}
+
+\subsection{CV Studio y Reclutador Asistido por IA}
+\label{ssec:s3_be_ia}
+El \comando{CvDocumentController} expone el CRUD del documento de CV, la asistencia IA
+(\comando{/ai-assist}) y la compilación a PDF (\comando{/compile-latex}). El
+\comando{RecruiterAiController} ofrece \textit{insights} (\comando{/ai-insights}) construidos a
+partir de las RPC analíticas del esquema. La tabla~\ref{tab:s3_rpc} resume las RPC implicadas.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Función RPC}} & \textcolor{white}{\textbf{Aporte al insight}} \\ \hline
+        \comando{get\_recruiter\_funnel} & Embudo de conversión del pipeline. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{get\_market\_radar} & Demanda vs. oferta de skills. \\ \hline
+        \comando{get\_talent\_leaderboard} & Ranking de talento por nicho. \\ \hline
+        \rowcolor{grisTecnico}
+        \comando{get\_recruiter\_activity} & Actividad de los últimos 7 días. \\ \hline
+    \end{tabularx}
+    \caption{RPC analíticas que alimentan los \textit{insights} del reclutador (Sprint 3).}
+    \label{tab:s3_rpc}
+\end{table}
+
+La compilación del CV a PDF se realiza con un \textit{pipeline} LaTeX en el servidor; el
+resultado se almacena y su URL se referencia en \comando{portfolio\_settings.cv\_pdf\_url}
+(migración V5), de modo que el portafolio público puede ofrecer la descarga del curriculum.
+
+\clearpage

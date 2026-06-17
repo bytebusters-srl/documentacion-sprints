@@ -1,0 +1,85 @@
+% =============================================================================
+% ANEXO T — Estrategia de Pruebas y Cobertura
+% =============================================================================
+\chapter{Anexo T — Estrategia de Pruebas y Cobertura}
+\label{cap:anexo_pruebas}
+
+Estrategia de verificación del producto, organizada en niveles según la pirámide de pruebas, con
+las herramientas reales de cada repositorio.\par
+
+\section{Niveles de Prueba}
+\label{sec:anexo_pruebas_niveles}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Nivel}} & \textcolor{white}{\textbf{Herramientas}} & \textcolor{white}{\textbf{Ámbito}} \\ \hline
+Unitarias (BE) & JUnit 5 & Reglas de dominio y validación de DTO. \\ \hline
+\rowcolor{grisTecnico}
+Integración (BE) & Spring Boot Test + Testcontainers & API + PostgreSQL real en contenedor. \\ \hline
+Componentes (FE) & Vitest + Testing Library (jsdom) & Render e interacción de componentes. \\ \hline
+\rowcolor{grisTecnico}
+E2E & Suite de flujos (Vitest) & Flujos completos de navegación (Anexo~\ref{cap:anexo_e2e}). \\ \hline
+Carga / seguridad & Pruebas de carga + OWASP & Tiempos de respuesta y mitigaciones. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Cobertura por Dominio}
+\label{sec:anexo_pruebas_cobertura}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|c|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Dominio}} & \textcolor{white}{\textbf{Nivel principal}} & \textcolor{white}{\textbf{Foco de la verificación}} \\ \hline
+Autenticación & Integración & JWT, OTP, blacklist, recuperación. \\ \hline
+\rowcolor{grisTecnico}
+Perfil/Skills & Unitaria & Validación de DTO y soft-delete. \\ \hline
+Proyectos & Integración & Subida Zero Trust y borrado en cascada. \\ \hline
+\rowcolor{grisTecnico}
+Chat & E2E & Idempotencia y entrega en vivo. \\ \hline
+Reclutador & Integración & RPCs seguras y métricas. \\ \hline
+\rowcolor{grisTecnico}
+Visibilidad & E2E & Portafolio público/protegido. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\begin{NotaTecnica}
+El perfil de empaquetado \comando{prod} omite los tests de integración (\comando{skipTests}) para
+acelerar el despliegue; estos se ejecutan en el flujo de CI y en el perfil de desarrollo.
+\end{NotaTecnica}
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo U — Cronograma Detallado por Semana}
+\label{cap:anexo_cronograma}
+
+Desglose semanal de los incrementos, alineado con el calendario del Plan General
+(Sección~\ref{ssec:s0_roadmap}).\par
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Sprint}} & \textcolor{white}{\textbf{Semana}} & \textcolor{white}{\textbf{Hitos}} \\ \hline
+0 & 16--28 mar & Incepción, C4, ER, boilerplate, CI/CD. \\ \hline
+\rowcolor{grisTecnico}
+1 & 30 mar--4 abr & Supabase Auth, Resource Server, filtros. \\ \hline
+1 & 7--11 abr & Registro/login/OTP, layouts y formularios. \\ \hline
+\rowcolor{grisTecnico}
+2 & 13--18 abr & Migraciones de skills/experiencia; CRUD backend. \\ \hline
+2 & 21--25 abr & Vistas de contenido, pruebas y glosario. \\ \hline
+\rowcolor{grisTecnico}
+3 & 27 abr--2 may & Proyectos, evidencias Zero Trust, conexiones. \\ \hline
+3 & 5--9 may & Chat Realtime, CV Studio IA, Talent Discovery. \\ \hline
+\rowcolor{grisTecnico}
+4 & 11--16 may & OWASP, query profiling, migraciones V11--V15. \\ \hline
+4 & 19--23 may & E2E, accesibilidad, visibilidad y \textit{technical review}. \\ \hline
+\rowcolor{grisTecnico}
+5 & 25--30 may & Seeders, backups, variables de entorno. \\ \hline
+5 & 2--6 jun & Build optimizado, despliegue, Release Notes 2.0.0. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage

@@ -1,0 +1,394 @@
+% =============================================================================
+% ANEXOS — Catálogos de referencia (trazabilidad ISO 15289)
+% Base de datos documentada a partir del esquema real aplicado a Supabase
+% (migraciones V1–V15 del repositorio ethoshubB), schema `core`.
+% =============================================================================
+\chapter{Anexo A — Catálogo Completo de Endpoints REST}
+\label{cap:anexo_endpoints}
+
+Este anexo consolida los \textit{endpoints} expuestos por el backend \comando{ethoshubB} a lo
+largo de los seis sprints, agrupados por dominio. Todas las respuestas siguen el envoltorio
+\comando{ApiResponse} (Sección~\ref{ssec:s1_gi_openapi}) y se documentan en Swagger UI
+(\comando{/swagger-ui.html}).\par
+
+\section{Autenticación y Seguridad}
+\label{sec:anexo_ep_auth}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+POST & \comando{/api/auth/register} & Registro de cuenta con rol. \\ \hline
+\rowcolor{grisTecnico}
+POST & \comando{/api/auth/login} & Inicio de sesión y emisión de token. \\ \hline
+POST & \comando{/api/auth/oauth/sync} & Sincronización tras OAuth. \\ \hline
+\rowcolor{grisTecnico}
+POST & \comando{/api/auth/forgot-password/request} & Recuperación de contraseña. \\ \hline
+POST & \comando{/api/v1/auth/request-password-change} & Solicitud de OTP (\comando{profile\_security\_codes}). \\ \hline
+\rowcolor{grisTecnico}
+POST & \comando{/api/v1/auth/verify-otp} & Verificación de OTP. \\ \hline
+DELETE & \comando{/api/v1/auth/account} & Eliminación de cuenta (\comando{delete\_profile\_cascade}). \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Perfil, Trayectoria y Habilidades}
+\label{sec:anexo_ep_perfil}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+GET/PUT & \comando{/api/v1/profile} & Lee/actualiza el perfil (\comando{profiles\_basic} / \comando{profiles\_company}). \\ \hline
+\rowcolor{grisTecnico}
+CRUD & \comando{/api/v1/experiences} & Experiencia laboral (geo). \\ \hline
+CRUD & \comando{/api/v1/education} & Formación académica. \\ \hline
+\rowcolor{grisTecnico}
+CRUD & \comando{/api/v1/skills} & Hard/soft skills (soft-delete). \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Proyectos, Conexiones y Portafolio}
+\label{sec:anexo_ep_proyectos}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+CRUD & \comando{/api/v1/projects} & Vitrina de proyectos. \\ \hline
+\rowcolor{grisTecnico}
+POST & \comando{/api/v1/evidences/upload} & Subida Zero Trust de evidencias. \\ \hline
+CRUD & \comando{/api/v1/connections} & Conexiones URL-first (\comando{profile\_connections}). \\ \hline
+\rowcolor{grisTecnico}
+GET/PUT & \comando{/api/v1/portfolio/settings} & Ajustes de visibilidad y SEO. \\ \hline
+GET & \comando{/api/v1/portfolio/public/\{slug\}} & Vista pública (con/sin contraseña). \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\section{Chat, CV Studio, Reclutador y Administración}
+\label{sec:anexo_ep_reclutador}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Método}} & \textcolor{white}{\textbf{Ruta}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+CRUD & \comando{/api/v1/chat/messages} & Mensajería Realtime (idempotente). \\ \hline
+\rowcolor{grisTecnico}
+CRUD & \comando{/api/v1/cv/documents} & CV Studio (edición/compilación PDF). \\ \hline
+GET & \comando{/api/v1/talent} & Descubrimiento de talento. \\ \hline
+\rowcolor{grisTecnico}
+POST & \comando{/api/v1/recruiter/ai/insights} & Insights IA (Gemini). \\ \hline
+GET & \comando{/api/v1/admin/metrics} & Métricas de administración. \\ \hline
+\rowcolor{grisTecnico}
+GET & \comando{/actuator/health} & Salud del servicio. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo B — Diccionario de Datos (schema \texttt{core})}
+\label{cap:anexo_datos}
+
+Diccionario de datos del schema \comando{core} de la base PostgreSQL gestionada por Supabase,
+documentado a partir de las migraciones reales \comando{V1}--\comando{V15}. La identidad y las
+credenciales residen en el schema \comando{auth} (gestionado por Supabase); el dominio de negocio
+vive en \comando{core}, protegido por RLS. El perfil se modela en \textbf{dos tablas según el
+rol}: \comando{profiles\_basic} (profesional) y \comando{profiles\_company} (reclutador), ambas
+con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
+
+\section{Entidades de Identidad y Perfil}
+\label{sec:anexo_datos_perfil}
+
+\textbf{Tabla \comando{core.profiles\_basic}} — perfil del profesional.
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+\comando{id\_auth} & \comando{uuid} PK & Identidad (= \comando{auth.users.id}). \\ \hline
+\rowcolor{grisTecnico}
+\comando{first\_name} / \comando{last\_name} & \comando{text} & Nombre y apellidos. \\ \hline
+\comando{email} & \comando{text} & Correo (sincronizado vía \textit{trigger} V12). \\ \hline
+\rowcolor{grisTecnico}
+\comando{bio} & \comando{text} & Biografía profesional. \\ \hline
+\comando{location} & \comando{text} & Ubicación textual. \\ \hline
+\rowcolor{grisTecnico}
+\comando{phone\_number} & \comando{varchar} & Teléfono de contacto. \\ \hline
+\comando{avatar\_url} & \comando{text} & URL de la foto de perfil. \\ \hline
+\rowcolor{grisTecnico}
+\comando{seniority} & \comando{varchar} & Nivel de seniority. \\ \hline
+\comando{availability\_status} & \comando{varchar} & Disponibilidad laboral. \\ \hline
+\rowcolor{grisTecnico}
+\comando{website} & \comando{text} & Sitio web personal. \\ \hline
+\comando{latitude} / \comando{longitude} & \comando{double} & Coordenadas (V4). \\ \hline
+\rowcolor{grisTecnico}
+\comando{is\_active} & \comando{boolean} & Cuenta activa. \\ \hline
+\comando{deleted\_at} & \comando{timestamptz} & Baja lógica (soft-delete). \\ \hline
+\rowcolor{grisTecnico}
+\comando{created\_at} / \comando{updated\_at} & \comando{timestamptz} & Marcas temporales (UTC). \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\textbf{Tabla \comando{core.profiles\_company}} — perfil del reclutador.
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+\comando{id\_auth} & \comando{uuid} PK & Identidad (= \comando{auth.users.id}). \\ \hline
+\rowcolor{grisTecnico}
+\comando{company\_name} & \comando{text} & Razón social. \\ \hline
+\comando{industry} & \comando{text} & Sector / industria. \\ \hline
+\rowcolor{grisTecnico}
+\comando{company\_size} & \comando{text} & Tamaño de la empresa. \\ \hline
+\comando{company\_description} & \comando{text} & Descripción corporativa. \\ \hline
+\rowcolor{grisTecnico}
+\comando{company\_website} & \comando{text} & Sitio web corporativo. \\ \hline
+\comando{email} / \comando{phone\_number} & \comando{text/varchar} & Contacto. \\ \hline
+\rowcolor{grisTecnico}
+\comando{deleted\_at} & \comando{timestamptz} & Baja lógica. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\textbf{Tabla \comando{core.profile\_security\_codes}} — códigos OTP (V4).
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Columna}} & \textcolor{white}{\textbf{Tipo}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
+\comando{id} & \comando{uuid} PK & Identificador. \\ \hline
+\rowcolor{grisTecnico}
+\comando{profile\_id} & \comando{uuid} FK & $\to$ \comando{profiles\_basic.id\_auth} (cascade). \\ \hline
+\comando{code} & \comando{char(6)} & Código de 6 dígitos. \\ \hline
+\rowcolor{grisTecnico}
+\comando{purpose} & \comando{varchar(30)} & Propósito (cambio email/contraseña, baja). \\ \hline
+\comando{used} & \comando{boolean} & Marca de consumo. \\ \hline
+\rowcolor{grisTecnico}
+\comando{expires\_at} & \comando{timestamptz} & Expira a los 15 minutos. \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage
+
+\section{Entidades de Trayectoria y Habilidades}
+\label{sec:anexo_datos_skills}
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Tabla}} & \textcolor{white}{\textbf{Columnas / notas relevantes}} & \textcolor{white}{\textbf{Mig.}} \\ \hline
+\comando{work\_experiences} & \comando{profile\_id}, \comando{job\_title}, \comando{start\_date}, \comando{is\_current}, \comando{latitude}/\comando{longitude}, \comando{deleted\_at}. & V1 \\ \hline
+\rowcolor{grisTecnico}
+\comando{academic\_records} & Formación académica del perfil; \comando{profile\_id}. & S2 \\ \hline
+\comando{hard\_skills} & \comando{profile\_id}, \comando{tag\_id} $\to$ \comando{global\_skill\_tags}, \comando{deleted\_at}; índice único parcial \comando{uq\_profile\_tag} (WHERE \comando{deleted\_at IS NULL}). & V9 \\ \hline
+\rowcolor{grisTecnico}
+\comando{soft\_skills} & Habilidades blandas; \comando{deleted\_at} (soft-delete). & S2 \\ \hline
+\comando{global\_skill\_tags} & \comando{id}, \comando{name}, \comando{category}: catálogo global de skills. & S2 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\section{Entidades de Portafolio, Proyectos y Conexiones}
+\label{sec:anexo_datos_portfolio}
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Tabla}} & \textcolor{white}{\textbf{Columnas / notas relevantes}} & \textcolor{white}{\textbf{Mig.}} \\ \hline
+\comando{portfolio\_settings} & \comando{profile\_id}, \comando{slug}, \comando{is\_published}, \comando{seo\_title} (60), \comando{seo\_description} (160), \comando{show\_connections}, \comando{show\_github\_heatmap}, \comando{selected\_cv\_document\_id}, \comando{cv\_pdf\_url}. & V4/V5 \\ \hline
+\rowcolor{grisTecnico}
+\comando{portfolio\_items} & Ítems del portafolio; \comando{portfolio\_settings\_id}. & S3 \\ \hline
+\comando{cv\_documents} & Documentos del CV Studio; \comando{deleted\_at} (soft-delete). & V2 \\ \hline
+\rowcolor{grisTecnico}
+\comando{profile\_connections} & \comando{provider} (\textit{check}: github, linkedin, slack, devto, \dots, custom), \comando{provider\_kind} (auth/manual/custom), \comando{display\_label}, \comando{status}, \comando{provider\_url}, \comando{api\_health}, \comando{provider\_metadata} (jsonb). Índices únicos por provider conocido y por URL custom. & V3/V14 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\section{Entidades de Reclutamiento y Mensajería}
+\label{sec:anexo_datos_reclutamiento}
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Tabla}} & \textcolor{white}{\textbf{Columnas / notas relevantes}} & \textcolor{white}{\textbf{Mig.}} \\ \hline
+\comando{profile\_likes} & \comando{company\_profile\_id} $\to$ company, \comando{basic\_profile\_id} $\to$ basic, \comando{stage} (\textit{check}: saved/review/interview/offer/hired), \comando{stage\_order}. RLS \comando{profile\_likes\_owner\_select} (V15). & V6/V8 \\ \hline
+\rowcolor{grisTecnico}
+\comando{recruiter\_candidate\_notes} & \comando{note\_id}, \comando{company\_profile\_id}, \comando{basic\_profile\_id}, \comando{body} (1--4000 car.). RLS \comando{rcn\_owner\_all}. & V6/V7 \\ \hline
+\comando{talent\_score\_snapshots} & Instantáneas semanales de \textit{score} por nicho; \comando{basic\_profile\_id}. & V6 \\ \hline
+\rowcolor{grisTecnico}
+\comando{chat\_messages} & \comando{chat\_id}, \comando{client\_message\_id} (idempotencia, índice único parcial), \comando{created\_at}. & V7 \\ \hline
+\comando{email\_change\_requests} & \comando{auth\_id}, \comando{new\_email}, \comando{token\_hash} (unique), \comando{consumed}, \comando{expires\_at}. RLS activo sin políticas (solo backend). & V13 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo C — Catálogo de Funciones RPC y Triggers}
+\label{cap:anexo_rpc}
+
+Las operaciones que cruzan la frontera de RLS se ejecutan mediante funciones
+\comando{SECURITY DEFINER} expuestas en el schema \comando{public} (PostgREST). Por seguridad,
+estas funciones \textbf{ignoran} cualquier identificador de empresa recibido por parámetro y usan
+\comando{auth.uid()} como identidad real, evitando que un usuario acceda a datos de otro.\par
+
+\section{RPC de Cuenta y Seguridad}
+\label{sec:anexo_rpc_seguridad}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Función}} & \textcolor{white}{\textbf{Propósito}} & \textcolor{white}{\textbf{Mig.}} \\ \hline
+\comando{core.delete\_profile\_cascade(p\_auth\_id)} & Baja en cascada: borra OTP, items y settings; anonimiza email y marca \comando{deleted\_at}. & V4 \\ \hline
+\rowcolor{grisTecnico}
+\comando{core.sync\_auth\_email\_to\_profiles()} & \textit{Trigger} \comando{on\_auth\_email\_changed}: propaga el cambio de email a las tablas de perfil. & V12 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\section{RPC de Pipeline, Notas e Insights del Reclutador}
+\label{sec:anexo_rpc_reclutador}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Función}} & \textcolor{white}{\textbf{Propósito}} & \textcolor{white}{\textbf{Mig.}} \\ \hline
+\comando{get\_company\_pipeline(p\_company\_id)} & Pipeline Kanban del reclutador (etapas y orden). & V8 \\ \hline
+\rowcolor{grisTecnico}
+\comando{update\_like\_stage(\dots)} & Mueve un candidato de etapa/orden. & V8 \\ \hline
+\comando{get/add/update/delete\_candidate\_note(\dots)} & CRUD de notas privadas por candidato. & V7 \\ \hline
+\rowcolor{grisTecnico}
+\comando{get\_recruiter\_funnel(p\_company\_id)} & Embudo: viewed/saved/interviewed/offered/hired. & V6 \\ \hline
+\comando{get\_market\_radar(p\_company\_id,p\_limit)} & Radar de skills: demanda vs. oferta. & V6 \\ \hline
+\rowcolor{grisTecnico}
+\comando{get\_recruiter\_activity(p\_company\_id)} & Actividad 7 días: vistas, likes, chats. & V6 \\ \hline
+\comando{get\_talent\_leaderboard(p\_niche,p\_limit)} & Ranking de talento por nicho. & V6 \\ \hline
+\rowcolor{grisTecnico}
+\comando{snapshot\_leaderboard(p\_niche)} & Persiste instantánea del ranking. & V6 \\ \hline
+\comando{get\_recent\_talent\_views(\dots)} & Talento visto recientemente (wrapper public). & V11 \\ \hline
+\rowcolor{grisTecnico}
+\comando{get\_company\_likes\_full(p\_company\_id)} & Likes del reclutador con datos del candidato. & V11 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\section{RPC de Chat, Exploración y Administración}
+\label{sec:anexo_rpc_chat}
+\renewcommand{\arraystretch}{1.3}
+\fontsize{8.8}{10.5}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Función}} & \textcolor{white}{\textbf{Propósito}} & \textcolor{white}{\textbf{Mig.}} \\ \hline
+\comando{get\_basic\_profile\_for\_chat(\dots)} & Datos del profesional para el panel de chat. & V11 \\ \hline
+\rowcolor{grisTecnico}
+\comando{get\_company\_profile\_for\_chat(\dots)} & Datos del reclutador para el panel de chat. & V11 \\ \hline
+\comando{core.get\_explore\_portfolios(p\_limit)} & Portafolios publicados para la exploración. & V10 \\ \hline
+\rowcolor{grisTecnico}
+\comando{admin.get\_skill\_catalog(\dots)} & Catálogo de skills (panel admin). & V10 \\ \hline
+\comando{admin.get\_skill\_metrics()} & Métricas agregadas de skills. & V10 \\ \hline
+\rowcolor{grisTecnico}
+\comando{admin.get\_top\_skills(p\_limit)} & Top de skills por número de perfiles. & V10 \\ \hline
+\comando{admin.delete\_unused\_skill\_tags(\dots)} & Limpieza de \textit{tags} sin uso. & V10 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo D — Políticas RLS y Seguridad de Datos}
+\label{cap:anexo_rls}
+
+El aislamiento de datos por usuario se garantiza con \textit{Row Level Security} de PostgreSQL.
+La tabla~\ref{tab:anexo_rls} resume las políticas explícitas y el criterio aplicado.\par
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Tabla}} & \textcolor{white}{\textbf{Política}} & \textcolor{white}{\textbf{Criterio}} \\ \hline
+\comando{recruiter\_candidate\_notes} & \comando{rcn\_owner\_all} & \comando{company\_profile\_id = auth.uid()}. \\ \hline
+\rowcolor{grisTecnico}
+\comando{profile\_likes} & \comando{profile\_likes\_owner\_select} & \comando{basic\_profile\_id = auth.uid()} (SELECT). \\ \hline
+\comando{email\_change\_requests} & (sin política) & RLS activo; solo el backend (service role) accede. \\ \hline
+\end{tabularx}\normalfont\normalsize
+\par\vspace{0.3cm}
+
+\begin{NotaTecnica}
+Las escrituras sobre tablas con RLS se canalizan por RPCs \comando{SECURITY DEFINER} con
+\comando{search\_path} fijado (\comando{core, public, pg\_temp}), lo que evita la inyección de
+esquemas maliciosos y mantiene el principio de mínimo privilegio descrito en el
+Sprint~1 (Sección~\ref{sec:s1_database}).
+\end{NotaTecnica}
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo E — Catálogo de Migraciones SQL}
+\label{cap:anexo_migraciones}
+
+Listado cronológico de las migraciones \comando{V1}--\comando{V15} aplicadas sobre Supabase,
+con el sprint en que se documentan.\par
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|c|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Migración}} & \textcolor{white}{\textbf{Contenido}} & \textcolor{white}{\textbf{Sprint}} \\ \hline
+V1 & Campos geográficos en \comando{work\_experiences}. & 2 \\ \hline
+\rowcolor{grisTecnico}
+V2 & Soft-delete de \comando{cv\_documents}. & 2 \\ \hline
+V3 & Creación de \comando{profile\_connections}. & 3 \\ \hline
+\rowcolor{grisTecnico}
+V4 & SEO, coordenadas, \comando{profile\_security\_codes} y \comando{delete\_profile\_cascade}. & 1--2 \\ \hline
+V5 & Curriculum PDF en \comando{portfolio\_settings}. & 3 \\ \hline
+\rowcolor{grisTecnico}
+V6 & Talent Discovery: likes/etapas, notas, snapshots y RPCs analíticas. & 3 \\ \hline
+V7 & Idempotencia de \comando{chat\_messages} + RPCs seguras de notas. & 3 \\ \hline
+\rowcolor{grisTecnico}
+V8 & RPCs seguras de pipeline (\comando{auth.uid()}). & 3 \\ \hline
+V9/V10 & Soft-delete de \comando{hard\_skills} + RPCs admin/skills. & 2 \\ \hline
+\rowcolor{grisTecnico}
+V11 & Fix RPCs chat/perfil + wrapper \comando{get\_recent\_talent\_views}. & 4 \\ \hline
+V12 & Trigger de sincronización de email a perfiles. & 4 \\ \hline
+\rowcolor{grisTecnico}
+V13 & Tabla \comando{email\_change\_requests}. & 4 \\ \hline
+V14 & Conexiones URL-first (+22 providers + custom). & 3 \\ \hline
+\rowcolor{grisTecnico}
+V15 & Política RLS SELECT para \comando{profile\_likes}. & 4 \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage
+
+% =============================================================================
+\chapter{Anexo F — Matriz de Trazabilidad Épicas $\leftrightarrow$ Sprints}
+\label{cap:anexo_trazabilidad}
+
+Conforme a ISO/IEC/IEEE 15289, cada Épica del \textit{Product Backlog}
+(Sección~\ref{ssec:s0_backlog}) se vincula al sprint que la entrega y al capítulo que la
+documenta.\par
+
+\renewcommand{\arraystretch}{1.3}
+\fontsize{9}{10.8}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|c|c|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Épica}} & \textcolor{white}{\textbf{Funcionalidad}} & \textcolor{white}{\textbf{Sprint}} & \textcolor{white}{\textbf{Cap.}} \\ \hline
+EPIC-01 & Identidad, acceso y seguridad. & 1 & \ref{cap:sprint1} \\ \hline
+\rowcolor{grisTecnico}
+EPIC-02 & Perfil profesional y trayectoria. & 2 & \ref{cap:sprint2} \\ \hline
+EPIC-03 & Matriz de habilidades. & 2 & \ref{cap:sprint2} \\ \hline
+\rowcolor{grisTecnico}
+EPIC-04 & Gestión de proyectos y evidencias. & 3 & \ref{cap:sprint3} \\ \hline
+EPIC-05 & Interconexión y sincronización. & 3 & \ref{cap:sprint3} \\ \hline
+\rowcolor{grisTecnico}
+EPIC-06 & Visibilidad, marca personal y SEO. & 4 & \ref{cap:sprint4} \\ \hline
+EPIC-07 & Inteligencia de datos y analíticas. & 3--5 & \ref{cap:sprint3} \\ \hline
+\rowcolor{grisTecnico}
+EPIC-08 & UX y diseño adaptable. & 5 & \ref{cap:sprint5} \\ \hline
+\end{tabularx}\normalfont\normalsize
+
+\clearpage
