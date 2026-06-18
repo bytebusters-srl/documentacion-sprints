@@ -13,8 +13,9 @@ ISO/IEC/IEEE 26515 de describir el sistema en niveles progresivos de detalle, ap
 
 El nivel de contexto sitúa a EthosHub como un sistema central que interactúa con dos actores
 humanos (Profesional y Reclutador, además del Administrador) y con un conjunto de sistemas
-externos de los que depende: \textbf{Supabase} (autenticación, base de datos PostgreSQL y
-\textit{Realtime}), \textbf{Google Gemini} (servicios de IA), \textbf{Google Drive}
+externos de los que depende: \textbf{Supabase} (autenticación y \textit{Realtime}), una
+\textbf{base de datos PostgreSQL 15.10} autoalojada en el servidor TIS de la UMSS
+(administrada vía phpPgAdmin), \textbf{Google Gemini} (servicios de IA), \textbf{Google Drive}
 (importación de evidencias) y un \textbf{servidor SMTP} (correo transaccional). La
 Figura~\ref{fig:s0_c4_contexto} resume estas relaciones.
 
@@ -80,7 +81,7 @@ para las rutas de la SPA, mientras que los controladores REST atienden \comando{
         \node[layer, below=0.7cm of spa] (ctrl) {Controllers (REST)};
         \node[layer, below=0.7cm of ctrl] (svc) {Services (dominio)};
         \node[layer, below=0.7cm of svc] (repo) {Repositories (jOOQ)};
-        \node[store, right=2.2cm of repo] (db) {PostgreSQL (Supabase)};
+        \node[store, right=2.2cm of repo] (db) {PostgreSQL 15.10\\(servidor TIS)};
         \node[store, right=2.2cm of svc] (apis) {Gemini / SMTP / Drive};
 
         \draw[rel] (spa) -- node[right]{fetch \comando{/api}} (ctrl);
@@ -116,7 +117,7 @@ de propósito general) y la \textbf{cohesión de despliegue} (un solo artefacto)
         Framework (BE) & Spring Boot 4.0.6 & Web MVC, Security, Validation y Actuator integrados. \\ \hline
         Acceso a datos & jOOQ + Spring JDBC & SQL tipado contra el schema \comando{core}; control total de consultas. \\ \hline
         \rowcolor{grisTecnico}
-        Base de datos & PostgreSQL (Supabase) & RLS, RPCs \comando{SECURITY DEFINER} y \textit{pooler} gestionado. \\ \hline
+        Base de datos & PostgreSQL 15.10 (servidor TIS) & RLS, RPCs \comando{SECURITY DEFINER}; autoalojada y administrada vía phpPgAdmin. \\ \hline
         Seguridad & Spring Security (OAuth2 RS) & Validación de JWT de Supabase vía JWKS. \\ \hline
         \rowcolor{grisTecnico}
         Framework (FE) & React 18.3 + TS 5.3 & Componentes, \textit{strict mode} y tipado estático. \\ \hline

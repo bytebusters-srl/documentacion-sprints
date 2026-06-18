@@ -1,12 +1,78 @@
 % =============================================================================
 % ANEXOS — Catálogos de referencia (trazabilidad ISO 15289)
-% Base de datos documentada a partir del esquema real aplicado a Supabase
-% (migraciones V1–V15 del repositorio ethoshubB), schema `core`.
+% Base de datos documentada a partir del esquema real aplicado a PostgreSQL 15.10 (servidor TIS)
+% (migraciones V1–V15 del repositorio EthosBack), schema `core`.
 % =============================================================================
-\chapter{Anexo A — Catálogo Completo de Endpoints REST}
+\chapter*{Relación de los Anexos con los Sprints}
+\addcontentsline{toc}{chapter}{Relación de los Anexos con los Sprints}
+\label{cap:anexo_relacion}
+
+Conforme a ISO/IEC/IEEE 15289, cada anexo de referencia se vincula al sprint (o rango de
+sprints) en el que se origina su contenido y al capítulo de la memoria que lo documenta. La
+tabla~\ref{tab:anexo_sprints} establece esa trazabilidad para los Anexos A--BB.\par
+
+\begin{table}[!ht]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\fontsize{8.6}{10.3}\selectfont\sffamily
+\begin{tabularx}{\textwidth}{|l|X|c|}
+\hline
+\rowcolor{colorPrimario}
+\textcolor{white}{\textbf{Anexo}} & \textcolor{white}{\textbf{Contenido}} & \textcolor{white}{\textbf{Sprint(s)}} \\ \hline
+A — Endpoints REST & Catálogo consolidado de la API. & 1--5 \\ \hline
+\rowcolor{grisTecnico}
+B — Diccionario de Datos (\comando{core}) & Tablas y columnas (migraciones V1--V15). & 0--4 \\ \hline
+C — Funciones RPC y Triggers & RPCs \comando{SECURITY DEFINER} y triggers. & 1--4 \\ \hline
+\rowcolor{grisTecnico}
+D — Políticas RLS & Aislamiento de datos por usuario. & 1, 3, 4 \\ \hline
+E — Migraciones SQL & Listado V1--V15 con su sprint. & 1--4 \\ \hline
+\rowcolor{grisTecnico}
+F — Trazabilidad Épicas$\leftrightarrow$Sprints & Vínculo Épica--Sprint--Capítulo. & 0--5 \\ \hline
+G — Especificación de Endpoints & Contrato detallado de la API. & 1--4 \\ \hline
+\rowcolor{grisTecnico}
+H — Casos de Prueba (E2E) & Escenarios de validación funcional. & 4 \\ \hline
+I — Diagramas de Estado & Ciclos de vida de las entidades. & 3, 4 \\ \hline
+\rowcolor{grisTecnico}
+J — Glosario Técnico & Términos transversales del producto. & 0--5 \\ \hline
+K — Configuración y Variables & Secretos y perfiles de despliegue. & 0, 5 \\ \hline
+\rowcolor{grisTecnico}
+L — Mapa de Endpoints por Controlador & Inventario por controlador REST. & 1--5 \\ \hline
+M — Inventario del Frontend & Componentes y vistas de la SPA. & 1--5 \\ \hline
+\rowcolor{grisTecnico}
+N — Métricas y Velocidad & \textit{Burndown} y velocidad por sprint. & 0--5 \\ \hline
+O — Matriz de Riesgos & Riesgos y mitigaciones. & 0--5 \\ \hline
+\rowcolor{grisTecnico}
+P — Pila Tecnológica y Dependencias & \textit{Stack} y librerías. & 0 \\ \hline
+Q — Estructura de Repositorios & Árbol de \comando{EthosBack}/\comando{EthosFront}. & 0 \\ \hline
+\rowcolor{grisTecnico}
+R — Convenciones de Código y Versiones & GitFlow y estándares de código. & 0 \\ \hline
+S — Cumplimiento Normativo & Trazabilidad ISO 26515/15289. & 0--5 \\ \hline
+\rowcolor{grisTecnico}
+T — Estrategia de Pruebas y Cobertura & Pirámide de pruebas y cobertura. & 0--5 \\ \hline
+U — Cronograma Detallado por Semana & Planificación semanal del proyecto. & 0--5 \\ \hline
+\rowcolor{grisTecnico}
+V — Mapa de Pantallas de la SPA & Inventario de pantallas por rol. & 1--5 \\ \hline
+W — Recorridos de Usuario & \textit{User journeys} clave. & 1--5 \\ \hline
+\rowcolor{grisTecnico}
+X — Códigos de Error y Respuesta & Catálogo de errores de la API. & 1--5 \\ \hline
+Y — Eventos en Tiempo Real & Chat, presencia y notificaciones (Realtime). & 3 \\ \hline
+\rowcolor{grisTecnico}
+Z — Correos Transaccionales & Plantillas de correo del sistema. & 1, 4 \\ \hline
+AA — Decisiones de Arquitectura (ADR) & Registro de decisiones de diseño. & 0 \\ \hline
+\rowcolor{grisTecnico}
+BB — Convenciones de la API & Reglas de diseño y consumo REST. & 0, 1 \\ \hline
+\end{tabularx}\normalfont\normalsize
+\caption{Relación de los Anexos A--BB con los sprints que originan su contenido.}
+\label{tab:anexo_sprints}
+\end{table}
+
+\clearpage
+
+% =============================================================================
+\chapter{Catálogo Completo de Endpoints REST}
 \label{cap:anexo_endpoints}
 
-Este anexo consolida los \textit{endpoints} expuestos por el backend \comando{ethoshubB} a lo
+Este anexo consolida los \textit{endpoints} expuestos por el backend \comando{EthosBack} a lo
 largo de los seis sprints, agrupados por dominio. Todas las respuestas siguen el envoltorio
 \comando{ApiResponse} (Sección~\ref{ssec:s1_gi_openapi}) y se documentan en Swagger UI
 (\comando{/swagger-ui.html}).\par
@@ -15,6 +81,7 @@ largo de los seis sprints, agrupados por dominio. Todas las respuestas siguen el
 \label{sec:anexo_ep_auth}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -36,6 +103,7 @@ DELETE & \comando{/api/v1/auth/account} & Eliminación de cuenta (\comando{delet
 \label{sec:anexo_ep_perfil}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -49,10 +117,12 @@ CRUD & \comando{/api/v1/skills} & Hard/soft skills (soft-delete). \\ \hline
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
 
+\clearpage
 \section{Proyectos, Conexiones y Portafolio}
 \label{sec:anexo_ep_proyectos}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -71,6 +141,7 @@ GET & \comando{/api/v1/portfolio/public/\{slug\}} & Vista pública (con/sin cont
 \label{sec:anexo_ep_reclutador}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -89,10 +160,11 @@ GET & \comando{/actuator/health} & Salud del servicio. \\ \hline
 \clearpage
 
 % =============================================================================
-\chapter{Anexo B — Diccionario de Datos (schema \texttt{core})}
+\chapter{Diccionario de Datos (schema \texttt{core})}
 \label{cap:anexo_datos}
 
-Diccionario de datos del schema \comando{core} de la base PostgreSQL gestionada por Supabase,
+Diccionario de datos del schema \comando{core} de la base PostgreSQL~15.10 autoalojada en el
+servidor TIS (administrada vía phpPgAdmin),
 documentado a partir de las migraciones reales \comando{V1}--\comando{V15}. La identidad y las
 credenciales residen en el schema \comando{auth} (gestionado por Supabase); el dominio de negocio
 vive en \comando{core}, protegido por RLS. El perfil se modela en \textbf{dos tablas según el
@@ -102,9 +174,10 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \section{Entidades de Identidad y Perfil}
 \label{sec:anexo_datos_perfil}
 
-\textbf{Tabla \comando{core.profiles\_basic}} — perfil del profesional.
+\textbf{Tabla \comando{core.profiles\_basic}} — perfil del profesional.\par
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -133,9 +206,10 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
 
-\textbf{Tabla \comando{core.profiles\_company}} — perfil del reclutador.
+\textbf{Tabla \comando{core.profiles\_company}} — perfil del reclutador.\par
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -155,9 +229,10 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
 
-\textbf{Tabla \comando{core.profile\_security\_codes}} — códigos OTP (V4).
+\textbf{Tabla \comando{core.profile\_security\_codes}} — códigos OTP (V4).\par
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -179,6 +254,7 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \label{sec:anexo_datos_skills}
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -196,6 +272,7 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \label{sec:anexo_datos_portfolio}
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -212,6 +289,7 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \label{sec:anexo_datos_reclutamiento}
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -228,7 +306,7 @@ con clave \comando{id\_auth} que referencia a \comando{auth.users.id}.\par
 \clearpage
 
 % =============================================================================
-\chapter{Anexo C — Catálogo de Funciones RPC y Triggers}
+\chapter{Catálogo de Funciones RPC y Triggers}
 \label{cap:anexo_rpc}
 
 Las operaciones que cruzan la frontera de RLS se ejecutan mediante funciones
@@ -240,6 +318,7 @@ estas funciones \textbf{ignoran} cualquier identificador de empresa recibido por
 \label{sec:anexo_rpc_seguridad}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{8.8}{10.5}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -253,6 +332,7 @@ estas funciones \textbf{ignoran} cualquier identificador de empresa recibido por
 \label{sec:anexo_rpc_reclutador}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{8.8}{10.5}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -274,10 +354,12 @@ estas funciones \textbf{ignoran} cualquier identificador de empresa recibido por
 \comando{get\_company\_likes\_full(p\_company\_id)} & Likes del reclutador con datos del candidato. & V11 \\ \hline
 \end{tabularx}\normalfont\normalsize
 
+\clearpage
 \section{RPC de Chat, Exploración y Administración}
 \label{sec:anexo_rpc_chat}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{8.8}{10.5}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -297,7 +379,7 @@ estas funciones \textbf{ignoran} cualquier identificador de empresa recibido por
 \clearpage
 
 % =============================================================================
-\chapter{Anexo D — Políticas RLS y Seguridad de Datos}
+\chapter{Políticas RLS y Seguridad de Datos}
 \label{cap:anexo_rls}
 
 El aislamiento de datos por usuario se garantiza con \textit{Row Level Security} de PostgreSQL.
@@ -305,13 +387,14 @@ La tabla~\ref{tab:anexo_rls} resume las políticas explícitas y el criterio apl
 
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
 \textcolor{white}{\textbf{Tabla}} & \textcolor{white}{\textbf{Política}} & \textcolor{white}{\textbf{Criterio}} \\ \hline
-\comando{recruiter\_candidate\_notes} & \comando{rcn\_owner\_all} & \comando{company\_profile\_id = auth.uid()}. \\ \hline
+\comando{recruiter\_candidate\_notes} & \comando{rcn\_owner\_all} & \comando{company\_profile\_id} \\ \hline
 \rowcolor{grisTecnico}
-\comando{profile\_likes} & \comando{profile\_likes\_owner\_select} & \comando{basic\_profile\_id = auth.uid()} (SELECT). \\ \hline
+\comando{profile\_likes} & \comando{profile\_likes\_owner\_select} & \comando{basic\_profile\_id} \\ \hline
 \comando{email\_change\_requests} & (sin política) & RLS activo; solo el backend (service role) accede. \\ \hline
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
@@ -326,14 +409,15 @@ Sprint~1 (Sección~\ref{sec:s1_database}).
 \clearpage
 
 % =============================================================================
-\chapter{Anexo E — Catálogo de Migraciones SQL}
+\chapter{Catálogo de Migraciones SQL}
 \label{cap:anexo_migraciones}
 
-Listado cronológico de las migraciones \comando{V1}--\comando{V15} aplicadas sobre Supabase,
-con el sprint en que se documentan.\par
+Listado cronológico de las migraciones \comando{V1}--\comando{V15} aplicadas sobre
+PostgreSQL~15.10 (servidor TIS, vía phpPgAdmin), con el sprint en que se documentan.\par
 
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|c|}
 \hline
 \rowcolor{colorPrimario}
@@ -364,7 +448,7 @@ V15 & Política RLS SELECT para \comando{profile\_likes}. & 4 \\ \hline
 \clearpage
 
 % =============================================================================
-\chapter{Anexo F — Matriz de Trazabilidad Épicas $\leftrightarrow$ Sprints}
+\chapter{Matriz de Trazabilidad Épicas $\leftrightarrow$ Sprints}
 \label{cap:anexo_trazabilidad}
 
 Conforme a ISO/IEC/IEEE 15289, cada Épica del \textit{Product Backlog}
@@ -373,6 +457,7 @@ documenta.\par
 
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|c|c|}
 \hline
 \rowcolor{colorPrimario}

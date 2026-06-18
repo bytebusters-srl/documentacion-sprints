@@ -1,10 +1,10 @@
 % =============================================================================
 % ANEXO L — Mapa completo de endpoints por controlador (rutas reales)
 % =============================================================================
-\chapter{Anexo L — Mapa Completo de Endpoints por Controlador}
+\chapter{Mapa Completo de Endpoints por Controlador}
 \label{cap:anexo_mapa_ep}
 
-Mapa exhaustivo de los \textit{endpoints} REST de \comando{ethoshubB}, agrupados por controlador
+Mapa exhaustivo de los \textit{endpoints} REST de \comando{EthosBack}, agrupados por controlador
 real, con su prefijo de \comando{@RequestMapping}. Complementa el detalle de \textit{payloads}
 del Anexo~\ref{cap:anexo_ep_detalle}.\par
 
@@ -12,6 +12,7 @@ del Anexo~\ref{cap:anexo_ep_detalle}.\par
 \label{sec:anexo_mapa_perfil}
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -21,13 +22,13 @@ ProfileController & GET/PATCH & \comando{/api/v1/profile/basic}, \comando{/bio} 
 WorkExperienceController & GET/POST/PUT/DELETE & \comando{/api/v1/work-experiences[...]} \\ \hline
 AcademicRecordController & GET/POST/PUT/DELETE & \comando{/api/v1/academic-records[...]} \\ \hline
 \rowcolor{grisTecnico}
-SkillController & GET/POST/PUT/DELETE & \comando{/api/skills/...}, \comando{/api/profiles/\{id\}/skills/...} \\ \hline
+SkillController & GET/POST/PUT/DELETE & \comando{/api/skills/...}, \comando{/api/profiles/\{id\}/...} \\ \hline
 ProjectController & GET/POST/DELETE & \comando{/api/projects[...]}, \comando{/api/v1/projects/public/\{id\}} \\ \hline
 \rowcolor{grisTecnico}
 PortfolioSettingsController & GET/PUT/POST & \comando{/api/v1/portfolio/settings}, \comando{/items}, \comando{/curriculum/compile} \\ \hline
 PortfolioPublicController & GET & \comando{/api/v1/portfolio/public/explore}, \comando{/\{slug\}} \\ \hline
 \rowcolor{grisTecnico}
-ConnectionController & GET/POST/DELETE & \comando{/api/v1/connections[...]/disconnect|reconnect|sync} \\ \hline
+ConnectionController & GET/POST/DELETE & \comando{/api/v1/connections[...]/disc|rec|sync} \\ \hline
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
 
@@ -35,6 +36,7 @@ ConnectionController & GET/POST/DELETE & \comando{/api/v1/connections[...]/disco
 \label{sec:anexo_mapa_cv}
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -49,10 +51,12 @@ PreferenceController & GET/PUT & \comando{/api/v1/preferences} \\ \hline
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
 
+\clearpage
 \section{Reclutador y Administración}
 \label{sec:anexo_mapa_admin}
 \renewcommand{\arraystretch}{1.25}
 \fontsize{8.6}{10.3}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -60,9 +64,9 @@ PreferenceController & GET/PUT & \comando{/api/v1/preferences} \\ \hline
 TalentController & GET & \comando{/api/v1/talents} \\ \hline
 \rowcolor{grisTecnico}
 RecruiterAiController & POST & \comando{/api/v1/recruiter/ai-insights} \\ \hline
-AdminMetricsController & GET & \comando{/api/admin/metrics/overview|growth|roles|top-skills|health}, \comando{/logs} \\ \hline
+AdminMetricsController & GET & \comando{/api/admin/metrics/overview|growth|roles}, \comando{/logs} \\ \hline
 \rowcolor{grisTecnico}
-AdminModerationController & GET/DELETE/POST & \comando{/api/admin/moderation/profiles/\{id\}[...]/restore} \\ \hline
+AdminModerationController & GET/DELETE/POST & \comando{/api/admin/moderation/profiles/\{id\}[...]} \\ \hline
 HealthController & GET & \comando{/actuator/health} \\ \hline
 \end{tabularx}\normalfont\normalsize
 

@@ -1,7 +1,7 @@
 \section{Frontend: Prototipado y Arquitectura de la Interfaz}
 \label{sec:s0_frontend}
 
-El frontend (\comando{ethoshubF}) se inicializó como una \textbf{Single Page Application} en
+El frontend (\comando{EthosFront}) se inicializó como una \textbf{Single Page Application} en
 React 18.3 + TypeScript 5.3 sobre Vite 5.1, con una arquitectura \textit{feature-first} y
 capas compartidas. Esta sección cubre la configuración de dependencias y manejo de estado
 (Sección~\ref{ssec:s0_fe_deps}) y la arquitectura de componentes y lineamientos estéticos
@@ -65,7 +65,7 @@ src/
 \end{lstlisting}
 
 El \textbf{flujo de datos} es unidireccional: los componentes consumen \textit{stores} de
-Zustand y servicios (\comando{shared/services/*}) que invocan la API REST (vía Axios) o
+Zustand y servicios \\ (\comando{shared/services/*}) que invocan la API REST (vía Axios) o
 directamente a Supabase (Realtime/RPC). El \textbf{enrutamiento protegido} se define en
 \comando{app/router/} con \comando{ProtectedRoute} (autenticación), \comando{RoleScopeGuard}
 (autorización por rol) y \comando{RouteErrorBoundary}.
@@ -76,7 +76,7 @@ Los \textbf{lineamientos estéticos} establecidos como línea base son:
     \item \textbf{Estética \textit{clean-tech}:} jerarquía visual clara, espaciado generoso y
     contraste alto, orientada a transmitir profesionalismo.
     \item \textbf{Sistema de componentes:} primitivas en \comando{components/ui} con variantes
-    tipadas mediante \comando{class-variance-authority}.
+    tipadas mediante \\ \comando{class-variance-authority}.
     \item \textbf{Animaciones:} Framer Motion para transiciones y microinteracciones, con la
     consigna de no introducir latencia perceptible.
     \item \textbf{Responsividad:} diseño \textit{mobile-first} con Tailwind; el \comando{Sidebar}

@@ -1,7 +1,7 @@
 \section{Backend: Configuración Inicial y Boilerplate}
 \label{sec:s0_backend}
 
-El andamiaje del backend (\comando{ethoshubB}) se construyó sobre Spring Boot 4.0.6 con Maven,
+El andamiaje del backend (\comando{EthosBack}) se construyó sobre Spring Boot 4.0.6 con Maven,
 priorizando la reproducibilidad del entorno y la integración temprana del flujo de
 empaquetado monolítico. Esta sección documenta la inicialización del repositorio
 (Sección~\ref{ssec:s0_be_init}) y la estructura de directorios junto con el flujo de CI/CD
@@ -48,7 +48,7 @@ fijado en la Sección~\ref{sec:s0_arquitectura}. El árbol base entregado en el 
 siguiente:
 
 \begin{lstlisting}[caption={Estructura de directorios del backend.}, label={lst:s0_tree}]
-ethoshubB/
+EthosBack/
 |-- build.sh                  # Empaquetado monolitico (FE + BE -> JAR)
 |-- pom.xml                   # Dependencias y plugins Maven
 |-- Dockerfile                # Imagen de despliegue
@@ -94,7 +94,7 @@ monolítico. La tabla~\ref{tab:s0_buildsh} documenta sus modos de operación.
 \end{table}
 
 \begin{NotaTecnica}
-El flujo de \comando{build.sh} compila \comando{../ethoshubF} con Node, copia \comando{dist/} a
+El flujo de \comando{build.sh} compila \comando{../EthosFront} con Node, copia \comando{dist/} a
 \comando{src/main/resources/static/} mediante el \comando{maven-resources-plugin} (fase
 \comando{process-resources}) y empaqueta el JAR con el \comando{spring-boot-maven-plugin}. Este
 mecanismo es la columna vertebral del despliegue monolítico documentado en el Sprint 5.
@@ -124,6 +124,7 @@ La tabla~\ref{tab:s0_cicd} resume las etapas del \textit{pipeline} de CI definid
     \label{tab:s0_cicd}
 \end{table}
 
+\clearpage
 \subsection{Diagrama de Secuencia: Empaquetado Monolítico (\texttt{build.sh})}
 \label{ssec:s0_seq_build}
 La Figura~\ref{fig:s0_seq} muestra la secuencia del empaquetado FE+BE en un único JAR.

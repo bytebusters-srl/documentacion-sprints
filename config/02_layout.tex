@@ -4,8 +4,8 @@
 % 1. Configuración de Márgenes Exactos
 \geometry{
     a4paper,
-    inner=3.0cm,       
-    outer=2.0cm,       
+    inner=2.5cm,       
+    outer=2.5cm,       
     top=2.5cm,       
     bottom=2.5cm,    
     includehead,     
@@ -14,13 +14,33 @@
     headsep=0.4cm,   
     footskip=1.0cm   
 }
-\singlespacing 
+\singlespacing
 
-\titleformat{\chapter}[hang]
-  {\sffamily\bfseries\fontsize{16}{19.2}\selectfont\color{colorPrimario}}
-  {\thechapter.}
-  {1em}{}
-\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+% Microtipografía: permite a TeX encontrar mejores cortes de línea (reduce
+% los avisos Overfull/Underfull en texto justificado sin alterar el contenido).
+\emergencystretch=3em
+
+% Portada de capítulo estilo "libro" (alineada al Manual Técnico): el título del
+% capítulo ocupa su propia plana con un rótulo "CAPÍTULO N" en gran tamaño y un
+% breve resumen declarado con \resumenCapitulo{...}. El contenido inicia en la
+% página siguiente.
+\titleformat{\chapter}[display]
+  {\sffamily\bfseries\color{colorPrimario}}
+  {\filright\fontsize{13}{15}\selectfont\color{grisISO}\MakeUppercase{Capítulo \thechapter}}
+  {0.35cm}
+  {\fontsize{25}{29}\selectfont\filright}
+  []
+\titlespacing*{\chapter}{0pt}{55pt}{24pt}
+
+% \resumenCapitulo{texto}: sinopsis breve bajo el título del capítulo, en la misma
+% plana. Cierra con \clearpage para que el contenido empiece en la página siguiente.
+\newcommand{\resumenCapitulo}[1]{%
+  \vspace{0.5cm}%
+  {\color{colorAcento}\rule{2.5cm}{2pt}}\par
+  \vspace{0.45cm}%
+  {\normalfont\sffamily\fontsize{11}{15}\selectfont\color{grisISO!95!black}%
+   \itshape #1\par}%
+  \clearpage}
 
 \titleformat{\section}[hang]
   {\sffamily\bfseries\fontsize{14}{16.8}\selectfont\color{colorPrimario}}

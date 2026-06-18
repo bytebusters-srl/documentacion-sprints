@@ -17,6 +17,7 @@ trazada en los registros siguientes, garantizando la responsabilidad
 \noindent
 \renewcommand{\arraystretch}{1.4}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\dimexpr\textwidth-2pt\relax}{|c|c|X|c|}
 \hline
 \rowcolor{headerTabla}
@@ -46,6 +47,7 @@ La elaboración y validación de esta memoria fue responsabilidad del equipo de
 \noindent
 \renewcommand{\arraystretch}{1.4}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\dimexpr\textwidth-2pt\relax}{|>{\bfseries\color{colorPrimario}}l|X|c|}
 \hline
 \rowcolor{headerTabla}
@@ -56,12 +58,12 @@ Scrum Master & Facilitación de ceremonias y trazabilidad de los incrementos por
 \rowcolor{grisTecnico}
 Product Owner & Definición del Backlog, criterios de aceptación y aprobación de incrementos. & Producto \\
 \hline
-Líder de Backend & Documentación de la API, seguridad y persistencia (\texttt{ethoshubB}). & Backend \\
+Líder de Backend & Documentación de la API, seguridad y persistencia (\texttt{EthosBack}). & Backend \\
 \hline
 \rowcolor{grisTecnico}
-Líder de Frontend & Documentación de la SPA, componentes y estados (\texttt{ethoshubF}). & Frontend \\
+Líder de Frontend & Documentación de la SPA, componentes y estados (\texttt{EthosFront}). & Frontend \\
 \hline
-DBA & Modelo de datos, migraciones \texttt{V*.sql} y políticas RLS sobre Supabase. & Base de Datos \\
+DBA & Modelo de datos, migraciones \texttt{V*.sql} y políticas RLS sobre PostgreSQL 15.10 (servidor TIS). & Base de Datos \\
 \hline
 \rowcolor{grisTecnico}
 QA Lead & Casos de prueba, revisión técnica y usabilidad de la información. & V\&V \\
@@ -69,11 +71,33 @@ QA Lead & Casos de prueba, revisión técnica y usabilidad de la información. &
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.4cm}
 
+\clearpage
 \begin{NotaTecnica}
 Este documento es de carácter \textbf{confidencial} y está dirigido al equipo de
 producto de Byte Busters S.R.L.\ y a los evaluadores autorizados de la convocatoria
 CPTIS-2302-2026. Su identificador de trazabilidad es \comando{PDS-ETHOSHUB-2.0.0} y se
-versiona junto al código fuente en los repositorios \comando{ethoshubB} y \comando{ethoshubF}.
+versiona junto al código fuente en los repositorios GitHub \comando{EthosBack}
+(\url{https://github.com/dpardo23/EthosBack.git}) y \comando{EthosFront}
+(\url{https://github.com/dpardo23/EthosFront.git}). El producto se despliega en el dominio
+\url{http://bytebusters.tis.cs.umss.edu.bo}.
 \end{NotaTecnica}
+
+\section*{Documentación Relacionada del Proyecto}
+Esta Memoria P.D.S.\ forma parte del corpus documental de \textbf{EthosHub v2.0.0} entregado a la
+convocatoria CPTIS-2302-2026. Para los detalles que exceden el alcance incremental de esta
+memoria, consúltense los documentos hermanos del mismo repositorio documental
+(\texttt{/Documentacion}):
+\begin{itemize}[noitemsep]
+    \item \textbf{Convocatoria CPTIS-2302-2026} (\texttt{00\_Convocatoria-CPTIS}): bases y
+    requisitos de la convocatoria pública.
+    \item \textbf{Manual Técnico de Arquitectura y Diseño} (\texttt{01\_Manual-Tecnico}):
+    arquitectura C4, diccionario de datos e integraciones (Supabase, Gemini, Drive).
+    \item \textbf{Manual de Instalación} (\texttt{02\_Manual-Instalacion}): despliegue paso a paso
+    sobre el servidor TIS (PostgreSQL~15.10, phpPgAdmin y net2ftp).
+    \item \textbf{Manual de Usuario} (\texttt{03\_Manual-Usuario}): guía funcional para
+    profesionales, reclutadores y administradores.
+    \item \textbf{Documentación de Pruebas y Validación} (\texttt{05\_Documentacion-V\&V}): casos de prueba unitarios, de integración y end-to-end, con sus resultados y evidencias.
+    \item \textbf{Documentación de Actas} (\texttt{06\_Documentacion-Actas}): resúmenes y detalles de las reuniones del equipo. Documentación de ceremonias Scrum, retrospectivas y decisiones técnicas.
+\end{itemize}
 
 \clearpage

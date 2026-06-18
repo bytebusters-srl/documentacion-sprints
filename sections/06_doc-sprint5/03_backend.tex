@@ -18,12 +18,12 @@ contenedores. La Figura~\ref{fig:s5_deploy} muestra la topología de despliegue.
         \node[ext] (cli) {Cliente (navegador)};
         \node[box, right=of cli] (lb) {Balanceador de carga};
         \node[box, right=of lb] (jar) {Contenedor\\JAR EthosHub};
-        \node[ext, below=of jar] (supa) {Supabase (PostgreSQL)};
+        \node[ext, below=of jar] (supa) {PostgreSQL 15.10\\(servidor TIS)};
         \node[ext, below=of lb] (env) {Variables de entorno (secretos)};
 
         \draw[rel] (cli) -- node[above]{HTTPS} (lb);
         \draw[rel] (lb) -- (jar);
-        \draw[rel] (jar) -- node[right]{JDBC pooler} (supa);
+        \draw[rel] (jar) -- node[right]{JDBC} (supa);
         \draw[rel] (env) -- node[left]{inyecta} (jar);
     \end{tikzpicture}
     \caption{Topología de despliegue productivo (monolítico en contenedor).}
@@ -44,7 +44,7 @@ variables de entorno descritas en la tabla~\ref{tab:s5_env}.
         \hline
         \rowcolor{colorPrimario}
         \textcolor{white}{\textbf{Variable}} & \textcolor{white}{\textbf{Descripción}} \\ \hline
-        \comando{DATABASE\_URL} & JDBC URL de PostgreSQL (Supabase pooler). \\ \hline
+        \comando{DATABASE\_URL} & JDBC URL de PostgreSQL 15.10 (servidor TIS, administrado vía phpPgAdmin). \\ \hline
         \rowcolor{grisTecnico}
         \comando{SUPABASE\_JWK\_SET\_URI} & JWKS de Supabase para validar JWT. \\ \hline
         \comando{MAIL\_*} & Credenciales SMTP (usuario, contraseña, remitente). \\ \hline
@@ -74,6 +74,42 @@ o nube, con balanceo de carga configurado. Tomcat ajusta \comando{max-http-form-
 java -jar target/ethoshub-2.0.0.jar --spring.profiles.active=prod
 \end{lstlisting}
 
+\subsection{Recursos de Despliegue Productivo}
+\label{ssec:s5_be_recursos}
+El artefacto monolítico se publicó en la infraestructura de la asignatura Taller de Ingeniería
+de Software (TIS) de la UMSS. El dominio de producción sirve la SPA y la API desde el mismo JAR;
+la administración de la base de datos PostgreSQL~15.10 se realiza con el cliente web phpPgAdmin y
+la transferencia de archivos del despliegue con el cliente web net2ftp. La
+tabla~\ref{tab:s5_recursos} consolida los puntos de acceso y los repositorios de código fuente.
+
+\begin{table}[!ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \fontsize{9}{10.8}\selectfont\sffamily
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{colorPrimario}
+        \textcolor{white}{\textbf{Recurso}} & \textcolor{white}{\textbf{Punto de acceso}} \\ \hline
+        Dominio de producción & \url{http://bytebusters.tis.cs.umss.edu.bo} \\ \hline
+        \rowcolor{grisTecnico}
+        Base de datos (PostgreSQL 15.10) & phpPgAdmin: \url{http://bytebusters.tis.cs.umss.edu.bo/phppgadmin} \\ \hline
+        Transferencia de archivos (FTP) & net2ftp: \url{http://bytebusters.tis.cs.umss.edu.bo/net2ftp} \\ \hline
+        \rowcolor{grisTecnico}
+        Repositorio backend (\comando{EthosBack}) & \url{https://github.com/dpardo23/EthosBack.git} \\ \hline
+        Repositorio frontend (\comando{EthosFront}) & \url{https://github.com/dpardo23/EthosFront.git} \\ \hline
+    \end{tabularx}
+    \caption{Recursos de despliegue productivo de EthosHub (Sprint 5).}
+    \label{tab:s5_recursos}
+\end{table}
+
+\begin{NotaTecnica}
+La base de datos PostgreSQL~15.10 se aloja en el servidor de la asignatura (no en un servicio
+gestionado): el esquema \comando{core} y las migraciones \comando{V1}--\comando{V15} se aplican y
+verifican a través de phpPgAdmin. Los procedimientos detallados de despliegue figuran en el
+\textbf{Manual de Instalación} (\texttt{02\_Manual-Instalacion}) y en el \textbf{Manual Técnico}
+(\texttt{01\_Manual-Tecnico}).
+\end{NotaTecnica}
+
 \subsection{Reversión y Continuidad del Servicio}
 \label{ssec:s5_be_rollback}
 El despliegue contempla un procedimiento de reversión (\textit{rollback}) ante incidentes, según
@@ -102,8 +138,9 @@ base de datos (Sección~\ref{ssec:s5_db_backups}).
 \subsection{Diagrama de Secuencia: Despliegue Productivo}
 \label{ssec:s5_seq_deploy}
 La Figura~\ref{fig:s5_seq} muestra la secuencia de despliegue: empaquetado, contenerización con
-variables de entorno y conexión a Supabase.
+variables de entorno y conexión a PostgreSQL.
 
+\clearpage
 \begin{figure}[!ht]
     \centering
     \begin{tikzpicture}[font=\sffamily\scriptsize, >=Latex,
@@ -115,13 +152,13 @@ variables de entorno y conexión a Supabase.
         \node[part] (b)  at (3.6,0)  {build.sh --prod};
         \node[part] (dk) at (7.6,0)  {Docker};
         \node[part] (j)  at (10.8,0) {JAR};
-        \node[part] (sb) at (13.4,0) {Supabase};
+        \node[part] (sb) at (13.4,0) {PostgreSQL};
         \foreach \n in {d,b,dk,j,sb} \draw[grisISO, dashed] (\n.south) -- ++(0,-4.7);
         \draw[msg] (0,-0.9)    -- node[above]{1. --prod} (3.6,-0.9);
         \draw[ret] (3.6,-1.6)  -- node[above]{2. JAR 2.0.0} (0,-1.6);
         \draw[msg] (0,-2.3)    -- node[above]{3. build \& run (env)} (7.6,-2.3);
         \draw[msg] (7.6,-3.0)  -- node[above]{4. arranca} (10.8,-3.0);
-        \draw[msg] (10.8,-3.7) -- node[above]{5. JDBC pooler} (13.4,-3.7);
+        \draw[msg] (10.8,-3.7) -- node[above]{5. JDBC} (13.4,-3.7);
     \end{tikzpicture}
     \caption{Diagrama de secuencia del despliegue productivo monolítico.}
     \label{fig:s5_seq}

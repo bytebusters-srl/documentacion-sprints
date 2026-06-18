@@ -3,6 +3,9 @@
 % =============================================================================
 \chapter{Sprint 0 — Incepción, Arquitectura Base y Planificación}
 \label{cap:sprint0}
+\resumenCapitulo{Fase de incepción del producto: establece la línea base tecnológica, la
+arquitectura monolítica de despliegue, el \textit{Product Backlog} priorizado y la estrategia
+de documentación continua que rigen los cinco incrementos posteriores de EthosHub.}
 
 El Sprint 0, denominado estructuralmente como la fase de \textit{Inception}, constituye el
 periodo de cimentación técnica y conceptual de la plataforma \textbf{EthosHub}. Durante este
@@ -73,7 +76,7 @@ de éxito transversal es la \textbf{validación de paridad de entornos al 100\,\
         \textbf{Tag de cierre} & \comando{release/v0.1.0}. \\ \hline
         \textbf{Stack Frontend} & React 18.3 + TypeScript 5.3 / Vite 5.1 / Node.js 18+. \\ \hline
         \textbf{Stack Backend} & Java 17 / Spring Boot 4.0.6 / Maven 3.9+. \\ \hline
-        \textbf{Base de datos} & PostgreSQL gestionada por Supabase (schema \comando{core}). \\ \hline
+        \textbf{Base de datos} & PostgreSQL 15.10 autoalojada en el servidor TIS (schema \comando{core}, administrada vía phpPgAdmin). \\ \hline
         \textbf{Acceso a datos} & jOOQ (\comando{DSLContext}) + Spring JDBC. \\ \hline
         \textbf{Criterio de éxito} & Paridad de entornos validada al 100\,\% en el equipo. \\ \hline
     \end{tabularx}

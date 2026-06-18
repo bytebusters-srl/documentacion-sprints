@@ -3,7 +3,7 @@
 
 La preparación para producción combina la siembra de datos maestros y una política de respaldos
 automatizada. La Figura~\ref{fig:s5_backup} resume el ciclo de respaldo y recuperación sobre
-Supabase.\par
+la base de datos PostgreSQL~15.10 autoalojada en el servidor TIS.\par
 
 \begin{figure}[!ht]
     \centering
@@ -31,13 +31,14 @@ funcional desde el primer despliegue.
 
 \subsection{Políticas de Respaldos y Recuperación}
 \label{ssec:s5_db_backups}
-Se implementaron políticas automatizadas de respaldos (\textit{backups}) sobre Supabase y
-protocolos de recuperación ante contingencias, definiendo la frecuencia de copia y el
-procedimiento de restauración.
+Se implementaron políticas automatizadas de respaldos (\textit{backups}) sobre la base de datos
+PostgreSQL~15.10 (volcados con \comando{pg\_dump}) y protocolos de recuperación ante
+contingencias, definiendo la frecuencia de copia y el procedimiento de restauración.
 
 \begin{NotaTecnica}
-Las migraciones se aplican sobre Supabase de forma controlada; cada script se revisa antes de
-ejecutarlo en un entorno compartido para preservar la integridad del schema \comando{core}.
+Las migraciones se aplican sobre PostgreSQL~15.10 de forma controlada a través del cliente web
+phpPgAdmin (\url{http://bytebusters.tis.cs.umss.edu.bo/phppgadmin}); cada script se revisa antes
+de ejecutarlo en un entorno compartido para preservar la integridad del schema \comando{core}.
 \end{NotaTecnica}
 
 \subsection{Catálogo de Semillas y Política de Respaldos}
@@ -58,7 +59,7 @@ aplicada para el arranque operativo.
         Cuentas administrativas & Semilla de cuentas \comando{adm.*@ethoshub.dev}. \\ \hline
         Configuración por defecto & Valores iniciales de \comando{portfolio\_settings}. \\ \hline
         \rowcolor{grisTecnico}
-        Respaldo programado & Copia periódica gestionada por Supabase. \\ \hline
+        Respaldo programado & Copia periódica con \comando{pg\_dump} del servidor TIS. \\ \hline
         Verificación de integridad & Comprobación del respaldo antes de archivarlo. \\ \hline
         \rowcolor{grisTecnico}
         Recuperación & Procedimiento de restauración ante contingencia. \\ \hline

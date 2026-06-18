@@ -1,12 +1,12 @@
 % =============================================================================
 % ANEXO G — Especificación detallada de endpoints (payloads y validaciones)
-% Extraído de los DTO reales (records con Jakarta Bean Validation) de ethoshubB.
+% Extraído de los DTO reales (records con Jakarta Bean Validation) de EthosBack.
 % =============================================================================
-\chapter{Anexo G — Especificación Detallada de Endpoints}
+\chapter{Especificación Detallada de Endpoints}
 \label{cap:anexo_ep_detalle}
 
 Este anexo documenta, dominio por dominio, los \textit{payloads} de petición y respuesta y las
-reglas de validación reales de la API \comando{ethoshubB}, extraídas de los \comando{record} de
+reglas de validación reales de la API \comando{EthosBack}, extraídas de los \comando{record} de
 DTO anotados con Jakarta Bean Validation. Todas las respuestas se envuelven en el tipo genérico
 \comando{ApiResponse<T>} (Sección~\ref{sec:anexo_ep_envelope}).\par
 
@@ -57,6 +57,7 @@ tabla~\ref{tab:anexo_auth_val} detalla las validaciones de los DTO de entrada.
     \label{tab:anexo_auth_val}
 \end{table}
 
+\clearpage
 \section{Seguridad y OTP (\texttt{/api/v1/auth})}
 \label{sec:anexo_ep_security_detalle}
 
@@ -127,6 +128,7 @@ tabla~\ref{tab:anexo_security_ep} enumera sus endpoints reales.
   "media": [ { "type": "image", "url": "https://...", "title": "Home" } ] }
 \end{lstlisting}
 
+\clearpage
 \begin{table}[!ht]
     \centering
     \renewcommand{\arraystretch}{1.3}

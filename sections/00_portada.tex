@@ -1,61 +1,96 @@
 \begin{titlepage}
     \thispagestyle{empty}
+    \sffamily
 
-        % ---SECCION SUPERIOR
-        \vspace*{-3.0cm}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{assets/img/umss/logoUMSS.png}
-        \end{center}
-        
-        \vspace*{-1.5cm}
-        \begin{center}
-            {\Large
-            \textbf{Facultad de Ciencias y Tecnología}\par
-            \textbf{Licenciatura en Ingeniería de Sistemas}\par
-            }
-        \end{center}
+    % =====================================================================
+    % SECCIÓN SUPERIOR — IDENTIFICACIÓN INSTITUCIONAL
+    % =====================================================================
+    \vspace*{-3.0cm}
+    \begin{center}
+        \includegraphics[width=0.36\textwidth]{assets/img/umss/logoUMSS.png}\par
+        \vspace{0.3cm}
+        {\large\textbf{Universidad Mayor de San Simón}\par}
+        {\normalsize\textbf{Facultad de Ciencias y Tecnología}\par}
+        {\normalsize Licenciatura en Ingeniería de Sistemas\par}
+    \end{center}
 
-        % ---SECCION CENTRAL
-        \vspace*{1.0cm}
-        \begin{center}
-            \rule{\textwidth}{0.2pt}\par
-            \vspace*{0.2cm}
-            {\Large
-                \textbf{Taller de Ingeniería de Software}\par
-            }
-            \vspace*{0.2cm}
-            {\normalsize
-                Convocatoria Pública\par
-                CPTIS-2302-2026\par
-                Sistema Generador de Portafolios Digitales de Proyectos de Software\par
-            }
-            \vspace*{0.3cm}
-            {\large
-                \textbf{\textsc{Memoria de Producto de Software}}\par
-            }
-            {\normalsize
-                \textit{Release Notes por Sprint --- ISO/IEC/IEEE 26515:2024}\par
-            }
-            \vspace*{0.2cm}
-            \rule{\textwidth}{0.2pt}\par
-        \end{center}
-    
-
-        % ---SECCION DATOS
-        \vspace*{6cm}
-        {\normalsize
-            \textbf{Consultor TIS: }Corina Justina Flores Villarroel\par
-            \textbf{Razón Social del Proponente: }Byte Busters S.R.L.\par
-            \textbf{Email del Proponente: }contacto@bytebusters.com\par
-            \textbf{Representante Legal de la Empresa: }Juan Diego Pardo Pozo\par
-            \textbf{Teléfono del Proponente: }+591 60349460\par
+    % Barra de clasificación documental (banda superior)
+    \vspace{0.5cm}
+    \begin{center}
+        \colorbox{colorPrimario}{%
+            \parbox{0.96\textwidth}{\centering
+                \color{white}\footnotesize\bfseries
+                DOCUMENTO CONTROLADO \quad$\bullet$\quad
+                CLASIFICACIÓN: CONFIDENCIAL \quad$\bullet$\quad
+                CONVOCATORIA CPTIS-2302-2026%
+            }%
         }
+    \end{center}
 
-        % ---SECCION INFERIOR
-        \begin{center}
-            \vfill 
-            {\normalsize
-                Cochabamba, Marzo 2026
-            }
-        \end{center}
+    % =====================================================================
+    % SECCIÓN CENTRAL — TÍTULO DEL ARTEFACTO
+    % =====================================================================
+    \vspace{0.8cm}
+    \begin{center}
+        \rule{\textwidth}{1.2pt}\par
+        \vspace{0.35cm}
+        {\Huge\bfseries\color{colorPrimario} Memoria de Producto\par}
+        \vspace{0.15cm}
+        {\LARGE\bfseries de Software\par}
+        \vspace{0.35cm}
+        {\large Plataforma \textbf{EthosHub}\par}
+        {\normalsize\itshape Release Notes por Sprint --- Sistema Generador de Portafolios Digitales\par}
+        \vspace{0.3cm}
+        \rule{\textwidth}{1.2pt}\par
+    \end{center}
+
+    % =====================================================================
+    % BLOQUE DE IDENTIFICACIÓN DOCUMENTAL (ISO/IEC/IEEE 26515:2024)
+    % =====================================================================
+    \vspace{0.7cm}
+    \begin{center}
+        \renewcommand{\arraystretch}{1.2}
+        \fontsize{9}{10.8}\selectfont
+        \begin{tabularx}{0.92\textwidth}{|>{\bfseries\color{colorPrimario}}l|X|}
+            \hline
+            \rowcolor{headerTabla}
+            \multicolumn{2}{|l|}{\sffamily\textbf{Identificación del documento (ISO/IEC/IEEE 15289:2024)}} \\
+            \hline
+            Identificador (Doc ID) & \texttt{MEM-PDS-ETHOSHUB-2.0.0} \\
+            \hline
+            \rowcolor{grisTecnico}
+            Versión & 2.0.0 \\
+            \hline
+            Estado & Aprobado \\
+            \hline
+            \rowcolor{grisTecnico}
+            Fecha de emisión & 15 de junio de 2026 \\
+            \hline
+            Norma de referencia & ISO/IEC/IEEE 26515:2024 \,$\cdot$\, ISO/IEC/IEEE 15289:2024 \\
+            \hline
+            \rowcolor{grisTecnico}
+            Tipo de artefacto & Memoria de Producto de Software (Release Notes) \\
+            \hline
+            \rowcolor{headerTabla}
+            \multicolumn{2}{|l|}{\sffamily\textbf{Proponente y supervisión}} \\
+            \hline
+            Razón social del proponente & Byte Busters S.R.L. \\
+            \hline
+            \rowcolor{grisTecnico}
+            Representante legal & Juan Diego Pardo Pozo \\
+            \hline
+            Correo de contacto & contacto.bytebusters@gmail.com \\
+            \hline
+            \rowcolor{grisTecnico}
+            Teléfono & +591 60349460 \\
+            \hline
+            Consultor TIS supervisor & Corina Justina Flores Villarroel \\
+            \hline
+        \end{tabularx}
+    \end{center}
+
+    \vfill
+    \begin{center}
+        {\normalsize Cochabamba, Bolivia \,$\cdot$\, Junio de 2026\par}
+    \end{center}
 \end{titlepage}

@@ -1,7 +1,7 @@
 % =============================================================================
 % ANEXO X — Catálogo de Códigos de Error y Respuesta
 % =============================================================================
-\chapter{Anexo X — Catálogo de Códigos de Error y Respuesta}
+\chapter{Catálogo de Códigos de Error y Respuesta}
 \label{cap:anexo_errores}
 
 Códigos de estado HTTP empleados por la API y su semántica en el envoltorio
@@ -11,6 +11,7 @@ Códigos de estado HTTP empleados por la API y su semántica en el envoltorio
 \label{sec:anexo_err_http}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -53,6 +54,7 @@ según la tabla~\ref{tab:anexo_err_ia}.
     \label{tab:anexo_err_ia}
 \end{table}
 
+\clearpage
 \begin{NotaTecnica}
 El manejador global de excepciones de \comando{shared/} traduce las excepciones de validación y
 de negocio a respuestas \comando{ApiResponse} consistentes, garantizando que el cliente reciba

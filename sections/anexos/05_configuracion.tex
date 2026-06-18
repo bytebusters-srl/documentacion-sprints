@@ -1,13 +1,13 @@
 % =============================================================================
 % ANEXO K — Configuración y Variables de Entorno
 % =============================================================================
-\chapter{Anexo K — Configuración y Variables de Entorno}
+\chapter{Configuración y Variables de Entorno}
 \label{cap:anexo_config}
 
 Este anexo documenta la configuración externalizable de ambos repositorios, base de la gestión
 de secretos del despliegue (Sprint~5, Sección~\ref{ssec:s5_be_secretos}).\par
 
-\section{Variables del Backend (\texttt{ethoshubB})}
+\section{Variables del Backend (\texttt{EthosBack})}
 \label{sec:anexo_config_be}
 El backend lee la configuración de \comando{application.yml} con \textit{placeholders}
 \comando{\$\{VAR:default\}}; el perfil \comando{prod} usa \comando{application-prod.yml}
@@ -15,6 +15,7 @@ El backend lee la configuración de \comando{application.yml} con \textit{placeh
 
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|l|}
 \hline
 \rowcolor{colorPrimario}
@@ -22,7 +23,7 @@ El backend lee la configuración de \comando{application.yml} con \textit{placeh
 \comando{SPRING\_PROFILES\_ACTIVE} & Perfil activo (\comando{local}/\comando{prod}). & \comando{local} \\ \hline
 \rowcolor{grisTecnico}
 \comando{SERVER\_PORT} & Puerto HTTP. & \comando{8080} \\ \hline
-\comando{DATABASE\_URL} & JDBC URL (Supabase pooler). & --- \\ \hline
+\comando{DATABASE\_URL} & JDBC URL de PostgreSQL 15.10 (servidor TIS). & --- \\ \hline
 \rowcolor{grisTecnico}
 \comando{DATABASE\_USERNAME/PASSWORD} & Credenciales de BD. & --- \\ \hline
 \comando{SUPABASE\_URL} & URL del proyecto Supabase. & --- \\ \hline
@@ -44,12 +45,14 @@ El backend lee la configuración de \comando{application.yml} con \textit{placeh
 \end{tabularx}\normalfont\normalsize
 \par\vspace{0.3cm}
 
-\section{Variables del Frontend (\texttt{ethoshubF})}
+\clearpage
+\section{Variables del Frontend (\texttt{EthosFront})}
 \label{sec:anexo_config_fe}
 Solo las variables con prefijo \comando{VITE\_} se exponen al cliente (son \textbf{públicas}).
 
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|}
 \hline
 \rowcolor{colorPrimario}
@@ -68,6 +71,7 @@ Solo las variables con prefijo \comando{VITE\_} se exponen al cliente (son \text
 \label{sec:anexo_config_build}
 \renewcommand{\arraystretch}{1.3}
 \fontsize{9}{10.8}\selectfont\sffamily
+\noindent
 \begin{tabularx}{\textwidth}{|l|X|}
 \hline
 \rowcolor{colorPrimario}

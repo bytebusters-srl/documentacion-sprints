@@ -101,9 +101,9 @@ principios de diseño que rigen el resto de la base de datos:
     UTC para garantizar consistencia entre zonas horarias.
 \end{enumerate}
 
-Las convenciones de migración se establecen también aquí: los \textit{scripts} versionados
+Las convenciones de migración se establecen también aquí: \\ los \textit{scripts} versionados
 residen en \comando{src/main/resources/db/migration/} con el formato estilo Flyway
-\comando{V<n>__descripcion.sql}. El Sprint 0 entrega el \textit{baseline} del schema
+\comando{V<n>\_\_descripcion.sql}. El Sprint 0 entrega el \textit{baseline} del schema
 \comando{core}; las migraciones \comando{V1} en adelante se documentan en los capítulos
 correspondientes y en el Anexo~\ref{cap:anexo_migraciones}.
 

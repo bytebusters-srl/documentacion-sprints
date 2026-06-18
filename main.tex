@@ -1,6 +1,6 @@
 % main.tex
 % Memoria P.D.S. (Release Notes) - ISO/IEC/IEEE 26515:2024 e ISO 15289
-% Producto documentado: EthosHub (ethoshubB / ethoshubF)
+% Producto documentado: EthosHub (EthosBack / EthosFront)
 % Estructura alineada al índice indice_documentacion_iso26515.md (Sprints 0 a 5)
 
 \documentclass[10pt, a4paper, twoside]{report} % Base a 10pt para notas de versión
@@ -13,18 +13,25 @@
 \begin{document}
 
 % ============================= FRONT MATTER =============================
+% Orden: Portada -> Índice -> Contenido (el historial abre el contenido).
 \include{sections/00_portada}
 
+\clearpage
 \begingroup
   \makeatletter \let\ps@plain\ps@empty \makeatother
   \pagestyle{empty}
-  \include{sections/front/01_historial}
   \tableofcontents
   \clearpage
 \endgroup
 
 \pagestyle{fancy}
 \setcounter{page}{1}
+
+% Historial de revisiones (primer contenido tras el índice)
+\setSprint{Historial de Revisiones}
+\setTag{release/v2.0.0}
+\setTaskID{Jira: DOC-HIST}
+\include{sections/front/01_historial}
 
 % ============================= CAPÍTULO 1 — SPRINT 0 =============================
 \setSprint{Sprint 0 - Closed}
@@ -98,6 +105,18 @@
 \setTag{release/v2.0.0}
 \setTaskID{Jira: DOC-ANEXOS}
 \appendix
+% Numeración de anexos con alfabeto inglés (A..Z, AA, BB): evita la letra «Ñ» que
+% babel-spanish inserta en \Alph y el desbordamiento del alfabeto (>26 anexos). El
+% rótulo de portada pasa de «CAPÍTULO N» a «ANEXO X», sin redundancia en el título.
+\makeatletter
+\renewcommand{\thechapter}{\ifcase\c@chapter\or A\or B\or C\or D\or E\or F\or G\or H\or I\or J\or K\or L\or M\or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or Y\or Z\or AA\or BB\or CC\or DD\or EE\fi}
+\titleformat{\chapter}[display]
+  {\sffamily\bfseries\color{colorPrimario}}
+  {\filright\fontsize{13}{15}\selectfont\color{grisISO}\MakeUppercase{Anexo \thechapter}}
+  {0.35cm}
+  {\fontsize{25}{29}\selectfont\filright}
+  []
+\makeatother
 \include{sections/anexos/00_anexos}
 \include{sections/anexos/01_endpoints_detalle}
 \include{sections/anexos/02_casos_prueba}
